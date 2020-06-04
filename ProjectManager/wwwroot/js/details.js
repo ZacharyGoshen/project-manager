@@ -72,19 +72,9 @@ function updateTaskDetailsHtml(task) {
     $("#taskDetailsName").val(task.name);
 
     if (task.assignedUser) {
-        $("#taskDetailsAssignee").html(`
-            <div class="default-profile-pic">
-                ` + task.assignedUser.firstName[0] + task.assignedUser.lastName[0] + `
-                </div>
-            <div>` + task.assignedUser.firstName + ` ` + task.assignedUser.lastName + `</div>
-        `);
+        updateTaskDetailsAssigneeHtml(task.assignedUser.firstName, task.assignedUser.lastName);
     } else {
-        $("#taskDetailsAssignee").html(`
-            <div id="taskDetailsAssignUserButton">
-                <input class="pick-user-icon" type="image" src="../images/user.png" />
-            </div>
-            <div>None</div>
-        `);
+        updateTaskDetailsAssigneeHtml(null, null);
     }
 
     $("#taskDetailsCreator").html(`
@@ -101,6 +91,29 @@ function updateTaskDetailsHtml(task) {
     } else {
         $("#taskDetailsDueDate").html(`
             <div class="board-task-due-date">` + taskDueDate.toDateString().slice(4, 10) + `</div>
+        `);
+    }
+}
+
+/** Update the task details view's assignee html
+ * 
+ * @param {string} firstName The first name of the assignee
+ * @param {string} lastName The last name of the assignee
+ */
+function updateTaskDetailsAssigneeHtml(firstName, lastName) {
+    if (firstName == null && lastName == null) {
+        $("#taskDetailsAssignee").html(`
+            <div id="taskDetailsAssignUserButton">
+                <input class="pick-user-icon" type="image" src="../images/user.png" />
+            </div>
+            <div>None</div>
+        `);
+    } else {
+        $("#taskDetailsAssignee").html(`
+            <div class="default-profile-pic">
+                ` + firstName[0] + lastName[0] + `
+                </div>
+            <div>` + firstName + ` ` + lastName + `</div>
         `);
     }
 }

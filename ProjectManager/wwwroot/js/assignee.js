@@ -28,11 +28,17 @@ function setUpAssigneeSearchResultClickEvent(taskId) {
         $(this).click(function () {
             assignUserToTaskInDatabase(taskId, userId);
             toggleAssigneeSelectionContainer(0, 0);
+
+            let userName = $(this).find(".assignee-search-result-name").html();
+            let firstName = userName.split(" ")[0];
+            let lastName = userName.split(" ")[1];
+
             if (currentView == "board") {
-                let userName = $(this).find(".assignee-search-result-name").html();
-                let firstName = userName.split(" ")[0];
-                let lastName = userName.split(" ")[1];
                 updateBoardTaskAssigneeHtml(taskId, firstName, lastName)
+            }
+
+            if (!$("#taskDetailsContainer").hasClass("hidden")) {
+                updateTaskDetailsAssigneeHtml(firstName, lastName);
             }
         });
     });
