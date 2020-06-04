@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BugTracker</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/list.css" />
+    <link rel="stylesheet" href="~/css/details.css" />
+    <link rel="stylesheet" href="~/css/board.css" />
+    <link rel="stylesheet" href="~/css/setDueDate.css" />
+</head>
+<body>
+    <div id="navBar">
+        <div id="navBarLeftSide">
+            <div id="projectDropDownDiv">
+                <b>Task Manager</b>
+            </div>
+            <div id="navBarLinkDiv">
+                <a class="nav-bar-link" asp-controller="Home" asp-action="Index">List</a>
+                <a class="nav-bar-link" asp-controller="Home" asp-action="Board">Board</a>
+                <a class="nav-bar-link" asp-controller="Tickets" asp-action="Index">Calendar</a>
+            </div>
+        </div>
+        <div id="navBarRightSide">
+            <a>
+                <img id="navBarProfilePic" src="~/images/defaultProfilePic.png" />
+            </a>
+        </div>
+    </div>
+    @RenderBody()
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/details.js" asp-append-version="true"></script>
+    <script src="~/js/assignee.js" asp-append-version="true"></script>
+    <script src="~/js/dueDate.js" asp-append-version="true"></script>
+    <script src="~/js/board.js" asp-append-version="true"></script>
+    <script src="~/js/boardMoveColumn.js" asp-append-version="true"></script>
+    <script src="~/js/boardMoveTask.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

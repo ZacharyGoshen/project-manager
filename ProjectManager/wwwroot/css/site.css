@@ -1,0 +1,108 @@
+﻿html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+button {
+    background-color: white;
+    border: 1px solid #f0f0f0;
+}
+a:hover {
+    color: #2a9df4
+}
+.default-profile-pic {
+    background-color: #2a9df4;
+    border-radius: 50%;
+    color: white;
+    font-size: 1rem;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    width: 30px;
+}
+.default-profile-pic:hover {
+    cursor: pointer;
+}
+.pick-user-icon {
+    background-color: #f0f0f0;
+    border: 2px solid white;
+    border-radius: 50%;
+    color: #9e9e9e;
+    height: 30px;
+    vertical-align: middle;
+    width: 30px;
+}
+.assignee-search-result {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    font-size: 1rem;
+    padding: 5px;
+    width: 100%;
+}
+.assignee-search-result > div {
+    margin-right: 10px;
+}
+.veryLowPriority {
+    background-color: #7fff00;
+}
+
+.lowPriority {
+    background-color: #dfff00;
+}
+
+.mediumPriority {
+    background-color: #fff200;
+}
+
+.highPriority {
+    background-color: #fba465;
+}
+
+.veryHighPriority {
+    background-color: #e3242b;
+}
+.toDoStatus {
+    background-color: #9dd9f3;
+}
+.inProgressStatus {
+    background-color: #8f00ff;
+}
+.completedStatus {
+    background-color: #2a9df4;
+}
+.hidden {
+    display: none !important;
+}
+#assigneeSelectionContainer {
+    position: absolute;
+    z-index: 4;
+    background-color: white;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 35px;
+}
+#assigneeSelectionContainer p {
+    font-size: 1rem;
+}
+#assigneeSelectionContainer input {
+    font-size: 1rem;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+}
+#assigneeSelectionContainer input:focus {
+    outline: none;
+}
+#assigneeSearchResultsContainer {
+    position: absolute;
+    background-color: white;
+    border: 2px solid #f0f0f0;
+    width: 100%;
+    min-height: 44px;
+}
+#assigneeSearchResultsContainer div:hover {
+    background-color: #2a9df4;
+    color: white;
+    cursor: pointer;
+}

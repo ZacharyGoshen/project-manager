@@ -1,0 +1,90 @@
+﻿@model ProjectManager.ViewModels.BoardViewModel
+
+<div id="boardContainer">
+    <div id="boardCategoryContainer">
+        @for (int categoryIndex = 0; categoryIndex < Model.Categories.Count; categoryIndex++)
+        {
+            <div class="board-category-drop-area" data-category-index="@categoryIndex"></div>
+
+            <div class="board-category" data-category-id="@Model.Categories[categoryIndex].CategoryId" data-category-index="@categoryIndex">
+                <div class="board-category-header">
+                    <div class="board-category-name">@Model.Categories[categoryIndex].Name</div>
+                    <button class="board-category-delete-button" type="button" onclick="deleteBoardCategory(@Model.Categories[categoryIndex].CategoryId)">x</button>
+                </div>
+                <div class="board-new-task-button-container">
+                    <button class="add-task-to-board-button" onclick="toggleNewTaskForm(@categoryIndex)">+</button>
+                </div>
+                <div class="new-board-task-container hidden">
+                    <textarea class="new-board-task-text-box"></textarea>
+                </div>
+
+                <div class="board-task-container">
+
+                    @for (int taskIndex = 0; taskIndex < Model.Tasks[categoryIndex].Count; taskIndex++)
+                    {
+                        <div class="board-task-drop-area" data-task-index="@taskIndex"></div>
+
+                        var task = Model.Tasks[categoryIndex][taskIndex];
+
+                        <div class="board-task" data-task-id="@task.TaskId" data-task-index="@taskIndex">
+                            <div class="board-task-first-row">
+                                <button type="submit" class="board-task-delete-button" onclick="deleteBoardTask(@task.TaskId)">x</button>
+                                <a class="unstyledLink hoverPointer" onclick="openTaskDetails(@task.TaskId)">@task.Name</a>
+                            </div>
+                            <div class="board-task-second-row">
+                                <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(@task.TaskId)">
+                                    @if (task.AssignedUser != null)
+                                    {
+                                        <div class="default-profile-pic">
+                                            @task.AssignedUser.FirstName[0]@task.AssignedUser.LastName[0]
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <input class="pick-user-icon pick-user-icon-hover" type="image" src="~/images/user.png" />
+                                    }
+                                </div>
+                                <div class="board-task-due-date" onclick="toggleBoardDueDateSelectionContainer(@task.TaskId)">
+                                    @if (@task.DueDateRangeStart.Date == new DateTime().Date)
+                                    {
+                                        <input class="pick-due-date-icon" type="image" src="~/images/clock.png" />
+                                    }
+                                    else
+                                    {
+                                        <div>@task.DueDateRangeStart.ToString("MMM dd")</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="board-task-drop-area" data-task-index="@Model.Tasks[categoryIndex].Count"></div>
+                    <div class="board-task-container-extra-height"></div>
+                </div>
+            </div>
+        }
+        <div class="board-category-drop-area" data-category-index="@Model.Categories.Count"></div>
+        <div class="board-category" data-category-index="@Model.Categories.Count">
+            <div id="addBoardCategoryButton" onclick="toggleNewBoardCategoryForm()">+ Add category</div>
+            <input id="newCategoryNameTextBox" class="hidden" type="text" placeholder="Category Name" />
+        </div>
+        <div id="boardCategoryContainerExtraWidth"></div>
+    </div>
+
+    <div id="removeBoardCategoryAlert" class="hidden">
+        Categories that have tasks attached cannot be removed
+    </div>
+
+    @Html.Partial("_AssignUser", @Model)
+
+    @Html.Partial("_SetDueDate", @Model)
+</div>
+
+<div id="draggedCategoryCopy" class="hidden"></div>
+
+<div id="boardCategoryDropAreaIndicator"></div>
+
+<div id="draggedTaskCopy" class="hidden"></div>
+
+<div id="boardTaskDropAreaIndicator"></div>
+
+@Html.Partial("_TaskDetails", @Model.Tasks[0][0])

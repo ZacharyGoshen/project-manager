@@ -1,0 +1,106 @@
+﻿#taskDetailsScreen {
+    background-color: grey;
+    height: 100%;
+    opacity: 0.5;
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+}
+#taskDetailsContainer {
+    background-color: white;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    padding: 0px 10px;
+    position: absolute;
+    z-index: 3;
+}
+#taskDetailsFirstRow {
+    border-bottom: 2px solid #f0f0f0;
+    display: flex;
+    flex-direction: row-reverse;
+    font-size: 1.5rem;
+}
+#closeTaskDetailsButton {
+    border: none;
+}
+#closeTaskDetailsButton:hover {
+    color: #e3242b;
+    font-weight: bold;
+}
+#taskDetailsSecondRow {
+    border-bottom: 2px solid #f0f0f0;
+    font-size: 1.5rem;
+    padding: 10px;
+}
+#taskDetailsThirdRow {
+    border-bottom: 2px solid #f0f0f0;
+    color: #9e9e9e;
+    font-size: 1rem;
+    padding: 10px;
+}
+#taskDetailsFourthRow {
+    border-bottom: 2px solid #f0f0f0;
+    color: #9e9e9e;
+    display: flex;
+    font-size: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+}
+#taskDetailsFourthRowFirstSection {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
+#taskDetailsAssignee {
+    align-items: center;
+    border: 2px solid white;
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+    padding: 5px 10px 5px 0px;
+}
+#taskDetailsAssignee:hover {
+    border-color: #2a9df4;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#taskDetailsAssignee > div {
+    margin-left: 10px;
+}
+#taskDetailsFourthRowSecondSection {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
+#taskDetailsCreator {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+    padding: 5px 10px 5px 0px;
+}
+#taskDetailsCreator > div {
+    margin-left: 10px;
+}
+#taskDetailsFifthRow {
+    align-items: center;
+    border-bottom: 2px solid #f0f0f0;
+    color: #9e9e9e;
+    display: flex;
+    font-size: 1rem;
+    flex-direction: row;
+    padding: 10px;
+}
+#taskDetailsDueDate {
+    border: 2px solid white;
+    padding: 0px 10px;
+    margin-left: 10px;
+}
+#taskDetailsDueDate:hover {
+    border-color: #2a9df4;
+    border-radius: 5px;
+    cursor: pointer;
+}
+

@@ -1,0 +1,234 @@
+﻿using ProjectManager.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+
+namespace ProjectManager.DAL
+{
+    public class MyContext : DbContext
+    {
+        public DbSet<User> Users { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Task> Tasks { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<UserProject> UserProjects { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=localhost,1433; Database=MyDB; User=SA; Password=<YourStrong@Passw0rd>");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Create one to many relationship between project and tasks
+            modelBuilder.Entity<Project>()
+                .HasMany(p => p.Tasks)
+                .WithOne(t => t.Project);
+
+            // Create one to many relationship between project and categories
+            modelBuilder.Entity<Project>()
+                .HasMany(p => p.Categories)
+                .WithOne(c => c.Project);
+
+            // Create one to many relationship between category and tasks
+            modelBuilder.Entity<Category>()
+                .HasMany(c => c.Tasks)
+                .WithOne(t => t.Category);
+
+            // Create many to many relationship between users and projects
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.UserProjects)
+                .WithOne(up => up.User);
+            modelBuilder.Entity<Project>()
+                .HasMany(p => p.UserProjects)
+                .WithOne(up => up.Project);
+
+            // Create one to many relationship between assigned user and tasks
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.AssignedTasks)
+                .WithOne(t => t.AssignedUser);
+
+            // Create one to many relationship between submitting user and tasks
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.SubmittedTasks)
+                .WithOne(t => t.SubmittingUser);
+
+            // Seed Users
+            modelBuilder.Entity<User>().HasData(
+                new
+                {
+                    UserId = 1,
+                    FirstName = "Zach",
+                    LastName = "Goshen",
+                    Email = "zachgoshen@gmail.com"
+                },
+                new
+                {
+                    UserId = 2,
+                    FirstName = "Erick",
+                    LastName = "Goshen",
+                    Email = "erickgoshen@gmail.com"
+                }
+                );
+
+            // Seed Projects
+            modelBuilder.Entity<Project>().HasData(
+                new
+                {
+                    ProjectId = 1,
+                    Name = "Task Manager"
+                }
+                );
+
+            // Seed Tasks
+            modelBuilder.Entity<Task>().HasData(
+                new
+                {
+                    TaskId = 1,
+                    Name = "Very low priority task",
+                    Description = "This task is very low priority",
+                    ProjectId = 1,
+                    CategoryId = 1,
+                    SubmittingUserUserId = 1,
+                    AssignedUserUserId = 1,
+                    Priority = Models.TaskPriority.VeryLow,
+                    CreationDate = DateTime.Now,
+                    DueDateRangeStart = new DateTime(),
+                    DueDateRangeEnd = new DateTime(),
+                    Order = 4
+                },
+                new
+                {
+                    TaskId = 2,
+                    Name = "Low priority task",
+                    Description = "This task is low priority",
+                    ProjectId = 1,
+                    CategoryId = 1,
+                    SubmittingUserUserId = 1,
+                    AssignedUserUserId = 2,
+                    Priority = Models.TaskPriority.Low,
+                    CreationDate = DateTime.Now,
+                    DueDateRangeStart = new DateTime(),
+                    DueDateRangeEnd = new DateTime(),
+                    Order = 3
+                },
+                new
+                {
+                    TaskId = 3,
+                    Name = "Medium priority task",
+                    Description = "This task is medium priority",
+                    ProjectId = 1,
+                    CategoryId = 1,
+                    SubmittingUserUserId = 1,
+                    AssignedUserUserId = 1,
+                    Priority = Models.TaskPriority.Medium,
+                    CreationDate = DateTime.Now,
+                    DueDateRangeStart = new DateTime(),
+                    DueDateRangeEnd = new DateTime(),
+                    Order = 2
+                },
+                new
+                {
+                    TaskId = 4,
+                    Name = "High priority task",
+                    Description = "This task is very high priority",
+                    ProjectId = 1,
+                    CategoryId = 1,
+                    SubmittingUserUserId = 1,
+                    AssignedUserUserId = 2,
+                    Priority = Models.TaskPriority.High,
+                    CreationDate = DateTime.Now,
+                    DueDateRangeStart = new DateTime(),
+                    DueDateRangeEnd = new DateTime(),
+                    Order = 1
+                },
+                new
+                {
+                    TaskId = 5,
+                    Name = "Very high priority task",
+                    Description = "This task is very high priority",
+                    ProjectId = 1,
+                    CategoryId = 1,
+                    SubmittingUserUserId = 1,
+                    AssignedUserUserId = 1,
+                    Priority = Models.TaskPriority.VeryHigh,
+                    CreationDate = DateTime.Now,
+                    DueDateRangeStart = new DateTime(),
+                    DueDateRangeEnd = new DateTime(),
+                    Order = 0
+                },
+                new
+                {
+                    TaskId = 6,
+                    Name = "In progress task",
+                    Description = "This task is in progress",
+                    ProjectId = 1,
+                    CategoryId = 2,
+                    SubmittingUserUserId = 1,
+                    AssignedUserUserId = 2,
+                    Priority = Models.TaskPriority.Medium,
+                    CreationDate = DateTime.Now,
+                    DueDateRangeStart = new DateTime(),
+                    DueDateRangeEnd = new DateTime(),
+                    Order = 0
+                },
+                new
+                {
+                    TaskId = 7,
+                    Name = "Completed task",
+                    Description = "This task has been completed",
+                    ProjectId = 1,
+                    CategoryId = 3,
+                    SubmittingUserUserId = 1,
+                    AssignedUserUserId = 1,
+                    Priority = Models.TaskPriority.Low,
+                    CreationDate = DateTime.Now,
+                    DueDateRangeStart = new DateTime(),
+                    DueDateRangeEnd = new DateTime(),
+                    Order = 0
+                }
+                );
+
+            // Seed Categories
+            modelBuilder.Entity<Category>().HasData(
+                new
+                {
+                    CategoryId = 1,
+                    Name = "To Do",
+                    ProjectId = 1,
+                    Order = 0
+                },
+                new
+                {
+                    CategoryId = 2,
+                    Name = "In Progress",
+                    ProjectId = 1,
+                    Order = 1
+                },
+                new
+                {
+                    CategoryId = 3,
+                    Name = "Completed",
+                    ProjectId = 1,
+                    Order = 2
+                }
+                );
+
+            // Seed UserProjects
+            modelBuilder.Entity<UserProject>().HasData(
+                new
+                {
+                    UserProjectId = 1,
+                    UserId = 1,
+                    ProjectId = 1
+                },
+                new
+                {
+                    UserProjectId = 2,
+                    UserId = 2,
+                    ProjectId = 1
+                }
+                );
+        }
+    }
+}

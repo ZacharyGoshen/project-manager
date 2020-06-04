@@ -1,0 +1,31 @@
+﻿@model ProjectManager.Models.Task
+
+<div id="taskDetailsScreen" class="hidden"></div>
+
+<div id="taskDetailsContainer" class="hidden" data-task-id="">
+    <div id="taskDetailsFirstRow">
+        <button id="closeTaskDetailsButton" onclick="closeTaskDetails()">x</button>
+    </div>
+    <div id="taskDetailsSecondRow">
+        <div id="taskName"></div>
+    </div>
+    <div id="taskDetailsThirdRow">
+        <div id="taskDescription">Add a description to this task</div>
+    </div>
+    <div id="taskDetailsFourthRow">
+        <div id="taskDetailsFourthRowFirstSection">
+            <div>Assigned To:</div>
+            <div id="taskDetailsAssignee" onclick="toggleDetailsAssigneeSelectionContainer()"></div>
+        </div>
+        <div id="taskDetailsFourthRowSecondSection">
+            <div>Created By:</div>
+            <div id="taskDetailsCreator">
+            </div>
+        </div>
+    </div>
+    <div id="taskDetailsFifthRow">
+        <div>Due Date:</div>
+        <div id="taskDetailsDueDate" onclick="toggleDetailsDueDateSelectionContainer()"></div>
+    </div>
+    </div>
+

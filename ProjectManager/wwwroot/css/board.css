@@ -1,0 +1,223 @@
+﻿.board-category {
+    flex: 0 0 300px;
+}
+.board-category-header {
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 14px;
+    padding-right: 14px;
+}
+.board-category-name {
+    margin: 20px 0px;
+}
+.board-category-delete-button {
+    background-color: transparent;
+    color: #9e9e9e;
+    border: none;
+}
+.board-category-delete-button:hover {
+    color: #e3242b;
+    font-weight: bold;
+}
+.board-new-task-button-container {
+    padding-left: 12px;
+    padding-right: 12px;
+    position: relative;
+    margin-bottom: 10px;
+}
+.add-task-to-board-button {
+    height: 40px;
+    width: 100%;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    text-align: center;
+    color: #9e9e9e;
+    font-size: 1.5em;
+    line-height: 100%;
+}
+.add-task-to-board-button:hover {
+    border-color: #2a9df4;
+    color: #2a9df4;
+}
+.new-board-task-container {
+    padding: 10px;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    background-color: white;
+    margin: 0px 12px 12px 10px;
+}
+.new-board-task-text-box {
+    width: 100%;
+    border: none;
+    resize: none;
+}
+.new-board-task-text-box:focus {
+    outline: none;
+}
+.board-task-container {
+    overflow-y: scroll;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+.board-task {
+    position: relative;
+    padding: 10px;
+    width: 100%;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    background-color: white;
+    margin-bottom: 10px;
+}
+.board-task-first-row {
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+}
+.board-task-second-row {
+    align-items: center;
+    color: #9e9e9e;
+    display: flex;
+    flex-direction: row;
+    font-size: 0.75em;
+}
+.board-task-second-row > div {
+    margin-right: 10px;
+}
+.board-task-second-row > input {
+    margin-right: 10px;
+}
+.board-task-priority {
+    width: 50px;
+    height: 10px;
+    border-radius: 5px;
+}
+.board-task-priority-none {
+    width: 50px;
+    height: 10px;
+    border-radius: 5px;
+    border: 2px dotted #9e9e9e; 
+}
+.board-task-delete-button {
+    border: none;
+    color: #9e9e9e;
+}
+.board-task-delete-button:hover {
+    color: #e3242b;
+    font-weight: bold;
+}
+.board-task-due-date {
+    align-self: center;
+}
+.board-task-due-date:hover {
+    color: #2a9df4;
+    cursor: pointer;
+}
+input[type="image"].pick-user-icon-hover:hover {
+    border: 2px solid #2a9df4;
+}
+.pick-due-date-icon {
+    background-color: #f0f0f0;
+    border: 2px solid white;
+    border-radius: 50%;
+    color: #9e9e9e;
+    height: 30px;
+    vertical-align: middle;
+    width: 30px;
+}
+input[type="image"].pick-due-date-icon:hover {
+    border: 2px solid #2a9df4;
+}
+#draggedCategoryCopy {
+    position: absolute;
+    width: 300px;
+    margin-top: 20px;
+    opacity: .8;
+}
+#draggedCategoryCopy > div {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+.board-category-drop-area {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+}
+.board-task-drop-area {
+    position: absolute;
+    z-index: -1;
+}
+#boardCategoryDropAreaIndicator {
+    position: absolute;
+    z-index: -1;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+}
+#boardCategoryDropAreaIndicator > div {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+#draggedTaskCopy {
+    position: absolute;
+    padding: 10px;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    background-color: white;
+    margin-bottom: 10px;
+    opacity: .8;
+}
+#boardTaskDropAreaIndicator {
+    position: absolute;
+    padding: 10px;
+    z-index: -1;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+}
+#boardContainer {
+    margin-top: 90px;
+    height: 100%;
+}
+#boardCategoryContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+#newCategoryNameTextBox {
+    margin-top: 13px;
+    width: 100%;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    padding: 5px;
+}
+#addBoardCategoryButton {
+    color: #9e9e9e;
+    padding-left: 14px;
+    margin: 20px 0px;
+}
+#addBoardCategoryButton:hover {
+    color: #2a9df4;
+    cursor: pointer;
+}
+#newCategoryNameTextBox:focus {
+    outline: none;
+}
+#removeBoardCategoryAlert {
+    position: absolute;
+    font-size: 0.75rem;
+    color: #e3242b;
+    background-color: white;
+    padding: 10px;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+}
+#boardCategoryContainerExtraWidth {
+    width: 20px;
+}

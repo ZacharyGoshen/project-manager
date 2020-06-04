@@ -1,0 +1,17 @@
+﻿@model ProjectManager.ViewModels.BoardViewModel
+
+<div id="assigneeSelectionContainer" class="hidden">
+    <p>Assignee</p>
+    <input id="assigneeSearchBox" type="text"/>
+    <div id="assigneeSearchResultsContainer" class="hidden">
+        @foreach (User user in Model.Users)
+        {
+            <div class="assignee-search-result hidden" data-user-id="@user.UserId">
+                <div class="default-profile-pic">
+                    @user.FirstName[0]@user.LastName[0]
+                </div>
+                <div class="assignee-search-result-name">@user.FirstName @user.LastName</div>
+            </div>
+        }
+    </div>
+</div>

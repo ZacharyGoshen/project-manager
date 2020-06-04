@@ -1,0 +1,49 @@
+﻿.profile-pic {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+.backgroundOval {
+    color: white;
+    width: 50%;
+    text-align: center;
+    border-radius: 15px;
+}
+.unstyledLink {
+    color: black;
+}
+.unstyledLink:hover {
+    text-decoration: none;
+}
+.hoverPointer:hover {
+    cursor: pointer;
+}
+#taskListContainer {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 90px;
+}
+#taskListTable {
+    width: 100%;
+    border-collapse: collapse;
+    border-style: hidden;
+}
+#taskListTable th {
+    font-weight: normal;
+    color: #9e9e9e;
+    border: 1px solid #f0f0f0;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+#taskListTable td {
+    color: #9e9e9e;
+    border: 1px solid #f0f0f0;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+#taskListTable tr td:first-child {
+    color: black;
+}
