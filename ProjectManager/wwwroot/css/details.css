@@ -52,6 +52,21 @@
     font-size: 1rem;
     padding: 10px;
 }
+#taskDetailsDescription {
+    border: 2px solid white;
+    border-radius: 5px;
+    color: #9e9e9e;
+    padding: 5px;
+    resize: none;
+    width: 100%;
+}
+#taskDetailsDescription:focus {
+    border-color: #f0f0f0;
+    outline: none;
+}
+#taskDetailsDescription:hover {
+    border-color: #f0f0f0;
+}
 #taskDetailsFourthRow {
     border-bottom: 2px solid #f0f0f0;
     color: #9e9e9e;

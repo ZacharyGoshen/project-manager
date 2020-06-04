@@ -273,6 +273,16 @@ namespace ProjectManager.Controllers
             }
         }
 
+        public void SetTaskDescription(int taskId, string taskDescription)
+        {
+            using (var context = new DAL.MyContext())
+            {
+                var task = context.Tasks.Find(taskId);
+                task.Description = taskDescription;
+                context.SaveChanges();
+            }
+        }
+
         public void AssignUserToTask(int taskId, int userId)
         {
             using (var context = new DAL.MyContext())

@@ -133,6 +133,19 @@ function changeNameOfTaskInDatabase(taskId, taskName) {
     });
 }
 
+/** Set the description of a task in the database
+ *
+ * @param {number} taskId The ID of the task who's description is being set
+ * @param {string} taskDescription The task's new description
+ */
+function setTaskDescriptionInDatabase(taskId, taskDescription) {
+    $.ajax({
+        type: "POST",
+        url: "/Home/SetTaskDescription",
+        data: { taskId: taskId, taskDescription: taskDescription }
+    });
+}
+
 /** Updates the category and index of a task in the database
  * 
  * @param {number} taskId The ID of the task being updated

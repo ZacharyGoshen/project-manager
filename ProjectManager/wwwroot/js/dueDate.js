@@ -38,7 +38,6 @@ function setUpCalendarDateClickEvent(taskId) {
             if (!$("#taskDetailsContainer").hasClass("hidden")) {
                 updateTaskDetailsDueDateHtml(dueDate);
             }
-
         });
     });
 }

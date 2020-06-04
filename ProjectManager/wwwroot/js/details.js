@@ -2,6 +2,10 @@
  */
 function setUpTaskDetailsEventListeners() {
     updateTaskDetailsNameOnEnter();
+    updateTaskDetailsDescriptionOnEnter()
+
+    setUpTaskDetailsNameOnFocus();
+    setUpTaskDetailsDescriptionOnFocus();
 }
 
 /** Update the name of the task in the database, details view, and current view
@@ -14,13 +18,75 @@ function updateTaskDetailsNameOnEnter() {
 
             let taskId = $("#taskDetailsContainer").data("taskId");
             let taskName = $(this).val();
-            changeNameOfTaskInDatabase(taskId, taskName);
+
+            if (taskName != "") {
+                changeNameOfTaskInDatabase(taskId, taskName);
+                if (currentView == "board") {
+                    updateBoardTaskNameHtml(taskId, taskName);
+                }
+            }
 
             $(this).blur();
+        }
+    });
+}
+
+/** Update the description of the task in the database and details view
+ * when the enter key is pressed in the task description input
+ */
+function updateTaskDetailsDescriptionOnEnter() {
+    $("#taskDetailsDescription").keypress(function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+
+            let taskId = $("#taskDetailsContainer").data("taskId");
+            let taskDescription = $(this).val();
+            setTaskDescriptionInDatabase(taskId, taskDescription);
+
+            $(this).blur();
+        }
+    });
+}
+
+/** Update the task name in the database and current view when the task details
+ * name text box loses focus. Don't allow a blank name
+ */
+function setUpTaskDetailsNameOnFocus() {
+    $("#taskDetailsName").focusout(function () {
+        let taskId = $("#taskDetailsContainer").data("taskId");
+        let taskName = $(this).val();
+
+        if (taskName != "") {
+            changeNameOfTaskInDatabase(taskId, taskName);
             if (currentView == "board") {
                 updateBoardTaskNameHtml(taskId, taskName);
             }
         }
+    });
+}
+
+/** Update the task decription in the database and show the placeholder text
+ * if none is supplied when the task details description text box loses focus
+ */
+function setUpTaskDetailsDescriptionOnFocus() {
+    $("#taskDetailsDescription").focus(function () {
+        if ($(this).val() == "Add a description to this task") {
+            $(this).val("");
+            $(this).css("color", "black");
+        }
+    });
+    $("#taskDetailsDescription").focusout(function () {
+        let taskId = $("#taskDetailsContainer").data("taskId");
+        let taskDescription = null;
+
+        if ($(this).val() == "") {
+            $(this).val("Add a description to this task");
+            $(this).css("color", "#9e9e9e");
+        } else {
+            taskDescription = $(this).val();
+        }
+
+        setTaskDescriptionInDatabase(taskId, taskDescription);
     });
 }
 
@@ -70,6 +136,7 @@ function updateTaskDetailsHtml(task) {
     $("#taskDetailsContainer").data("taskId", task.taskId);
 
     $("#taskDetailsName").val(task.name);
+    updateTaskDetailsDescriptionHtml(task.description);
 
     if (task.assignedUser) {
         updateTaskDetailsAssigneeHtml(task.assignedUser.firstName, task.assignedUser.lastName);
@@ -87,6 +154,20 @@ function updateTaskDetailsHtml(task) {
     let dueDate = new Date(task.dueDateRangeStart + "Z");
     dueDate.setDate(dueDate.getDate() + 1);
     updateTaskDetailsDueDateHtml(dueDate);
+}
+
+/** Update the task details view's description html
+ * 
+ * @param {string} description The description of the task
+ */
+function updateTaskDetailsDescriptionHtml(description) {
+    if (description == null) {
+        $("#taskDetailsDescription").val("Add a description to this task");
+        $("#taskDetailsDescription").css("color", "#9e9e9e");
+    } else {
+        $("#taskDetailsDescription").val(description);
+        $("#taskDetailsDescription").css("color", "black");
+    }
 }
 
 /** Update the task details view's assignee html
