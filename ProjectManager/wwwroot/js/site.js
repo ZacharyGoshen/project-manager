@@ -120,6 +120,19 @@ function deleteCategoryInDatabase(categoryId) {
     });
 }
 
+/** Update the name of a task in the database
+ *
+ * @param {number} taskId The ID of the task who's name is being changed
+ * @param {string} taskName The task's new name
+ */
+function changeNameOfTaskInDatabase(taskId, taskName) {
+    $.ajax({
+        type: "POST",
+        url: "/Home/ChangeTaskName",
+        data: { taskId: taskId, taskName: taskName }
+    });
+}
+
 /** Updates the category and index of a task in the database
  * 
  * @param {number} taskId The ID of the task being updated

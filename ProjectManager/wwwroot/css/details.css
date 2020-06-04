@@ -33,6 +33,19 @@
     font-size: 1.5rem;
     padding: 10px;
 }
+#taskDetailsName {
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 5px;
+    width: 100%;
+}
+#taskDetailsName:focus {
+    border-color: #f0f0f0;
+    outline: none;
+}
+#taskDetailsName:hover {
+    border-color: #f0f0f0;
+}
 #taskDetailsThirdRow {
     border-bottom: 2px solid #f0f0f0;
     color: #9e9e9e;

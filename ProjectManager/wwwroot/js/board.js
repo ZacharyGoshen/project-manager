@@ -7,11 +7,13 @@ let horizontalScrollIntervalId = 0;
 
 onBoardViewLoad();
 
-/** Sets up the event listeners of the board view after the page has finished
+/** Set up the event listeners of the board view after the page has finished
  * loading
  */
 function onBoardViewLoad() {
     $(document).ready(function () {
+        setUpTaskDetailsEventListeners();
+
         setTaskContainerHeights();
 
         $(document).mousemove(function (event) {
@@ -57,7 +59,7 @@ function onBoardViewLoad() {
     });
 }
 
-/** Resizes each column's scroll box so that its height fill the remainder of
+/** Resize each column's scroll box so that its height fill the remainder of
 * the screen
 */
 function setTaskContainerHeights() {
@@ -69,7 +71,7 @@ function setTaskContainerHeights() {
     })
 }
 
-/** Sets up the event listeners attached to a given category
+/** Set up the event listeners attached to a given category
  *
  * @param {object} category The given category
  */
@@ -83,7 +85,7 @@ function setUpBoardCategoryEventListeners(category) {
     });
 }
 
-/** Sets up the event listeners attached to a given task
+/** Set up the event listeners attached to a given task
  *  
  * @param {object} task The given task
  */
@@ -91,7 +93,7 @@ function setUpBoardTaskEventListeners(task) {
     startBoardTaskDragOnMouseDown(task);
 }
 
-/** Adds the new category when the enter key is pressed within the new category form
+/** Add the new category when the enter key is pressed within the new category form
  */
 function addNewBoardCategoryOnEnter() {
     $("#newCategoryNameTextBox").keypress(function (event) {
@@ -114,7 +116,7 @@ function addNewBoardCategoryOnEnter() {
     });
 }
 
-/** Adds the new task when the enter key is pressed within the new task form
+/** Add the new task when the enter key is pressed within the new task form
  */ 
 function addNewBoardTaskOnEnter(category) {
     let newTaskTextBox = category.find(".new-board-task-text-box");
@@ -140,7 +142,7 @@ function addNewBoardTaskOnEnter(category) {
     });
 }
 
-/** Toggles the new category form between open and closed and moves the cursor
+/** Toggle the new category form between open and closed and move the cursor
  * to the form if opened
  */
 function toggleNewBoardCategoryForm() {
@@ -160,7 +162,7 @@ function toggleNewBoardCategoryForm() {
     }
 }
 
-/** Toggles the new task form between open and closed and moves the cursor
+/** Toggle the new task form between open and closed and move the cursor
  * to the form if opened. Closes any other new task form currently open
  * 
  * @param {number} categoryIndex The category index of the new task
@@ -179,8 +181,8 @@ function toggleNewTaskForm(categoryIndex) {
     }
 }
 
-/** Sets the location of the assignee selection container to right below the
- * button clicked and then toggles it between open and closed
+/** Set the location of the assignee selection container to right below the
+ * button clicked and then toggle it between open and closed
  *
  * @param {number} taskId The ID of the task whose assignee is being selected
  */
@@ -197,7 +199,7 @@ function toggleBoardAssigneeSelectionContainer(taskId) {
 }
 
 /** Sets the location of the due date selection container to right below the
- * button clicked and then toggles it between open and closed
+ * button clicked and then toggle it between open and closed
  * 
  * @param {number} taskId The ID of the task whose due date is being selected
  */
@@ -214,7 +216,7 @@ function toggleBoardDueDateSelectionContainer(taskId) {
     setUpCalendarDateClickEvent(taskId);
 }
 
-/** Generates the html of a new board category
+/** Generate the html of a new board category
  * 
  * @param {number} categoryId The ID of the new category
  * @param {string} categoryName The name of the new category
@@ -242,7 +244,7 @@ function generateNewBoardCategoryHtml(categoryId, categoryName, categoryIndex) {
         `;
 }
 
-/** Creates a new task with the given ID and name
+/** Create a new task with the given ID and name
  * 
  * @param {number} taskId The task's ID
  * @param {number} taskName The task's name
@@ -253,7 +255,7 @@ function generateNewBoardTaskHtml(taskId, taskName) {
         <div class="board-task" data-task-id="` + taskId + `" data-task-index="0">
             <div class="board-task-first-row">
                 <button type="submit" class="board-task-delete-button" onclick="deleteBoardTask(` + taskId + `)">x</button>
-                <a class="unstyledLink hoverPointer" onclick="openTaskDetails(` + taskId + `)">` + taskName + `</a>
+                <a class="board-task-name unstyledLink hoverPointer" onclick="openTaskDetails(` + taskId + `)">` + taskName + `</a>
             </div>
             <div class="board-task-second-row">
                 <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(` + taskId + `)">
@@ -267,7 +269,7 @@ function generateNewBoardTaskHtml(taskId, taskName) {
         `;
 }
 
-/** Inserts a category and its drop area's html into the board and increments
+/** Insert a category and its drop area's html into the board and increment
  * the indices of all the categories and drop areas to the right of it
  * 
  * @param {string} categoryToInsert The HTML of the task that is being inserted
@@ -302,7 +304,7 @@ function insertCategoryInBoard(categoryToInsert, destinationIndex) {
     }
 }
 
-/** Inserts a task and its drop area's html into a category and increments the
+/** Insert a task and its drop area's html into a category and increment the
  * indices of all the tasks and drop areas below it
  * 
  * @param {string} taskToInsert The HTML of the task that is being inserted
@@ -341,7 +343,17 @@ function insertBoardTaskInCategory(taskToInsert, destinationCategoryId, destinat
     }
 }
 
-/** Updates the html of the board task to show the user that was assigned
+/** Update the html of the board task to show its new name
+ *
+ * @param {number} taskId The ID of the task who's name is being changed
+ * @param {string} taskName The task's new name
+ */
+function updateBoardTaskNameHtml(taskId, taskName) {
+    let task = findBoardTaskWithId(taskId);
+    task.find(".board-task-name").html(taskName);
+}
+
+/** Update the html of the board task to show the user that was assigned
  * 
  * @param {number} taskId The ID of the task who's being assigned a user
  * @param {string} firstName The assigned user's first name
@@ -357,7 +369,7 @@ function updateBoardTaskAssigneeHtml(taskId, firstName, lastName) {
     `);
 }
 
-/** Updates the html of the board task to show the updated due date
+/** Update the html of the board task to show the updated due date
  * 
  * @param {any} taskId The ID of the task who's due date is being updated
  * @param {any} dueDate The due date of the task
@@ -370,7 +382,7 @@ function updateBoardTaskDueDateHtml(taskId, dueDate) {
     `);
 }
 
-/** Removes a category and its drop area from the board and decrements the
+/** Remove a category and its drop area from the board and decrement the
  * indices of all the categories and drop areas to the right of it
  *
  * @param {number} categoryId The ID of the category being removed
@@ -400,7 +412,7 @@ function removeCategoryHtmlFromBoard(categoryId) {
     dropAreaToRemove.remove();
 }
 
-/** Removes a task and its drop area from its category and decrements the indices
+/** Remove a task and its drop area from its category and decrement the indices
  * of all the tasks and drop areas below it
  * 
  * @param {number} taskId The ID of the task being removed
@@ -430,7 +442,7 @@ function removeBoardTaskHtmlFromCategory(taskId) {
     dropAreaToRemove.remove();
 }
 
-/** Removes the selected category if it has no tasks. Otherwise displays an error
+/** Remove the selected category if it has no tasks. Otherwise display an error
  * 
  * @param {any} numberOfTasksInCategory
  * @param {any} categoryIndex
@@ -448,7 +460,7 @@ function deleteBoardCategory(categoryId) {
     }
 }
 
-/** Deletes the task in the database and removes its html from the board
+/** Delete the task in the database and removes its html from the board
  * 
  * @param {number} taskId The ID of the task being deleted
  */
@@ -457,7 +469,7 @@ function deleteBoardTask(taskId) {
     removeBoardTaskHtmlFromCategory(taskId);
 }
 
-/** Displays a warning below the delete category button telling the user they
+/** Display a warning below the delete category button telling the user they
  * can not delete a category that still has tasks in it
  * 
  * @param {object} category
@@ -471,7 +483,7 @@ function showRemoveNotEmptyCategoryWarning(category) {
     alert.offset({ top: buttonCoordinates.top + buttonHeight, left: buttonCoordinates.left });
 }
 
-/** Finds the board category with the matching ID
+/** Find the board category with the matching ID
  * 
  * @param {number} categoryId The ID of the category you want to find
  * @returns {object} The category you want to find
@@ -486,7 +498,7 @@ function findBoardCategoryWithId(categoryId) {
     return category;
 }
 
-/** Finds the board task with the matching ID
+/** Find the board task with the matching ID
  * 
  * @param {number} taskId The ID of the task you want to find
  * @returns {object} The task you want to find
@@ -501,7 +513,7 @@ function findBoardTaskWithId(taskId) {
     return task;
 }
 
-/** Inserts the dragged category into its new position and updates the database
+/** Insert the dragged category into its new position and update the database
  */
 function endBoardCategoryDrag() {
     if (categoryBeingDragged) {
@@ -531,7 +543,7 @@ function endBoardCategoryDrag() {
     }
 }
 
-/** Inserts the dragged task into its new column and updates the database
+/** Insert the dragged task into its new column and update the database
  */
 function endBoardTaskDrag() {
     if (taskBeingDragged) {
@@ -562,7 +574,7 @@ function endBoardTaskDrag() {
     }
 }
 
-/** Hides all the pop ups of the board view
+/** Hide all the pop ups of the board view
  */
 function hideBoardViewPopUps() {
     $("#assigneeSelectionContainer").addClass("hidden");

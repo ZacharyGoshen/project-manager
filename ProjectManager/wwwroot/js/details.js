@@ -1,4 +1,30 @@
-﻿/** Opens the task details view and updates it with the given task's data
+﻿/** Set up the event listeners of the task details view
+ */
+function setUpTaskDetailsEventListeners() {
+    updateTaskDetailsNameOnEnter();
+}
+
+/** Update the name of the task in the database, details view, and current view
+ * when the enter key is pressed in the task name input
+ */
+function updateTaskDetailsNameOnEnter() {
+    $("#taskDetailsName").keypress(function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+
+            let taskId = $("#taskDetailsContainer").data("taskId");
+            let taskName = $(this).val();
+            changeNameOfTaskInDatabase(taskId, taskName);
+
+            $(this).blur();
+            if (currentView == "board") {
+                updateBoardTaskNameHtml(taskId, taskName);
+            }
+        }
+    });
+}
+
+/** Open the task details view and update it with the given task's data
  * 
  * @param {number} taskId The ID of the task being viewed
  */
@@ -14,10 +40,8 @@ function openTaskDetails(taskId) {
 
     let windowHeight = window.innerHeight;
     let windowWidth = window.innerWidth;
-
     let detailsHeight = windowHeight * 0.8;
     let detailsWidth = windowWidth * 0.5;
-
     let detailsTopOffset = (windowHeight / 2) - (detailsHeight / 2);
     let detailsLeftOffset = (windowWidth / 2) - (detailsWidth / 2);
 
@@ -30,9 +54,6 @@ function openTaskDetails(taskId) {
     $("#taskDetailsContainer").innerHeight(detailsHeight);
     $("#taskDetailsContainer").innerWidth(detailsWidth);
     $("#taskDetailsContainer").offset({ top: detailsTopOffset, left: detailsLeftOffset });
-
-    $("#AssignedTaskId").val(taskId);
-    $("#DueDateTaskId").val(taskId);
 }
 
 /** Closes the task details view */
@@ -41,14 +62,14 @@ function closeTaskDetails() {
     $("#taskDetailsContainer").addClass("hidden");
 }
 
-/** Updates the task details view with the given task's data
+/** Update the task details view with the given task's data
  * 
  * @param {object} task The task being viewed
  */
 function updateTaskDetailsHtml(task) {
     $("#taskDetailsContainer").data("taskId", task.taskId);
 
-    $("#taskName").html(task.name);
+    $("#taskDetailsName").val(task.name);
 
     if (task.assignedUser) {
         $("#taskDetailsAssignee").html(`
@@ -84,7 +105,7 @@ function updateTaskDetailsHtml(task) {
     }
 }
 
-/** Toggles the assignee selection container of a task's details view between
+/** Toggle the assignee selection container of a task's details view between
  * open and closed */
 function toggleDetailsAssigneeSelectionContainer() {
     let button = $("#taskDetailsAssignee");
@@ -96,7 +117,7 @@ function toggleDetailsAssigneeSelectionContainer() {
     setUpAssigneeSearchResultClickEvent(taskId);
 }
 
-/** Toggles the assignee selection container of a task's details view between
+/** Toggle the assignee selection container of a task's details view between
  * open and closed */
 function toggleDetailsDueDateSelectionContainer() {
     let button = $("#taskDetailsDueDate");
