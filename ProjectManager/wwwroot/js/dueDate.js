@@ -28,10 +28,17 @@ function setUpCalendarDateClickEvent(taskId) {
         $(this).click(function () {
             setDueDateInDatabase(taskId, day, month, year);
             toggleDueDateSelectionContainer(0, 0);
+
+            let dueDate = new Date(year, month, day);
+
             if (currentView == "board") {
-                let dueDate = new Date(year, month, day);
                 updateBoardTaskDueDateHtml(taskId, dueDate);
             }
+
+            if (!$("#taskDetailsContainer").hasClass("hidden")) {
+                updateTaskDetailsDueDateHtml(dueDate);
+            }
+
         });
     });
 }

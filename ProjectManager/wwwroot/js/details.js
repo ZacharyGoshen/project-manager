@@ -84,15 +84,9 @@ function updateTaskDetailsHtml(task) {
         <div>` + task.submittingUser.firstName + ` ` + task.submittingUser.lastName + `</div>
     `);
 
-    let taskDueDate = new Date(task.dueDateRangeStart + "Z");
-    taskDueDate.setDate(taskDueDate.getDate() + 1);
-    if (taskDueDate.getTime() == new Date("0001-01-01T00:00:00Z").getTime()) {
-        $("#taskDetailsDueDate").html("<div>None</div>");
-    } else {
-        $("#taskDetailsDueDate").html(`
-            <div class="board-task-due-date">` + taskDueDate.toDateString().slice(4, 10) + `</div>
-        `);
-    }
+    let dueDate = new Date(task.dueDateRangeStart + "Z");
+    dueDate.setDate(dueDate.getDate() + 1);
+    updateTaskDetailsDueDateHtml(dueDate);
 }
 
 /** Update the task details view's assignee html
@@ -114,6 +108,20 @@ function updateTaskDetailsAssigneeHtml(firstName, lastName) {
                 ` + firstName[0] + lastName[0] + `
                 </div>
             <div>` + firstName + ` ` + lastName + `</div>
+        `);
+    }
+}
+
+/** Update the task details view's due date html
+ * 
+ * @param {object} dueDate A Date object containing task's due date
+ */
+function updateTaskDetailsDueDateHtml(dueDate) {
+    if (dueDate.getTime() == new Date("0001-01-01T00:00:00Z").getTime()) {
+        $("#taskDetailsDueDate").html("<div>None</div>");
+    } else {
+        $("#taskDetailsDueDate").html(`
+            <div class="board-task-due-date">` + dueDate.toDateString().slice(4, 10) + `</div>
         `);
     }
 }
