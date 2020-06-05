@@ -41,13 +41,13 @@
                                     }
                                     else
                                     {
-                                        <input class="pick-user-icon pick-user-icon-hover" type="image" src="~/images/user.png" />
+                                        <input class="unassigned-user-icon" type="image" src="~/images/user.png" />
                                     }
                                 </div>
                                 <div class="board-task-due-date" onclick="toggleBoardDueDateSelectionContainer(@task.TaskId)">
                                     @if (@task.DueDateRangeStart.Date == new DateTime().Date)
                                     {
-                                        <input class="pick-due-date-icon" type="image" src="~/images/clock.png" />
+                                        <input class="unassigned-due-date-icon" type="image" src="~/images/clock.png" />
                                     }
                                     else
                                     {

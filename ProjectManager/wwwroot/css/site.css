@@ -20,10 +20,16 @@ a:hover {
     text-align: center;
     width: 30px;
 }
-.default-profile-pic:hover {
-    cursor: pointer;
+.unassigned-user-icon {
+    background-color: #f0f0f0;
+    border: 2px solid white;
+    border-radius: 50%;
+    color: #9e9e9e;
+    height: 30px;
+    vertical-align: middle;
+    width: 30px;
 }
-.pick-user-icon {
+.unassigned-due-date-icon {
     background-color: #f0f0f0;
     border: 2px solid white;
     border-radius: 50%;

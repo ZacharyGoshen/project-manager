@@ -106,20 +106,34 @@ function openTaskDetails(taskId) {
 
     let windowHeight = window.innerHeight;
     let windowWidth = window.innerWidth;
-    let detailsHeight = windowHeight * 0.8;
+    let detailsHeight = windowHeight * 0.9;
     let detailsWidth = windowWidth * 0.5;
     let detailsTopOffset = (windowHeight / 2) - (detailsHeight / 2);
     let detailsLeftOffset = (windowWidth / 2) - (detailsWidth / 2);
 
-    $("#taskDetailsScreen").removeClass("hidden");
-    $("#taskDetailsScreen").innerHeight(windowHeight);
-    $("#taskDetailsScreen").innerWidth(windowWidth);
-    $("#taskDetailsScreen").offset({ top: 0, left: 0 });
+    let detailsScreen = $("#taskDetailsScreen");
+    detailsScreen.removeClass("hidden");
+    detailsScreen.innerHeight(windowHeight);
+    detailsScreen.innerWidth(windowWidth);
+    detailsScreen.offset({ top: 0, left: 0 });
 
-    $("#taskDetailsContainer").removeClass("hidden");
-    $("#taskDetailsContainer").innerHeight(detailsHeight);
-    $("#taskDetailsContainer").innerWidth(detailsWidth);
-    $("#taskDetailsContainer").offset({ top: detailsTopOffset, left: detailsLeftOffset });
+    let detailsContainer = $("#taskDetailsContainer");
+    detailsContainer.removeClass("hidden");
+    detailsContainer.outerHeight(detailsHeight);
+    detailsContainer.outerWidth(detailsWidth);
+    detailsContainer.offset({ top: detailsTopOffset, left: detailsLeftOffset });
+
+    let header = $("#taskDetailsHeader");
+    header.offset(detailsContainer.offset());
+    header.outerWidth(detailsContainer.outerWidth());
+    detailsContainer.css("padding-top", header.outerHeight() + "px");
+
+    let footer = $("#taskDetailsFooter");
+    let footerTopOffset = detailsContainer.offset().top + detailsContainer.outerHeight() - footer.outerHeight();
+    let footerLeftOffset = detailsContainer.offset().left;
+    footer.offset({ top: footerTopOffset, left: footerLeftOffset });
+    footer.outerWidth(detailsContainer.outerWidth());
+    detailsContainer.css("padding-bottom", footer.outerHeight() + "px");
 }
 
 /** Closes the task details view */
@@ -144,11 +158,15 @@ function updateTaskDetailsHtml(task) {
         updateTaskDetailsAssigneeHtml(null, null);
     }
 
+    let creationDate = new Date(task.creationDate);
+    let creationDateDay = creationDate.toString().slice(4, 10);
+    let creationDateTime = creationDate.toString().slice(16, 21);
     $("#taskDetailsCreator").html(`
         <div class="default-profile-pic">
             ` + task.submittingUser.firstName[0] + task.submittingUser.lastName[0] + `
         </div>
-        <div>` + task.submittingUser.firstName + ` ` + task.submittingUser.lastName + `</div>
+        <div>` + task.submittingUser.firstName + ` ` + task.submittingUser.lastName + ` created this task.</div>
+        <div class="task-details-time">` + creationDateDay + " at " + creationDateTime + `</div>
     `);
 
     let dueDate = new Date(task.dueDateRangeStart + "Z");
@@ -178,16 +196,14 @@ function updateTaskDetailsDescriptionHtml(description) {
 function updateTaskDetailsAssigneeHtml(firstName, lastName) {
     if (firstName == null && lastName == null) {
         $("#taskDetailsAssignee").html(`
-            <div id="taskDetailsAssignUserButton">
-                <input class="pick-user-icon" type="image" src="../images/user.png" />
-            </div>
+            <input class="unassigned-user-icon" type="image" src="../images/user.png" />
             <div>None</div>
         `);
     } else {
         $("#taskDetailsAssignee").html(`
             <div class="default-profile-pic">
                 ` + firstName[0] + lastName[0] + `
-                </div>
+            </div>
             <div>` + firstName + ` ` + lastName + `</div>
         `);
     }
@@ -199,10 +215,14 @@ function updateTaskDetailsAssigneeHtml(firstName, lastName) {
  */
 function updateTaskDetailsDueDateHtml(dueDate) {
     if (dueDate.getTime() == new Date("0001-01-01T00:00:00Z").getTime()) {
-        $("#taskDetailsDueDate").html("<div>None</div>");
+        $("#taskDetailsDueDate").html(`
+            <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
+            <div>None</div>
+        `);
     } else {
         $("#taskDetailsDueDate").html(`
-            <div class="board-task-due-date">` + dueDate.toDateString().slice(4, 10) + `</div>
+            <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
+            <div>` + dueDate.toDateString().slice(4, 10) + `</div>
         `);
     }
 }

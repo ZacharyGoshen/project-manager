@@ -3,29 +3,34 @@
 <div id="taskDetailsScreen" class="hidden"></div>
 
 <div id="taskDetailsContainer" class="hidden" data-task-id="">
-    <div id="taskDetailsFirstRow">
-        <button id="closeTaskDetailsButton" onclick="closeTaskDetails()">x</button>
+    <div id="taskDetailsHeader">
+        <div id="closeTaskDetailsButton" onclick="closeTaskDetails()">x</div>
     </div>
-    <div id="taskDetailsSecondRow">
+    <div id="taskDetailsFirstSection">
         <input id="taskDetailsName" type="text" spellcheck="false">
-    </div>
-    <div id="taskDetailsThirdRow">
         <textarea id="taskDetailsDescription"></textarea>
     </div>
-    <div id="taskDetailsFourthRow">
-        <div id="taskDetailsFourthRowFirstSection">
-            <div>Assigned To:</div>
+    <div id="taskDetailsSecondSection">
+        <div>
+            <div class="task-details-label">Assigned To:</div>
             <div id="taskDetailsAssignee" onclick="toggleDetailsAssigneeSelectionContainer()"></div>
         </div>
-        <div id="taskDetailsFourthRowSecondSection">
-            <div>Created By:</div>
-            <div id="taskDetailsCreator">
-            </div>
+        <div>
+            <div class="task-details-label">Due Date:</div>
+            <div id="taskDetailsDueDate" onclick="toggleDetailsDueDateSelectionContainer()"></div>
+        </div>
+        <div>
+            <div class="task-details-label">Priority:</div>
+        </div>
+        <div>
+            <div class="task-details-label">Tags:</div>
         </div>
     </div>
-    <div id="taskDetailsFifthRow">
-        <div>Due Date:</div>
-        <div id="taskDetailsDueDate" onclick="toggleDetailsDueDateSelectionContainer()"></div>
+    <div id="taskDetailsThirdSection">
+        <div id="taskDetailsCreator"></div>
+    </div>
+    <div id="taskDetailsFooter">
+        <textarea id="taskDetailsCommentInput">Add a comment to this task</textarea>
     </div>
 </div>
 

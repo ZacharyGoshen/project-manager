@@ -259,10 +259,10 @@ function generateNewBoardTaskHtml(taskId, taskName) {
             </div>
             <div class="board-task-second-row">
                 <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(` + taskId + `)">
-                    <input class="pick-user-icon pick-user-icon-hover" type="image" src="../images/user.png" />
+                    <input class="unassigned-user-icon" type="image" src="../images/user.png" />
                 </div>
                 <div class="board-task-due-date" onclick="toggleBoardDueDateSelectionContainer(` + taskId + `)">
-                    <input class="pick-due-date-icon" type="image" src="../images/clock.png" />
+                    <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
                 </div>
             </div>
         </div>
