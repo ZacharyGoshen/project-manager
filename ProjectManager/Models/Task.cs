@@ -22,11 +22,12 @@ namespace ProjectManager.Models
         public DateTime DueDateRangeStart { get; set; }
         public DateTime DueDateRangeEnd { get; set; }
         public int Order { get; set; }
+        public TaskPriority Priority { get; set; }
 
         public Project Project { get; set; }
         public User AssignedUser { get; set; }
         public User SubmittingUser { get; set; }
-        public TaskPriority Priority { get; set; }
         public Category Category { get; set; }
+        public IList<Comment> Comments { get; set; }
     }
 }

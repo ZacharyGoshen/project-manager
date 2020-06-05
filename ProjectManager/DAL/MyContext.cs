@@ -10,6 +10,7 @@ namespace ProjectManager.DAL
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Task> Tasks { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<UserProject> UserProjects { get; set; }
 
@@ -43,6 +44,11 @@ namespace ProjectManager.DAL
                 .HasMany(p => p.UserProjects)
                 .WithOne(up => up.Project);
 
+            // Create one to many relationship between user and comments
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Comments)
+                .WithOne(c => c.User);
+
             // Create one to many relationship between assigned user and tasks
             modelBuilder.Entity<User>()
                 .HasMany(u => u.AssignedTasks)
@@ -52,6 +58,11 @@ namespace ProjectManager.DAL
             modelBuilder.Entity<User>()
                 .HasMany(u => u.SubmittedTasks)
                 .WithOne(t => t.SubmittingUser);
+
+            // Create one to many relationship between task and comments
+            modelBuilder.Entity<Task>()
+                .HasMany(t => t.Comments)
+                .WithOne(c => c.Task);
 
             // Seed Users
             modelBuilder.Entity<User>().HasData(

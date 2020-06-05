@@ -14,6 +14,7 @@ namespace ProjectManager.Models
 
         public IList<Task> AssignedTasks { get; set; }
         public IList<Task> SubmittedTasks { get; set; }
+        public IList<Comment> Comments { get; set; }
         public IList<UserProject> UserProjects { get; set; }
     }
 }
