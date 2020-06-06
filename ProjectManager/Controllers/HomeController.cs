@@ -199,6 +199,7 @@ namespace ProjectManager.Controllers
                 var task = context.Tasks
                     .Include(t => t.AssignedUser)
                     .Include(t => t.SubmittingUser)
+                    .Include(t => t.Comments)
                     .Where(t => t.TaskId == taskId)
                     .First();
                 return Json(task);
@@ -241,7 +242,7 @@ namespace ProjectManager.Controllers
                 var newTask = new ProjectManager.Models.Task()
                 {
                     Name = taskName,
-                    CreationDate = DateTime.Now,
+                    CreationTime = TimeZoneInfo.ConvertTimeToUtc(DateTime.Now),
                     Order = 0
                 };
 
@@ -300,8 +301,8 @@ namespace ProjectManager.Controllers
             using (var context = new DAL.MyContext())
             {
                 var task = context.Tasks.Find(taskId);
-                task.DueDateRangeStart = new DateTime(year, month, day);
-                task.DueDateRangeEnd = new DateTime(year, month, day);
+                task.DueDateRangeStart = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
+                task.DueDateRangeEnd = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
                 context.SaveChanges();
             }
         }

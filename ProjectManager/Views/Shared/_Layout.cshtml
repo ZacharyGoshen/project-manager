@@ -15,7 +15,7 @@
 <body>
     <div id="navBar">
         <div id="navBarLeftSide">
-            <div id="projectDropDownDiv">
+            <div id="projectDropDownDiv" data-project-id="1">
                 <b>Task Manager</b>
             </div>
             <div id="navBarLinkDiv">
@@ -25,9 +25,9 @@
             </div>
         </div>
         <div id="navBarRightSide">
-            <a>
+            <div id="loggedInUser" data-user-id="1" data-user-name="Zachary Goshen">
                 <img id="navBarProfilePic" src="~/images/defaultProfilePic.png" />
-            </a>
+            </div>
         </div>
     </div>
     @RenderBody()

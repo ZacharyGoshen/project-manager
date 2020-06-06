@@ -103,7 +103,7 @@ namespace ProjectManager.DAL
                     SubmittingUserUserId = 1,
                     AssignedUserUserId = 1,
                     Priority = Models.TaskPriority.VeryLow,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     DueDateRangeStart = new DateTime(),
                     DueDateRangeEnd = new DateTime(),
                     Order = 4
@@ -118,7 +118,7 @@ namespace ProjectManager.DAL
                     SubmittingUserUserId = 1,
                     AssignedUserUserId = 2,
                     Priority = Models.TaskPriority.Low,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     DueDateRangeStart = new DateTime(),
                     DueDateRangeEnd = new DateTime(),
                     Order = 3
@@ -133,7 +133,7 @@ namespace ProjectManager.DAL
                     SubmittingUserUserId = 1,
                     AssignedUserUserId = 1,
                     Priority = Models.TaskPriority.Medium,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     DueDateRangeStart = new DateTime(),
                     DueDateRangeEnd = new DateTime(),
                     Order = 2
@@ -148,7 +148,7 @@ namespace ProjectManager.DAL
                     SubmittingUserUserId = 1,
                     AssignedUserUserId = 2,
                     Priority = Models.TaskPriority.High,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     DueDateRangeStart = new DateTime(),
                     DueDateRangeEnd = new DateTime(),
                     Order = 1
@@ -163,7 +163,7 @@ namespace ProjectManager.DAL
                     SubmittingUserUserId = 1,
                     AssignedUserUserId = 1,
                     Priority = Models.TaskPriority.VeryHigh,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     DueDateRangeStart = new DateTime(),
                     DueDateRangeEnd = new DateTime(),
                     Order = 0
@@ -178,7 +178,7 @@ namespace ProjectManager.DAL
                     SubmittingUserUserId = 1,
                     AssignedUserUserId = 2,
                     Priority = Models.TaskPriority.Medium,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     DueDateRangeStart = new DateTime(),
                     DueDateRangeEnd = new DateTime(),
                     Order = 0
@@ -193,7 +193,7 @@ namespace ProjectManager.DAL
                     SubmittingUserUserId = 1,
                     AssignedUserUserId = 1,
                     Priority = Models.TaskPriority.Low,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     DueDateRangeStart = new DateTime(),
                     DueDateRangeEnd = new DateTime(),
                     Order = 0

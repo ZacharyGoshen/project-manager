@@ -95,6 +95,33 @@ function getElementHovered(event, selector) {
     return elementHovered;
 }
 
+/** Scrolls to the bottom of the given container
+ * 
+ * @param {object} container The container that will be scrolled
+ */
+function scrollToBottomOfContainer(container) {
+    let scrollHeight = container.get(0).scrollHeight;
+    let containerHeight = container.outerHeight();
+    container.scrollTop(scrollHeight - containerHeight);
+}
+
+/** Converts a UTC string to a UTC Date object
+ * 
+ * @param {string} utcString A UTC date in string format
+ */
+function convertUTCStringToUTCDate(utcString) {
+    let date = new Date();
+    date.setUTCFullYear(utcString.slice(0, 4));
+    date.setUTCMonth(utcString.slice(5, 7));
+    date.setUTCDate(utcString.slice(8, 10));
+    date.setUTCHours(utcString.slice(11, 13));
+    date.setUTCMinutes(utcString.slice(14, 16));
+    date.setUTCSeconds(utcString.slice(17, 19));
+
+    return date;
+}
+
+
 /** Updates the index of a category in the database
  * 
  * @param {number} categoryId The ID of the task being updated
@@ -197,6 +224,20 @@ function deleteTaskInDatabase(taskId) {
         type: "POST",
         url: "/Home/DeleteTask",
         data: { taskId: taskId }
+    });
+}
+
+/** Adds a new comment to the database
+ * 
+ * @param {string} text The text of the comment
+ * @param {number} taskId The ID of the task the comment belongs to
+ * @param {number} userId The ID of user who made the comment
+ */
+function addCommentToDatabase(text, taskId, userId) {
+    $.ajax({
+        type: "POST",
+        url: "/Comment/New",
+        data: { text: text, taskId: taskId, userId: userId }
     });
 }
 

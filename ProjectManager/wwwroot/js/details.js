@@ -2,10 +2,13 @@
  */
 function setUpTaskDetailsEventListeners() {
     updateTaskDetailsNameOnEnter();
-    updateTaskDetailsDescriptionOnEnter()
-
     setUpTaskDetailsNameOnFocus();
+    
+    updateTaskDetailsDescriptionOnEnter();
     setUpTaskDetailsDescriptionOnFocus();
+
+    addCommentToTaskOnEnter();
+    setUpTaskDetailsCommentOnFocus();
 }
 
 /** Update the name of the task in the database, details view, and current view
@@ -44,6 +47,33 @@ function updateTaskDetailsDescriptionOnEnter() {
             setTaskDescriptionInDatabase(taskId, taskDescription);
 
             $(this).blur();
+        }
+    });
+}
+
+/** Adds a comment to the task in the database and displays it in the details
+ * view when the enter key is pressed in the comment input
+ */
+function addCommentToTaskOnEnter() {
+    $("#taskDetailsCommentInput").keypress(function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+
+            let text = $(this).val();
+            let taskId = $("#taskDetailsContainer").data("taskId");
+            let userId = $("#loggedInUser").data("userId");
+            if (text != "") {
+                addCommentToDatabase(text, taskId, userId);
+            }
+
+            $(this).val("");
+            $(this).blur();
+
+            let userName = $("#loggedInUser").data("userName");
+            let firstName = userName.split(" ")[0];
+            let lastName = userName.split(" ")[1];
+            addCommentHtmlToTaskDetails(text, firstName, lastName);
+            scrollToBottomOfContainer($("#taskDetailsContainer"));
         }
     });
 }
@@ -90,6 +120,24 @@ function setUpTaskDetailsDescriptionOnFocus() {
     });
 }
 
+/** Show the placeholder text if none is supplied when the task comment text box
+ * loses focus
+ */
+function setUpTaskDetailsCommentOnFocus() {
+    $("#taskDetailsCommentInput").focus(function () {
+        if ($(this).val() == "Add a comment to this task") {
+            $(this).val("");
+            $(this).css("color", "black");
+        }
+    });
+    $("#taskDetailsCommentInput").focusout(function () {
+        if ($(this).val() == "") {
+            $(this).val("Add a comment to this task");
+            $(this).css("color", "#9e9e9e");
+        }
+    });
+}
+
 /** Open the task details view and update it with the given task's data
  * 
  * @param {number} taskId The ID of the task being viewed
@@ -104,42 +152,49 @@ function openTaskDetails(taskId) {
         }
     });
 
-    let windowHeight = window.innerHeight;
-    let windowWidth = window.innerWidth;
-    let detailsHeight = windowHeight * 0.9;
-    let detailsWidth = windowWidth * 0.5;
-    let detailsTopOffset = (windowHeight / 2) - (detailsHeight / 2);
-    let detailsLeftOffset = (windowWidth / 2) - (detailsWidth / 2);
-
     let detailsScreen = $("#taskDetailsScreen");
+    let detailsBody = $("#taskDetailsContainer");
+    let header = $("#taskDetailsHeader");
+    let footer = $("#taskDetailsFooter");
+
     detailsScreen.removeClass("hidden");
-    detailsScreen.innerHeight(windowHeight);
-    detailsScreen.innerWidth(windowWidth);
+    detailsBody.removeClass("hidden");
+    header.removeClass("hidden");
+    footer.removeClass("hidden");
+
+    detailsScreen.innerHeight(window.innerHeight);
+    detailsScreen.innerWidth(window.innerWidth);
     detailsScreen.offset({ top: 0, left: 0 });
 
-    let detailsContainer = $("#taskDetailsContainer");
-    detailsContainer.removeClass("hidden");
-    detailsContainer.outerHeight(detailsHeight);
-    detailsContainer.outerWidth(detailsWidth);
-    detailsContainer.offset({ top: detailsTopOffset, left: detailsLeftOffset });
+    let windowHeightPercentage = 0.9;
+    let containerHeight = windowHeightPercentage * window.innerHeight;
+    let containerWidth = window.innerWidth * 0.5;
+    let containerTopOffset = (window.innerHeight / 2) - (containerHeight / 2);
+    let containerLeftOffset = (window.innerWidth / 2) - (containerWidth / 2);
 
-    let header = $("#taskDetailsHeader");
-    header.offset(detailsContainer.offset());
-    header.outerWidth(detailsContainer.outerWidth());
-    detailsContainer.css("padding-top", header.outerHeight() + "px");
+    header.offset({ top: containerTopOffset, left: containerLeftOffset });
+    header.outerWidth(containerWidth);
 
-    let footer = $("#taskDetailsFooter");
-    let footerTopOffset = detailsContainer.offset().top + detailsContainer.outerHeight() - footer.outerHeight();
-    let footerLeftOffset = detailsContainer.offset().left;
-    footer.offset({ top: footerTopOffset, left: footerLeftOffset });
-    footer.outerWidth(detailsContainer.outerWidth());
-    detailsContainer.css("padding-bottom", footer.outerHeight() + "px");
+    detailsBody.outerHeight(containerHeight - header.outerHeight() - footer.outerHeight());
+    detailsBody.outerWidth(containerWidth);
+    detailsBody.offset({
+        top: header.offset().top + header.outerHeight(),
+        left: containerLeftOffset
+    });
+
+    footer.offset({
+        top: detailsBody.offset().top + detailsBody.outerHeight(),
+        left: containerLeftOffset
+    });
+    footer.outerWidth(containerWidth);
 }
 
 /** Closes the task details view */
 function closeTaskDetails() {
     $("#taskDetailsScreen").addClass("hidden");
     $("#taskDetailsContainer").addClass("hidden");
+    $("#taskDetailsHeader").addClass("hidden");
+    $("#taskDetailsFooter").addClass("hidden");
 }
 
 /** Update the task details view with the given task's data
@@ -158,20 +213,39 @@ function updateTaskDetailsHtml(task) {
         updateTaskDetailsAssigneeHtml(null, null);
     }
 
-    let creationDate = new Date(task.creationDate);
-    let creationDateDay = creationDate.toString().slice(4, 10);
-    let creationDateTime = creationDate.toString().slice(16, 21);
-    $("#taskDetailsCreator").html(`
-        <div class="default-profile-pic">
-            ` + task.submittingUser.firstName[0] + task.submittingUser.lastName[0] + `
-        </div>
-        <div>` + task.submittingUser.firstName + ` ` + task.submittingUser.lastName + ` created this task.</div>
-        <div class="task-details-time">` + creationDateDay + " at " + creationDateTime + `</div>
-    `);
-
     let dueDate = new Date(task.dueDateRangeStart + "Z");
     dueDate.setDate(dueDate.getDate() + 1);
     updateTaskDetailsDueDateHtml(dueDate);
+
+    let creationDate = convertUTCStringToUTCDate(task.creationTime);
+    let creationDateDay = creationDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    let creationDateTime = creationDate.toLocaleTimeString([], { hour12: true, hour: "numeric", minute: "numeric" });
+    let commentContainerHtml = `
+        <div id="#taskDetailsCreator">
+            <div class="default-profile-pic">
+                ` + task.submittingUser.firstName[0] + task.submittingUser.lastName[0] + `
+            </div>
+            <div>` + task.submittingUser.firstName + ` ` + task.submittingUser.lastName + ` created this task.</div>
+            <div class="task-details-time">` + creationDateDay + " at " + creationDateTime + `</div>
+        </div>
+    `;
+
+    for (comment of task.comments) {
+        let commentCreationDate = convertUTCStringToUTCDate(comment.creationTime);
+        let commentCreationDateDay = commentCreationDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+        let commentCreationDateTime = commentCreationDate.toLocaleTimeString([], { hour12: true, hour: "numeric", minute: "numeric" });
+
+        commentContainerHtml += `
+            <div class="taskDetailsComment">
+                <div class="default-profile-pic">
+                    ` + comment.user.firstName[0] + comment.user.lastName[0] + `
+                </div>
+                <div>` + comment.text + `</div>
+                <div class="task-details-time">` + commentCreationDateDay + " at " + commentCreationDateTime + `</div>
+            </div>
+        `;
+    }
+    $("#taskDetailsThirdSection").html(commentContainerHtml);
 }
 
 /** Update the task details view's description html
@@ -225,6 +299,28 @@ function updateTaskDetailsDueDateHtml(dueDate) {
             <div>` + dueDate.toDateString().slice(4, 10) + `</div>
         `);
     }
+}
+
+/** Update the task details view's comment html
+ * 
+ * @param {any} text
+ * @param {any} firstName
+ * @param {any} lastName
+ */
+function addCommentHtmlToTaskDetails(text, firstName, lastName) {
+    let commentCreationDate = new Date();
+    let commentCreationDateDay = commentCreationDate.toString().slice(4, 10);
+    let commentCreationDateTime = commentCreationDate.toString().slice(16, 21);
+
+    $("#taskDetailsThirdSection").append(`
+        <div class="taskDetailsComment">
+            <div class="default-profile-pic">
+                ` + firstName[0] + lastName[0] + `
+            </div>
+            <div>` + text + `</div>
+            <div class="task-details-time">` + commentCreationDateDay + " at " + commentCreationDateTime + `</div>
+        </div>
+    `);
 }
 
 /** Toggle the assignee selection container of a task's details view between

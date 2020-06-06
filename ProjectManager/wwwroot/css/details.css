@@ -16,9 +16,9 @@
 }
 #taskDetailsContainer {
     background-color: white;
-    border-radius: 5px;
     font-size: 1rem;
-    padding: 0px 10px;
+    overflow-y: scroll;
+    padding: 0px 20px;
     position: absolute;
     z-index: 3;
 }
@@ -111,18 +111,18 @@
 #taskDetailsDueDate > *:first-child {
     margin-right: 10px;
 }
-#taskDetailsThirdSection {
+#taskDetailsThirdSection > div {
     padding: 10px;
 }
-#taskDetailsCreator {
+#taskDetailsThirdSection > div {
     align-items: center;
     display: flex;
     flex-direction: row;
 }
-#taskDetailsCreator > *:first-child {
+#taskDetailsThirdSection > div > *:first-child {
     margin-right: 10px;
 }
-#taskDetailsCreator > div:nth-child(2) {
+#taskDetailsThirdSection > div > div:nth-child(2) {
     flex: 1;
 }
 #taskDetailsFooter {
