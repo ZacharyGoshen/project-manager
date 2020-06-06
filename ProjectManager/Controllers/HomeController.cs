@@ -296,13 +296,19 @@ namespace ProjectManager.Controllers
 
         public void SetDueDate(int taskId, int day, int month, int year)
         {
-            using (var context = new DAL.MyContext())
+            var context = new DAL.MyContext();
+            var task = context.Tasks.Find(taskId);
+            if ((day == -1) && (month == -1) && (year == -1))
             {
-                var task = context.Tasks.Find(taskId);
+                task.DueDateRangeStart = new DateTime();
+                task.DueDateRangeEnd = new DateTime();
+            }
+            else
+            {
                 task.DueDateRangeStart = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
                 task.DueDateRangeEnd = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
-                context.SaveChanges();
             }
+            context.SaveChanges();
         }
 
         public void MoveTask(int taskId, int newCategoryId, int newTaskIndex)

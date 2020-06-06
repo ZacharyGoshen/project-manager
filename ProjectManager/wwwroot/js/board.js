@@ -383,9 +383,15 @@ function updateBoardTaskAssigneeHtml(taskId, firstName, lastName) {
 function updateBoardTaskDueDateHtml(taskId, dueDate) {
     let task = findBoardTaskWithId(taskId);
 
-    task.find(".board-task-due-date").html(`
-        <div>` + dueDate.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + `</div>
-    `);
+    if (dueDate.getTime() == new Date("0001-01-01T00:00:00Z").getTime()) {
+        task.find(".board-task-due-date").html(`
+            <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
+        `);
+    } else {
+        task.find(".board-task-due-date").html(`
+            <div>` + dueDate.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + `</div>
+        `);
+    }
 }
 
 /** Remove a category and its drop area from the board and decrement the

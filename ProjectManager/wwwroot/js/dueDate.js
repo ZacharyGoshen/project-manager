@@ -26,7 +26,7 @@ function setUpCalendarDateClickEvent(taskId) {
         let month = $(this).data("month");
         let year = $(this).data("year");
         $(this).click(function () {
-            setDueDateInDatabase(taskId, day, month, year);
+            setDueDateInDatabase(taskId, day, month + 1, year);
             toggleDueDateSelectionContainer(0, 0);
 
             let dueDate = new Date(year, month, day);

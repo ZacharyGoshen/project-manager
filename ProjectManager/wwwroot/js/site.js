@@ -198,7 +198,7 @@ function setDueDateInDatabase(taskId, day, month, year) {
     $.ajax({
         type: "POST",
         url: "/Home/SetDueDate",
-        data: { taskId: taskId, day: day, month: month + 1, year: year }
+        data: { taskId: taskId, day: day, month: month, year: year }
     });
 }
 

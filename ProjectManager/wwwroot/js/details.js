@@ -152,6 +152,20 @@ function removeTaskAssignee() {
     }
 }
 
+/** Removes the due date from the task in the database, the details view
+ * and the current view
+ */
+function removeTaskDueDate() {
+    let taskId = $("#taskDetailsContainer").data("taskId");
+    setDueDateInDatabase(taskId, -1, -1, -1);
+
+    let minimumDateTime = new Date("0001-01-01T00:00:00Z");
+    updateTaskDetailsDueDateHtml(minimumDateTime);
+    if (currentView == "board") {
+        updateBoardTaskDueDateHtml(taskId, minimumDateTime);
+    }
+}
+
 /** Open the task details view and update it with the given task's data
  * 
  * @param {number} taskId The ID of the task being viewed
@@ -229,7 +243,6 @@ function updateTaskDetailsHtml(task) {
     }
 
     let dueDate = new Date(task.dueDateRangeStart + "Z");
-    dueDate.setDate(dueDate.getDate() + 1);
     updateTaskDetailsDueDateHtml(dueDate);
 
     let creationDate = convertUTCStringToUTCDate(task.creationTime);
@@ -294,7 +307,7 @@ function updateTaskDetailsAssigneeHtml(firstName, lastName) {
                 ` + firstName[0] + lastName[0] + `
             </div>
             <div>` + firstName + ` ` + lastName + `</div>
-            <div class="remove-assignee-button" onclick="removeTaskAssignee()">
+            <div class="task-details-remove-button" onclick="removeTaskAssignee()">
                 <div>x</div>
             </div>
         `);
@@ -315,6 +328,9 @@ function updateTaskDetailsDueDateHtml(dueDate) {
         $("#taskDetailsDueDate").html(`
             <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
             <div>` + dueDate.toLocaleDateString(undefined, { month: "long", day: "numeric" }) + `</div>
+            <div class="task-details-remove-button" onclick="removeTaskDueDate()">
+                <div>x</div>
+            </div>
         `);
     }
 }
