@@ -371,14 +371,14 @@ function updateBoardTaskAssigneeHtml(taskId, firstName, lastName) {
 
 /** Update the html of the board task to show the updated due date
  * 
- * @param {any} taskId The ID of the task who's due date is being updated
- * @param {any} dueDate The due date of the task
+ * @param {number} taskId The ID of the task who's due date is being updated
+ * @param {object} dueDate The due date of the task
  */
 function updateBoardTaskDueDateHtml(taskId, dueDate) {
     let task = findBoardTaskWithId(taskId);
 
     task.find(".board-task-due-date").html(`
-        <div>` + dueDate.toDateString().slice(4, 10) + `</div>
+        <div>` + dueDate.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + `</div>
     `);
 }
 

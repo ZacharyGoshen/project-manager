@@ -296,7 +296,7 @@ function updateTaskDetailsDueDateHtml(dueDate) {
     } else {
         $("#taskDetailsDueDate").html(`
             <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
-            <div>` + dueDate.toDateString().slice(4, 10) + `</div>
+            <div>` + dueDate.toLocaleDateString(undefined, { month: "long", day: "numeric" }) + `</div>
         `);
     }
 }

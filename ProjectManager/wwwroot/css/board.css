@@ -118,10 +118,13 @@
     color: #e3242b;
     font-weight: bold;
 }
+.board-task-assignee > div:hover {
+    cursor: pointer;
+}
 .board-task-due-date {
     align-self: center;
 }
-.board-task-due-date >div :hover {
+.board-task-due-date > div:hover {
     color: #2a9df4;
     cursor: pointer;
 }
