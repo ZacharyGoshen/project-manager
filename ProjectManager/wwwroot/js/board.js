@@ -362,11 +362,17 @@ function updateBoardTaskNameHtml(taskId, taskName) {
 function updateBoardTaskAssigneeHtml(taskId, firstName, lastName) {
     let task = findBoardTaskWithId(taskId);
 
-    task.find(".board-task-assignee").html(`
-        <div class="default-profile-pic">
-            ` + firstName[0] + lastName[0] + `
-        </div>
-    `);
+    if (firstName == null && lastName == null) {
+        task.find(".board-task-assignee").html(`
+            <input class="unassigned-user-icon" type="image" src="../images/user.png" />
+        `);
+    } else {
+        task.find(".board-task-assignee").html(`
+            <div class="default-profile-pic">
+                ` + firstName[0] + lastName[0] + `
+            </div>
+        `);
+    }
 }
 
 /** Update the html of the board task to show the updated due date

@@ -286,14 +286,12 @@ namespace ProjectManager.Controllers
 
         public void AssignUserToTask(int taskId, int userId)
         {
-            using (var context = new DAL.MyContext())
-            {
-                var assignedTask = context.Tasks.Find(taskId);
-                var assignedUser = context.Users.Find(userId);
+            var context = new DAL.MyContext();
+            var assignedTask = context.Tasks.Find(taskId);
+            var assignedUser = context.Users.Find(userId);
 
-                assignedTask.AssignedUser = assignedUser;
-                context.SaveChanges();
-            }
+            assignedTask.AssignedUser = assignedUser;
+            context.SaveChanges();
         }
 
         public void SetDueDate(int taskId, int day, int month, int year)

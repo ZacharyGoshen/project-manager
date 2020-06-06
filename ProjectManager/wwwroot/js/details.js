@@ -138,6 +138,20 @@ function setUpTaskDetailsCommentOnFocus() {
     });
 }
 
+/** Removes the assigned user from the task in the database, the details view
+ * and the current view
+ */
+function removeTaskAssignee() {
+    let taskId = $("#taskDetailsContainer").data("taskId");
+    let userId = $("#taskDetailsAssignee").data("userId");
+    removeAssignedTaskFromUserInDatabase(taskId, userId);
+
+    updateTaskDetailsAssigneeHtml(null, null);
+    if (currentView == "board") {
+        updateBoardTaskAssigneeHtml(taskId, null, null);
+    }
+}
+
 /** Open the task details view and update it with the given task's data
  * 
  * @param {number} taskId The ID of the task being viewed
@@ -208,6 +222,7 @@ function updateTaskDetailsHtml(task) {
     updateTaskDetailsDescriptionHtml(task.description);
 
     if (task.assignedUser) {
+        $("#taskDetailsAssignee").data("userId", task.assignedUser.userId);
         updateTaskDetailsAssigneeHtml(task.assignedUser.firstName, task.assignedUser.lastName);
     } else {
         updateTaskDetailsAssigneeHtml(null, null);
@@ -279,6 +294,9 @@ function updateTaskDetailsAssigneeHtml(firstName, lastName) {
                 ` + firstName[0] + lastName[0] + `
             </div>
             <div>` + firstName + ` ` + lastName + `</div>
+            <div class="remove-assignee-button" onclick="removeTaskAssignee()">
+                <div>x</div>
+            </div>
         `);
     }
 }

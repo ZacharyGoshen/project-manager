@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ProjectManager.Controllers
 {
-    public class UsersController : BaseController
+    public class UserController : BaseController
     {
         public IActionResult Index()
         {
@@ -43,6 +43,16 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        public void RemoveAssignedTask(int taskId, int userId)
+        {
+            var context = new DAL.MyContext();
+            var assignedUser = context.Users.Find(userId);
+            var assignedTask = context.Tasks.Find(taskId);
+
+            assignedUser.AssignedTasks.Remove(assignedTask);
+            context.SaveChanges();
         }
 
         [HttpGet]
