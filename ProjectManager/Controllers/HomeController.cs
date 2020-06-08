@@ -38,28 +38,6 @@ namespace ProjectManager.Controllers
             }
         }
 
-        public IActionResult Details(int id)
-        {
-            using (var context = new DAL.MyContext())
-            {
-                context.Database.EnsureCreated();
-                var task = context.Tasks
-                    .Include(t => t.Category)
-                    .Include(t => t.AssignedUser)
-                    .Include(t => t.SubmittingUser)
-                    .Include(t => t.Project)
-                    .Where(t => t.TaskId == id)
-                    .First();
-
-                var model = new TaskDetailsViewModel()
-                {
-                    Task = task
-                };
-
-                return View(model);
-            }
-        }
-
         [HttpGet]
         public IActionResult Board()
         {

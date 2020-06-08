@@ -2,6 +2,24 @@
     color: #9e9e9e;
     width: 120px;
 }
+.task-details-value {
+    align-items: center;
+    border: 2px solid white;
+    display: flex;
+    flex-direction: row;
+    padding: 5px 10px;
+}
+.task-details-value:hover {
+    border-color: #9e9e9e;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.task-details-value:hover .task-details-remove-button {
+    background-color: #f0f0f0;
+}
+.task-details-value:hover .task-details-remove-button > div {
+    color: #9e9e9e;
+}
 .task-details-remove-button {
     background-color: white;
     border-radius: 50%;
@@ -123,47 +141,14 @@
     flex-direction: row;
     height: 50px;
 }
-#taskDetailsAssignee {
-    align-items: center;
-    border: 2px solid white;
-    display: flex;
-    flex-direction: row;
-    padding: 5px 10px;
-}
-#taskDetailsAssignee:hover {
-    border-color: #9e9e9e;
-    border-radius: 5px;
-    cursor: pointer;
-}
-#taskDetailsAssignee:hover .task-details-remove-button {
-    background-color: #f0f0f0;
-}
-#taskDetailsAssignee:hover .task-details-remove-button > div {
-    color: #9e9e9e;
-}
 #taskDetailsAssignee > *:first-child {
     margin-right: 10px;
 }
-#taskDetailsDueDate {
-    align-items: center;
-    border: 2px solid white;
-    display: flex;
-    flex-direction: row;
-    padding: 5px 10px;
-}
-#taskDetailsDueDate:hover {
-    border-color: #9e9e9e;
-    border-radius: 5px;
-    cursor: pointer;
-}
-#taskDetailsDueDate:hover .task-details-remove-button {
-    background-color: #f0f0f0;
-}
-#taskDetailsDueDate:hover .task-details-remove-button > div {
-    color: #9e9e9e;
-}
 #taskDetailsDueDate > *:first-child {
     margin-right: 10px;
+}
+#taskDetailsPriority .task-priority {
+    width: 100px;
 }
 #taskDetailsThirdSection > div {
     padding: 10px;

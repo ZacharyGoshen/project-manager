@@ -35,6 +35,10 @@ function onBoardViewLoad() {
         $(".board-task").each(function () {
             let task = $(this);
             setUpBoardTaskEventListeners(task);
+
+            let taskId = task.data("taskId");
+            let priority = task.find(".board-task-priority").data("priority");
+            updateBoardTaskPriorityHtml(taskId, priority);
         });
 
         showElementOnClickOutside($("#addBoardCategoryButton"), ["#addBoardCategoryButton", "#newCategoryNameTextBox"]);
@@ -253,17 +257,20 @@ function generateNewBoardCategoryHtml(categoryId, categoryName, categoryIndex) {
 function generateNewBoardTaskHtml(taskId, taskName) {
     return `
         <div class="board-task" data-task-id="` + taskId + `" data-task-index="0">
-            <div class="board-task-first-row">
-                <button type="submit" class="board-task-delete-button" onclick="deleteBoardTask(` + taskId + `)">x</button>
-                <a class="board-task-name unstyledLink hoverPointer" onclick="openTaskDetails(` + taskId + `)">` + taskName + `</a>
+            <div class="board-task-left-section">
+                <div class="board-task-priority task-priority" data-priority="0"></div>
+                <div class="board-task-name" onclick="openTaskDetails(` + taskId + `)">` + taskName + `</div>
+                <div class="board-task-third-row">
+                    <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(` + taskId + `)">
+                        <input class="unassigned-user-icon" type="image" src="../images/user.png" />
+                    </div>
+                    <div class="board-task-due-date" onclick="toggleBoardDueDateSelectionContainer(` + taskId + `)">
+                        <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
+                    </div>
+                </div>
             </div>
-            <div class="board-task-second-row">
-                <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(` + taskId + `)">
-                    <input class="unassigned-user-icon" type="image" src="../images/user.png" />
-                </div>
-                <div class="board-task-due-date" onclick="toggleBoardDueDateSelectionContainer(` + taskId + `)">
-                    <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
-                </div>
+            <div class="board-task-right-section">
+                <div class="board-task-delete-button" onclick="deleteBoardTask(` + taskId + `)">x</div>
             </div>
         </div>
         `;
@@ -341,6 +348,20 @@ function insertBoardTaskInCategory(taskToInsert, destinationCategoryId, destinat
         taskAbove.after(taskToInsert);
         taskAbove.after(dropAreaToInsert);
     }
+}
+
+function updateBoardTaskPriorityHtml(taskId, priority) {
+    let task = findBoardTaskWithId(taskId);
+    let priorityClassName = getPriorityCssClassName(priority);
+    let priorityString = getPriorityString(priority);
+
+    task.find(".board-task-priority").removeClass("task-priority-very-low");
+    task.find(".board-task-priority").removeClass("task-priority-low");
+    task.find(".board-task-priority").removeClass("task-priority-medium");
+    task.find(".board-task-priority").removeClass("task-priority-high");
+    task.find(".board-task-priority").removeClass("task-priority-very-high");
+    task.find(".board-task-priority").addClass(priorityClassName);
+    task.find(".board-task-priority").html(priorityString);
 }
 
 /** Update the html of the board task to show its new name

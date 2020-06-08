@@ -27,33 +27,36 @@
                         var task = Model.Tasks[categoryIndex][taskIndex];
 
                         <div class="board-task" data-task-id="@task.TaskId" data-task-index="@taskIndex">
-                            <div class="board-task-first-row">
-                                <button type="submit" class="board-task-delete-button" onclick="deleteBoardTask(@task.TaskId)">x</button>
-                                <a class="board-task-name unstyledLink hoverPointer" onclick="openTaskDetails(@task.TaskId)">@task.Name</a>
+                            <div class="board-task-left-section">
+                                <div class="board-task-priority task-priority" data-priority="@task.Priority"></div>
+                                <div class="board-task-name" onclick="openTaskDetails(@task.TaskId)">@task.Name</div>
+                                <div class="board-task-third-row">
+                                    <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(@task.TaskId)">
+                                        @if (task.AssignedUser != null)
+                                        {
+                                            <div class="default-profile-pic">
+                                                @task.AssignedUser.FirstName[0]@task.AssignedUser.LastName[0]
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <input class="unassigned-user-icon" type="image" src="~/images/user.png" />
+                                        }
+                                    </div>
+                                    <div class="board-task-due-date" onclick="toggleBoardDueDateSelectionContainer(@task.TaskId)">
+                                        @if (@task.DueDateRangeStart.Date == new DateTime().Date)
+                                        {
+                                            <input class="unassigned-due-date-icon" type="image" src="~/images/clock.png" />
+                                        }
+                                        else
+                                        {
+                                            <div>@task.DueDateRangeStart.ToString("MMM d")</div>
+                                        }
+                                    </div>
+                                </div>
                             </div>
-                            <div class="board-task-second-row">
-                                <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(@task.TaskId)">
-                                    @if (task.AssignedUser != null)
-                                    {
-                                        <div class="default-profile-pic">
-                                            @task.AssignedUser.FirstName[0]@task.AssignedUser.LastName[0]
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <input class="unassigned-user-icon" type="image" src="~/images/user.png" />
-                                    }
-                                </div>
-                                <div class="board-task-due-date" onclick="toggleBoardDueDateSelectionContainer(@task.TaskId)">
-                                    @if (@task.DueDateRangeStart.Date == new DateTime().Date)
-                                    {
-                                        <input class="unassigned-due-date-icon" type="image" src="~/images/clock.png" />
-                                    }
-                                    else
-                                    {
-                                        <div>@task.DueDateRangeStart.ToString("MMM d")</div>
-                                    }
-                                </div>
+                            <div class="board-task-right-section">
+                                <div class="board-task-delete-button" onclick="deleteBoardTask(@task.TaskId)">x</div>
                             </div>
                         </div>
                     }
@@ -77,6 +80,8 @@
     @Html.Partial("_AssignUser", @Model)
 
     @Html.Partial("_SetDueDate", @Model)
+
+    @Html.Partial("_PrioritySelection", @Model)
 </div>
 
 <div id="draggedCategoryCopy" class="hidden"></div>

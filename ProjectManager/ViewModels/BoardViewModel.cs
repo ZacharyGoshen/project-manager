@@ -38,23 +38,5 @@ namespace ProjectManager.ViewModels
         public List<List<Task>> Tasks { get; set; }
         public List<Category> Categories { get; set; }
         public List<User> Users { get; set; }
-
-        public string PriorityToClass(TaskPriority priority)
-        {
-            switch (priority)
-            {
-                case TaskPriority.VeryLow:
-                    return "veryLowPriority";
-                case TaskPriority.Low:
-                    return "lowPriority";
-                case TaskPriority.Medium:
-                    return "mediumPriority";
-                case TaskPriority.High:
-                    return "highPriority";
-                case TaskPriority.VeryHigh:
-                    return "veryHighPriority";
-            }
-            return "";
-        }
     }
 }

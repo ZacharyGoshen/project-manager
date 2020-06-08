@@ -1,6 +1,9 @@
 ﻿/** Set up the event listeners of the task details view
  */
 function setUpTaskDetailsEventListeners() {
+    hideElementOnClickOutside($("#prioritySelectionContainer"),
+        ["#prioritySelectionContainer", "#taskDetailsPriority"]);
+
     updateTaskDetailsNameOnEnter();
     setUpTaskDetailsNameOnFocus();
     
@@ -166,6 +169,19 @@ function removeTaskDueDate() {
     }
 }
 
+/** Removes the priority from the task in the database, the details view
+ * and the current view
+ */
+function removeTaskPriority() {
+    let taskId = $("#taskDetailsContainer").data("taskId");
+    setPriorityInDatabase(taskId, 0);
+
+    updateTaskDetailsPriorityHtml(0);
+    if (currentView == "board") {
+        updateBoardTaskPriorityHtml(taskId, 0);
+    }
+}
+
 /** Open the task details view and update it with the given task's data
  * 
  * @param {number} taskId The ID of the task being viewed
@@ -244,6 +260,8 @@ function updateTaskDetailsHtml(task) {
 
     let dueDate = new Date(task.dueDateRangeStart + "Z");
     updateTaskDetailsDueDateHtml(dueDate);
+
+    updateTaskDetailsPriorityHtml(task.priority);
 
     let creationDate = convertUTCStringToUTCDate(task.creationTime);
     let creationDateDay = creationDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });
@@ -335,6 +353,27 @@ function updateTaskDetailsDueDateHtml(dueDate) {
     }
 }
 
+/** Update the task details view's priority html
+ * 
+ * @param {number} priority An integer between 0-5 representing the task's priority
+ */
+function updateTaskDetailsPriorityHtml(priority) {
+    if (priority == 0) {
+        $("#taskDetailsPriority").html(`
+            <div class="task-priority task-priority-none">None</div>
+        `);
+    } else {
+        let priorityClassName = getPriorityCssClassName(priority);
+        let priorityString = getPriorityString(priority);
+        $("#taskDetailsPriority").html(`
+            <div class="task-priority ` + priorityClassName + `">` + priorityString + `</div>
+            <div class="task-details-remove-button" onclick="removeTaskPriority()">
+                <div>x</div>
+            </div>
+        `);
+    }
+}
+
 /** Update the task details view's comment html
  * 
  * @param {any} text
@@ -380,4 +419,17 @@ function toggleDetailsDueDateSelectionContainer() {
     let taskId = $("#taskDetailsContainer").data("taskId");
     $("#dueDateSelectionContainer").data("taskId", taskId);
     setUpCalendarDateClickEvent(taskId);
+}
+
+/** Toggle the priority selection container of a task's details view between
+ * open and closed */
+function toggleDetailsPrioritySelectionContainer() {
+    let button = $("#taskDetailsPriority");
+    let xOffset = button.offset().left;
+    let yOffset = button.offset().top + button.outerHeight();
+    togglePrioritySelectionContainer(xOffset, yOffset);
+
+    let taskId = $("#taskDetailsContainer").data("taskId");
+    $("#prioritySelectionContainer").data("taskId", taskId);
+    setUpPriorityClickEvent(taskId);
 }

@@ -105,6 +105,79 @@ function scrollToBottomOfContainer(container) {
     container.scrollTop(scrollHeight - containerHeight);
 }
 
+function getPriorityCssClassName(priority) {
+    switch (priority) {
+        case 1:
+            return "task-priority-very-low";
+        case 2:
+            return "task-priority-low";
+        case 3:
+            return "task-priority-medium";
+        case 4:
+            return "task-priority-high";
+        case 5:
+            return "task-priority-very-high";
+        default:
+            return "";
+    }
+}
+
+function getPriorityString(priority) {
+    switch (priority) {
+        case 1:
+            return "Very Low";
+        case 2:
+            return "Low";
+        case 3:
+            return "Medium";
+        case 4:
+            return "High";
+        case 5:
+            return "Very High";
+        default:
+            return "";
+    }
+}
+
+/** Toggles the priority selection container between open and closed
+ *
+ * @param {number} xOffset The x offset of the container
+ * @param {number} yOffset The y offset of the container
+ */
+function togglePrioritySelectionContainer(xOffset, yOffset) {
+    let container = $("#prioritySelectionContainer");
+    if (container.hasClass("hidden")) {
+        container.removeClass("hidden");
+        container.offset({ top: yOffset, left: xOffset });
+    } else {
+        container.addClass("hidden");
+    }
+}
+
+/** Sets up the click events that sets a task's priority when a priority option
+ * is clicked
+ *
+ * @param {number} taskId
+ */
+function setUpPriorityClickEvent(taskId) {
+    $(".priority-selection-option").each(function () {
+        $(this).off("click");
+        let priority = $(this).data("priority");
+        $(this).click(function () {
+            setPriorityInDatabase(taskId, priority);
+            togglePrioritySelectionContainer(0, 0);
+
+            if (!$("#taskDetailsContainer").hasClass("hidden")) {
+                updateTaskDetailsPriorityHtml(priority);
+            }
+
+            if (currentView == "board") {
+                updateBoardTaskPriorityHtml(taskId, priority);
+            }
+        });
+    });
+}
+
 /** Converts a UTC string to a UTC Date object
  * 
  * @param {string} utcString A UTC date in string format
@@ -212,6 +285,19 @@ function assignUserToTaskInDatabase(taskId, userId) {
         type: "POST",
         url: "/Home/AssignUserToTask",
         data: { taskId: taskId, userId: userId }
+    });
+}
+
+/** Update the priority of a task in the database
+ * 
+ * @param {number} taskId The ID of the task being updated
+ * @param {number} priority A integer between 0-5 representing the task's new priority
+ */
+function setPriorityInDatabase(taskId, priority) {
+    $.ajax({
+        type: "POST",
+        url: "/Task/SetPriority",
+        data: { taskId: taskId, priority: priority }
     });
 }
 
