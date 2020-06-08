@@ -31,6 +31,11 @@ namespace ProjectManager.DAL
                 .HasMany(p => p.Categories)
                 .WithOne(c => c.Project);
 
+            // Create one to many relationship between project and tags
+            modelBuilder.Entity<Project>()
+                .HasMany(p => p.Tags)
+                .WithOne(t => t.Project);
+
             // Create one to many relationship between category and tasks
             modelBuilder.Entity<Category>()
                 .HasMany(c => c.Tasks)
@@ -43,6 +48,14 @@ namespace ProjectManager.DAL
             modelBuilder.Entity<Project>()
                 .HasMany(p => p.UserProjects)
                 .WithOne(up => up.Project);
+
+            // Create many to many relationship between tags and tasks
+            modelBuilder.Entity<Tag>()
+                .HasMany(t => t.TagTasks)
+                .WithOne(tt => tt.Tag);
+            modelBuilder.Entity<Task>()
+                .HasMany(t => t.TagTasks)
+                .WithOne(tt => tt.Task);
 
             // Create one to many relationship between user and comments
             modelBuilder.Entity<User>()

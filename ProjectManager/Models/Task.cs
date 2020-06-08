@@ -20,5 +20,6 @@ namespace ProjectManager.Models
         public User SubmittingUser { get; set; }
         public Category Category { get; set; }
         public IList<Comment> Comments { get; set; }
+        public IList<TagTask> TagTasks { get; set; }
     }
 }

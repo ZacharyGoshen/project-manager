@@ -11,5 +11,6 @@ namespace ProjectManager.Models
         public IList<Category> Categories { get; set; }
         public IList<Task> Tasks { get; set; }
         public IList<UserProject> UserProjects { get; set; }
+        public IList<Tag> Tags { get; set; }
     }
 }

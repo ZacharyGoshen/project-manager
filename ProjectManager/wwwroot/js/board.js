@@ -192,7 +192,7 @@ function toggleNewTaskForm(categoryIndex) {
  */
 function toggleBoardAssigneeSelectionContainer(taskId) {
     let task = findBoardTaskWithId(taskId);
-    let button = task.find(".board-task-second-row").children().eq(0);
+    let button = task.find(".board-task-third-row").children().eq(0);
     let buttonCoordinates = button.offset();
     let buttonHeight = button.height();
     let containerXOffset = buttonCoordinates.left;
@@ -209,7 +209,7 @@ function toggleBoardAssigneeSelectionContainer(taskId) {
  */
 function toggleBoardDueDateSelectionContainer(taskId) {
     let task = findBoardTaskWithId(taskId);
-    let button = task.find(".board-task-second-row").children().eq(1);
+    let button = task.find(".board-task-third-row").children().eq(1);
     let buttonCoordinates = button.offset();
     let buttonHeight = button.height();
     let containerXOffset = buttonCoordinates.left;
@@ -258,7 +258,6 @@ function generateNewBoardTaskHtml(taskId, taskName) {
     return `
         <div class="board-task" data-task-id="` + taskId + `" data-task-index="0">
             <div class="board-task-left-section">
-                <div class="board-task-priority task-priority" data-priority="0"></div>
                 <div class="board-task-second-row">
                     <div class="board-task-name" onclick="openTaskDetails(` + taskId + `)">` + taskName + `</div>
                 </div>
@@ -362,13 +361,14 @@ function updateBoardTaskPriorityHtml(taskId, priority) {
     let priorityClassName = getPriorityCssClassName(priority);
     let priorityString = getPriorityString(priority);
 
-    task.find(".board-task-priority").removeClass("task-priority-very-low");
-    task.find(".board-task-priority").removeClass("task-priority-low");
-    task.find(".board-task-priority").removeClass("task-priority-medium");
-    task.find(".board-task-priority").removeClass("task-priority-high");
-    task.find(".board-task-priority").removeClass("task-priority-very-high");
-    task.find(".board-task-priority").addClass(priorityClassName);
-    task.find(".board-task-priority").html(priorityString);
+    task.find(".board-task-priority").remove();
+    if (priority != 0) {
+        task.find(".board-task-left-section").prepend(`
+            <div class="board-task-priority task-priority `+ priorityClassName + `" data-priority="` + priority + `">
+                ` + priorityString + `
+            </div>
+        `);
+    }
 }
 
 /** Update the html of the board task to show its new completion status
@@ -384,8 +384,10 @@ function updateBoardTaskCompletedHtml(taskId, isCompleted) {
                 <div>&#10003</div>
             </div>
         `);
+        task.addClass("board-task-completed");
     } else {
         task.find(".board-task-completed-icon").remove();
+        task.removeClass("board-task-completed");
     }
 }
 
@@ -415,7 +417,7 @@ function updateBoardTaskAssigneeHtml(taskId, firstName, lastName) {
     } else {
         task.find(".board-task-assignee").html(`
             <div class="default-profile-pic">
-                ` + firstName[0] + lastName[0] + `
+                <div>` + firstName[0] + lastName[0] + `</div>
             </div>
         `);
     }

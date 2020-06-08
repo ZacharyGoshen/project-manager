@@ -25,8 +25,13 @@
                         <div class="board-task-drop-area" data-task-index="@taskIndex"></div>
 
                         var task = Model.Tasks[categoryIndex][taskIndex];
+                        var boardTaskClasses = "board-task";
+                        if (task.IsCompleted)
+                        {
+                            boardTaskClasses += " board-task-completed";
+                        }
 
-                        <div class="board-task" data-task-id="@task.TaskId" data-task-index="@taskIndex">
+                        <div class="@boardTaskClasses" data-task-id="@task.TaskId" data-task-index="@taskIndex">
                             <div class="board-task-left-section">
                                 <div class="board-task-priority task-priority" data-priority="@task.Priority"></div>
                                 <div class="board-task-second-row">
@@ -43,7 +48,7 @@
                                         @if (task.AssignedUser != null)
                                         {
                                             <div class="default-profile-pic">
-                                                @task.AssignedUser.FirstName[0]@task.AssignedUser.LastName[0]
+                                                <div>@task.AssignedUser.FirstName[0]@task.AssignedUser.LastName[0]</div>
                                             </div>
                                         }
                                         else

@@ -271,7 +271,7 @@ function updateTaskDetailsHtml(task) {
     let commentContainerHtml = `
         <div id="#taskDetailsCreator">
             <div class="default-profile-pic">
-                ` + task.submittingUser.firstName[0] + task.submittingUser.lastName[0] + `
+                <div>` + task.submittingUser.firstName[0] + task.submittingUser.lastName[0] + `</div>
             </div>
             <div>` + task.submittingUser.firstName + ` ` + task.submittingUser.lastName + ` created this task.</div>
             <div class="task-details-time">` + creationDateDay + " at " + creationDateTime + `</div>
@@ -286,7 +286,7 @@ function updateTaskDetailsHtml(task) {
         commentContainerHtml += `
             <div class="taskDetailsComment">
                 <div class="default-profile-pic">
-                    ` + comment.user.firstName[0] + comment.user.lastName[0] + `
+                    <div>` + comment.user.firstName[0] + comment.user.lastName[0] + `</div>
                 </div>
                 <div>` + comment.text + `</div>
                 <div class="task-details-time">` + commentCreationDateDay + " at " + commentCreationDateTime + `</div>
@@ -339,7 +339,7 @@ function updateTaskDetailsAssigneeHtml(firstName, lastName) {
     } else {
         $("#taskDetailsAssignee").html(`
             <div class="default-profile-pic">
-                ` + firstName[0] + lastName[0] + `
+                <div>` + firstName[0] + lastName[0] + `</div>
             </div>
             <div>` + firstName + ` ` + lastName + `</div>
             <div class="task-details-remove-button" onclick="removeTaskAssignee()">
@@ -405,7 +405,7 @@ function addCommentHtmlToTaskDetails(text, firstName, lastName) {
     $("#taskDetailsThirdSection").append(`
         <div class="taskDetailsComment">
             <div class="default-profile-pic">
-                ` + firstName[0] + lastName[0] + `
+                <div>` + firstName[0] + lastName[0] + `</div>
             </div>
             <div>` + text + `</div>
             <div class="task-details-time">` + commentCreationDateDay + " at " + commentCreationDateTime + `</div>
