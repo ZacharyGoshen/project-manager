@@ -75,6 +75,34 @@
     position: absolute;
     text-align: center;
 }
+.task-details-tag {
+    align-items: center;
+    background-color: #9e9e9e;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+    padding: 0px 10px;
+}
+.task-details-tag-name {
+    color: white;
+    margin-right: 10px;
+}
+.task-details-tag-remove-button {
+    background-color: white;
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+}
+.task-details-tag-remove-button:hover {
+    cursor: pointer;
+}
+.task-details-tag-remove-button > div {
+    color: #9e9e9e;
+    font-size: 12px;
+    margin-left: 4px;
+    margin-top: -2px;
+}
 .task-details-time {
     color: #9e9e9e;
     font-size: 0.75em;
@@ -176,6 +204,14 @@
 #taskDetailsPriority .task-priority {
     width: 100px;
 }
+#taskDetailsTags {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
+#taskDetailsAddTagButton {
+    margin-left: 10px;
+}
 #taskDetailsThirdSection > div {
     padding: 10px;
 }
@@ -183,6 +219,9 @@
     align-items: center;
     display: flex;
     flex-direction: row;
+}
+#taskDetailsAddTagButton {
+    color: #9e9e9e;
 }
 #taskDetailsThirdSection > div > *:first-child {
     margin-right: 10px;

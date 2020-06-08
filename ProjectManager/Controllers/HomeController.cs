@@ -68,11 +68,14 @@ namespace ProjectManager.Controllers
 
                 var users = context.Users.ToList();
 
+                var tags = context.Tags.Where(t => t.Project == project).ToList();
+
                 var model = new BoardViewModel()
                 {
                     Tasks = tasksByCategory,
                     Categories = categories,
-                    Users = users
+                    Users = users,
+                    Tags = tags
                 };
 
                 return View(model);
@@ -178,6 +181,8 @@ namespace ProjectManager.Controllers
                     .Include(t => t.AssignedUser)
                     .Include(t => t.SubmittingUser)
                     .Include(t => t.Comments)
+                    .Include(t => t.TagTasks)
+                    .ThenInclude(tt => tt.Tag)
                     .Where(t => t.TaskId == taskId)
                     .First();
                 return Json(task);

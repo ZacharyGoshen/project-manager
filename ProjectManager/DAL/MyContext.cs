@@ -12,7 +12,9 @@ namespace ProjectManager.DAL
         public DbSet<Task> Tasks { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<UserProject> UserProjects { get; set; }
+        public DbSet<TagTask> TagTasks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

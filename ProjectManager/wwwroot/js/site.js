@@ -105,89 +105,6 @@ function scrollToBottomOfContainer(container) {
     container.scrollTop(scrollHeight - containerHeight);
 }
 
-/** Get the css class corresponding to the given task priority
- * 
- * @param {number} priority The priority of a task
- * @returns {string} The name of a css class corresponding the the given task priority
- */
-function getPriorityCssClassName(priority) {
-    switch (priority) {
-        case 1:
-            return "task-priority-very-low";
-        case 2:
-            return "task-priority-low";
-        case 3:
-            return "task-priority-medium";
-        case 4:
-            return "task-priority-high";
-        case 5:
-            return "task-priority-very-high";
-        default:
-            return "";
-    }
-}
-
-/** Get the name that the given priority represents
- *
- * @param {number} priority The priority of a task
- * @returns {string} The name that the given priority represents
- */
-function getPriorityString(priority) {
-    switch (priority) {
-        case 1:
-            return "Very Low";
-        case 2:
-            return "Low";
-        case 3:
-            return "Medium";
-        case 4:
-            return "High";
-        case 5:
-            return "Very High";
-        default:
-            return "";
-    }
-}
-
-/** Toggles the priority selection container between open and closed
- *
- * @param {number} xOffset The x offset of the container
- * @param {number} yOffset The y offset of the container
- */
-function togglePrioritySelectionContainer(xOffset, yOffset) {
-    let container = $("#prioritySelectionContainer");
-    if (container.hasClass("hidden")) {
-        container.removeClass("hidden");
-        container.offset({ top: yOffset, left: xOffset });
-    } else {
-        container.addClass("hidden");
-    }
-}
-
-/** Sets up the click events that sets a task's priority when a priority option
- * is clicked
- *
- * @param {number} taskId
- */
-function setUpPriorityClickEvent(taskId) {
-    $(".priority-selection-option").each(function () {
-        $(this).off("click");
-        let priority = $(this).data("priority");
-        $(this).click(function () {
-            setPriorityInDatabase(taskId, priority);
-            togglePrioritySelectionContainer(0, 0);
-
-            if (!$("#taskDetailsContainer").hasClass("hidden")) {
-                updateTaskDetailsPriorityHtml(priority);
-            }
-
-            if (currentView == "board") {
-                updateBoardTaskPriorityHtml(taskId, priority);
-            }
-        });
-    });
-}
-
 /** Converts a UTC string to a UTC Date object
  * 
  * @param {string} utcString A UTC date in string format
@@ -203,7 +120,6 @@ function convertUTCStringToUTCDate(utcString) {
 
     return date;
 }
-
 
 /** Updates the index of a category in the database
  * 
@@ -324,6 +240,14 @@ function setPriorityInDatabase(taskId, priority) {
     });
 }
 
+function addTagToTaskInDatabase(taskId, tagId) {
+    $.ajax({
+        type: "POST",
+        url: "/Task/AddTag",
+        data: { taskId: taskId, tagId: tagId }
+    });
+}
+
 /** Remove an assigned task from a user in the database
  *  
  * @param {number} taskId The ID of the task
@@ -360,6 +284,20 @@ function addCommentToDatabase(text, taskId, userId) {
         type: "POST",
         url: "/Comment/New",
         data: { text: text, taskId: taskId, userId: userId }
+    });
+}
+
+/** Adds a new tag to the database
+ * 
+ * @param {string} tagName The name of the tag
+ * @param {number} projectId The ID of project the tag belongs to
+ * @param {number} taskId The ID of the task that is getting the tag
+ */
+function addTagToDatabase(tagName, taskId, projectId) {
+    $.ajax({
+        type: "POST",
+        url: "/Tag/New",
+        data: { tagName: tagName, taskId: taskId, projectId: projectId }
     });
 }
 

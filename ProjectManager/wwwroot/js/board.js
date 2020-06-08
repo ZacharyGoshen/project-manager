@@ -60,6 +60,13 @@ function onBoardViewLoad() {
 
         hideElementOnClickOutside($("#dueDateSelectionContainer"),
             ["#dueDateSelectionContainer", "#taskDetailsDueDate", ".board-task-due-date"]);
+
+        hideElementOnClickOutside($("#tagSelectionContainer"),
+            ["#tagSelectionContainer", "#taskDetailsAddTagButton"]);
+        removeFocusOnClickOutside($("#tagSearchBox"), [$("#tagSearchBox")]);
+        showElementOnFocus($("#tagSearchResultsContainer"), $("#tagSearchBox"));
+        hideElementOnClickOutside($("#tagSearchResultsContainer"), ["#tagSearchBox"]);
+        reloadTagSearchResultsOnInput();
     });
 }
 

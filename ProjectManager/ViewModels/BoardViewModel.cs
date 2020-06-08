@@ -38,5 +38,6 @@ namespace ProjectManager.ViewModels
         public List<List<Task>> Tasks { get; set; }
         public List<Category> Categories { get; set; }
         public List<User> Users { get; set; }
+        public List<Tag> Tags { get; set; }
     }
 }

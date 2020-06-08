@@ -265,6 +265,26 @@ function updateTaskDetailsHtml(task) {
 
     updateTaskDetailsPriorityHtml(task.priority);
 
+    let tagContainerHtml = "";
+    for (tagTask of task.tagTasks) {
+        let tag = tagTask.tag;
+        tagContainerHtml += `
+            <div class="task-details-tag">
+                <div class="task-details-tag-name">` + tag.name + `</div>
+                <div class="task-details-tag-remove-button">
+                    <div>x</div>
+                </div>
+            </div>
+        `;
+    }
+
+    tagContainerHtml += `
+        <div id="taskDetailsAddTagButton" class="task-details-value" onclick="toggleDetailsTagSelectionContainer()">
+            + Add Tag
+        </div>
+    `;
+    $("#taskDetailsTags").html(tagContainerHtml);
+
     let creationDate = convertUTCStringToUTCDate(task.creationTime);
     let creationDateDay = creationDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });
     let creationDateTime = creationDate.toLocaleTimeString([], { hour12: true, hour: "numeric", minute: "numeric" });
@@ -391,11 +411,27 @@ function updateTaskDetailsPriorityHtml(priority) {
     }
 }
 
+/** Update the task details view's tag html
+ * 
+ * @param {number} tagId The ID of the tag being added
+ * @param {number} tagName The name of the tag being added
+ */
+function addTagHtmlToTaskDetails(tagId, tagName) {
+    $("#taskDetailsAddTagButton").before(`
+        <div class="task-details-tag">
+            <div class="task-details-tag-name">` + tagName + `</div>
+            <div class="task-details-tag-remove-button">
+                <div>x</div>
+            </div>
+        </div>
+    `);
+}
+
 /** Update the task details view's comment html
  * 
- * @param {any} text
- * @param {any} firstName
- * @param {any} lastName
+ * @param {any} text The text of the comment being added
+ * @param {any} firstName The first name of the commenter
+ * @param {any} lastName The last name of the commenter
  */
 function addCommentHtmlToTaskDetails(text, firstName, lastName) {
     let commentCreationDate = new Date();
@@ -465,4 +501,17 @@ function toggleDetailsPrioritySelectionContainer() {
     let taskId = $("#taskDetailsContainer").data("taskId");
     $("#prioritySelectionContainer").data("taskId", taskId);
     setUpPriorityClickEvent(taskId);
+}
+
+/** Toggle the tag selection container of a task's details view between
+ * open and closed */
+function toggleDetailsTagSelectionContainer() {
+    let button = $("#taskDetailsAddTagButton");
+    let xOffset = button.offset().left;
+    let yOffset = button.offset().top + button.outerHeight();
+    toggleTagSelectionContainer(xOffset, yOffset);
+
+    let taskId = $("#taskDetailsContainer").data("taskId");
+    $("#tagSelectionContainer").data("taskId", taskId);
+    setUpTagSearchResultsClickEvent(taskId);
 }

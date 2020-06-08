@@ -1,0 +1,15 @@
+﻿@model ProjectManager.ViewModels.BoardViewModel
+
+<div id="tagSelectionContainer" class="hidden">
+    <p>Tag</p>
+    <input id="tagSearchBox" type="text" />
+    <div id="tagSearchResultsContainer" class="hidden">
+        @foreach (Tag tag in Model.Tags)
+        {
+            <div class="tag-search-result hidden" data-tag-id="@tag.TagId">
+                <div class="task-tag">@tag.Name</div>
+            </div>
+        }
+        <div id="createTagButton" onclick="createTag()">+ Create tag named </div>
+    </div>
+</div>
