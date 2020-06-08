@@ -29,7 +29,15 @@
                         <div class="board-task" data-task-id="@task.TaskId" data-task-index="@taskIndex">
                             <div class="board-task-left-section">
                                 <div class="board-task-priority task-priority" data-priority="@task.Priority"></div>
-                                <div class="board-task-name" onclick="openTaskDetails(@task.TaskId)">@task.Name</div>
+                                <div class="board-task-second-row">
+                                    @if (task.IsCompleted)
+                                    {
+                                        <div class="board-task-completed-icon">
+                                            <div>&#10003</div>
+                                        </div>
+                                    }
+                                    <div class="board-task-name" onclick="openTaskDetails(@task.TaskId)">@task.Name</div>
+                                </div>
                                 <div class="board-task-third-row">
                                     <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(@task.TaskId)">
                                         @if (task.AssignedUser != null)

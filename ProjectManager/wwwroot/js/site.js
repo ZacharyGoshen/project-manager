@@ -105,6 +105,11 @@ function scrollToBottomOfContainer(container) {
     container.scrollTop(scrollHeight - containerHeight);
 }
 
+/** Get the css class corresponding to the given task priority
+ * 
+ * @param {number} priority The priority of a task
+ * @returns {string} The name of a css class corresponding the the given task priority
+ */
 function getPriorityCssClassName(priority) {
     switch (priority) {
         case 1:
@@ -122,6 +127,11 @@ function getPriorityCssClassName(priority) {
     }
 }
 
+/** Get the name that the given priority represents
+ *
+ * @param {number} priority The priority of a task
+ * @returns {string} The name that the given priority represents
+ */
 function getPriorityString(priority) {
     switch (priority) {
         case 1:
@@ -217,6 +227,19 @@ function deleteCategoryInDatabase(categoryId) {
         type: "POST",
         url: "/Home/DeleteCategory",
         data: { categoryId: categoryId }
+    });
+}
+
+/** Set the completed status of a task in the database
+ *
+ * @param {number} taskId The ID of the task who's description is being set
+ * @param {string} taskDescription The task's new description
+ */
+function setTaskIsCompletedInDatabase(taskId, isCompleted) {
+    $.ajax({
+        type: "POST",
+        url: "/Task/SetIsCompleted",
+        data: { taskId: taskId, isCompleted: isCompleted }
     });
 }
 

@@ -248,6 +248,8 @@ function closeTaskDetails() {
 function updateTaskDetailsHtml(task) {
     $("#taskDetailsContainer").data("taskId", task.taskId);
 
+    updateTaskDetailsCompletedButtonHtml(task.isCompleted);
+
     $("#taskDetailsName").val(task.name);
     updateTaskDetailsDescriptionHtml(task.description);
 
@@ -292,6 +294,21 @@ function updateTaskDetailsHtml(task) {
         `;
     }
     $("#taskDetailsThirdSection").html(commentContainerHtml);
+}
+
+function updateTaskDetailsCompletedButtonHtml(isCompleted) {
+    let button = $("#taskDetailsCompletedButton");
+    if (isCompleted) {
+        button.removeClass("task-details-completed-button-off");
+        button.addClass("task-details-completed-button-on");
+        button.data("isCompleted", true);
+        button.html("&#10003 Completed");
+    } else {
+        button.removeClass("task-details-completed-button-on");
+        button.addClass("task-details-completed-button-off");
+        button.data("isCompleted", false);
+        button.html("&#10003 Mark Completed");
+    }
 }
 
 /** Update the task details view's description html
@@ -394,6 +411,22 @@ function addCommentHtmlToTaskDetails(text, firstName, lastName) {
             <div class="task-details-time">` + commentCreationDateDay + " at " + commentCreationDateTime + `</div>
         </div>
     `);
+}
+
+/** Toggle the task between completed and not completed and update the database,
+ * details view, and current view
+ */
+function taskDetailsToggleCompleted() {
+    let button = $("#taskDetailsCompletedButton");
+    let isCompleted = button.data("isCompleted");
+    updateTaskDetailsCompletedButtonHtml(!isCompleted);
+
+    let taskId = $("#taskDetailsContainer").data("taskId");
+    setTaskIsCompletedInDatabase(taskId, !isCompleted);
+
+    if (currentView == "board") {
+        updateBoardTaskCompletedHtml(taskId, !isCompleted);
+    }
 }
 
 /** Toggle the assignee selection container of a task's details view between

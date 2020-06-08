@@ -9,6 +9,14 @@ namespace ProjectManager.Controllers
 {
     public class TaskController : Controller
     {
+        public void SetIsCompleted(int taskId, bool isCompleted)
+        {
+            var context = new MyContext();
+            var task = context.Tasks.Find(taskId);
+            task.IsCompleted = isCompleted;
+            context.SaveChanges();
+        }
+
         public void SetPriority(int taskId, int priority)
         {
             var context = new MyContext();

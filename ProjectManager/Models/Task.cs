@@ -13,6 +13,7 @@ namespace ProjectManager.Models
         public DateTime DueDateRangeEnd { get; set; }
         public int Order { get; set; }
         public int Priority { get; set; }
+        public bool IsCompleted { get; set; }
 
         public Project Project { get; set; }
         public User AssignedUser { get; set; }

@@ -1,4 +1,17 @@
-﻿.task-details-label {
+﻿.task-details-completed-button-on {
+    border-color: #32cd32;
+    background-color: #32cd32;
+    color: white;
+}
+.task-details-completed-button-off {
+    border-color: #f0f0f0;
+    background-color: white;
+    color: #9e9e9e;
+}
+.task-details-completed-button-off:hover {
+    border-color: #9e9e9e;
+}
+.task-details-label {
     color: #9e9e9e;
     width: 120px;
 }
@@ -83,22 +96,37 @@
     z-index: 3;
 }
 #taskDetailsHeader {
+    align-items: center;
     background-color: white;
     border-bottom: 2px solid #f0f0f0;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     display: flex;
-    flex-direction: row-reverse;
-    font-size: 1.5rem;
-    padding: 0px 10px;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 5px 10px;
     position: absolute;
     z-index: 4;
 }
+#taskDetailsCompletedButton {
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 5px;
+    font-size: .75rem;
+    padding: 5px;
+}
+#taskDetailsCompletedButton:hover {
+    cursor: pointer;
+}
 #closeTaskDetailsButton {
     color: #9e9e9e;
+    font-size: 1.5rem;
 }
 #closeTaskDetailsButton:hover {
     cursor: pointer;
+}
+#closeTaskDetailsButton > div {
+    margin-top: -3px;
 }
 #taskDetailsFirstSection {
     border-bottom: 2px solid #f0f0f0;

@@ -259,7 +259,9 @@ function generateNewBoardTaskHtml(taskId, taskName) {
         <div class="board-task" data-task-id="` + taskId + `" data-task-index="0">
             <div class="board-task-left-section">
                 <div class="board-task-priority task-priority" data-priority="0"></div>
-                <div class="board-task-name" onclick="openTaskDetails(` + taskId + `)">` + taskName + `</div>
+                <div class="board-task-second-row">
+                    <div class="board-task-name" onclick="openTaskDetails(` + taskId + `)">` + taskName + `</div>
+                </div>
                 <div class="board-task-third-row">
                     <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(` + taskId + `)">
                         <input class="unassigned-user-icon" type="image" src="../images/user.png" />
@@ -350,6 +352,11 @@ function insertBoardTaskInCategory(taskToInsert, destinationCategoryId, destinat
     }
 }
 
+/** Update the html of the board task to show its new priority
+ *
+ * @param {number} taskId The ID of the task who's priority is changing
+ * @param {string} isCompleted The task's new priority
+ */
 function updateBoardTaskPriorityHtml(taskId, priority) {
     let task = findBoardTaskWithId(taskId);
     let priorityClassName = getPriorityCssClassName(priority);
@@ -362,6 +369,24 @@ function updateBoardTaskPriorityHtml(taskId, priority) {
     task.find(".board-task-priority").removeClass("task-priority-very-high");
     task.find(".board-task-priority").addClass(priorityClassName);
     task.find(".board-task-priority").html(priorityString);
+}
+
+/** Update the html of the board task to show its new completion status
+ *
+ * @param {number} taskId The ID of the task who's completion status is changing
+ * @param {string} isCompleted The task's new completion status
+ */
+function updateBoardTaskCompletedHtml(taskId, isCompleted) {
+    let task = findBoardTaskWithId(taskId);
+    if (isCompleted) {
+        task.find(".board-task-second-row").prepend(`
+            <div class="board-task-completed-icon">
+                <div>&#10003</div>
+            </div>
+        `);
+    } else {
+        task.find(".board-task-completed-icon").remove();
+    }
 }
 
 /** Update the html of the board task to show its new name

@@ -3,7 +3,10 @@
 <div id="taskDetailsScreen" class="hidden"></div>
 
 <div id="taskDetailsHeader" class="hidden">
-    <div id="closeTaskDetailsButton" onclick="closeTaskDetails()">x</div>
+    <div id="taskDetailsCompletedButton" onclick="taskDetailsToggleCompleted()"></div>
+    <div id="closeTaskDetailsButton" onclick="closeTaskDetails()">
+        <div>x</div>
+    </div>
 </div>
 
 <div id="taskDetailsContainer" class="hidden" data-task-id="">
