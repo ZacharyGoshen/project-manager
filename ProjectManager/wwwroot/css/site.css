@@ -10,6 +10,9 @@ button {
 a:hover {
     color: #2a9df4;
 }
+input {
+    autocompl
+}
 .default-profile-pic {
     background-color: #2a9df4;
     border: 2px solid transparent;

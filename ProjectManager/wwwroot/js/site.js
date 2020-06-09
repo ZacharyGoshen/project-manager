@@ -1,5 +1,14 @@
 ﻿let currentView = "";
 
+onViewLoad();
+
+/** Set up configurations that are necessary regardless of the current view */
+function onViewLoad() {
+    $(document).ready(function () {
+        $("input").attr("autocomplete", "off");
+    });
+}
+
 /** Removes focus from and element when clicking outside of a given set of
  * elements
  *
@@ -240,10 +249,28 @@ function setPriorityInDatabase(taskId, priority) {
     });
 }
 
+/** Add a tag to a task in the database
+ * 
+ * @param {number} taskId The ID of the task
+ * @param {number} tagId The ID of a tag
+ */
 function addTagToTaskInDatabase(taskId, tagId) {
     $.ajax({
         type: "POST",
         url: "/Task/AddTag",
+        data: { taskId: taskId, tagId: tagId }
+    });
+}
+
+/** Remove a tag to a task in the database
+ * 
+ * @param {number} taskId The ID of the task
+ * @param {number} tagId The ID of a tag
+ */
+function removeTagFromTaskInDatabase(taskId, tagId) {
+    $.ajax({
+        type: "POST",
+        url: "/Task/RemoveTag",
         data: { taskId: taskId, tagId: tagId }
     });
 }
@@ -268,7 +295,7 @@ function removeAssignedTaskFromUserInDatabase(taskId, userId) {
 function deleteTaskInDatabase(taskId) {
     $.ajax({
         type: "POST",
-        url: "/Home/DeleteTask",
+        url: "/Task/Delete",
         data: { taskId: taskId }
     });
 }

@@ -128,7 +128,9 @@ function addNewBoardCategoryOnEnter() {
 }
 
 /** Add the new task when the enter key is pressed within the new task form
- */ 
+ * 
+ * @param {objct} category The category of the the new task
+ */
 function addNewBoardTaskOnEnter(category) {
     let newTaskTextBox = category.find(".new-board-task-text-box");
     let categoryId = category.data("categoryId");
@@ -509,11 +511,32 @@ function removeBoardTaskHtmlFromCategory(taskId) {
     dropAreaToRemove.remove();
 }
 
-/** Remove the selected category if it has no tasks. Otherwise display an error
+/** Add a tag's html to a board task
  * 
- * @param {any} numberOfTasksInCategory
- * @param {any} categoryIndex
- * @param {any} categoryId
+ * @param {number} taskId The ID of the task the tag is being added to
+ * @param {number} tagId The ID of the tag
+ * @param {number} tagName The name of the tag
+ */
+function addTagHtmlToBoardTask(taskId, tagId, tagName) {
+    let task = findBoardTaskWithId(taskId);
+    task.find(".board-task-fourth-row").append(`
+        <div class="board-task-tag" data-tag-id="` + tagId + `">` + tagName + `</div>
+    `);
+}
+
+/** Remove a tag's html from a board task
+ * 
+ * @param {number} taskId The ID of the task the tag belongs to
+ * @param {number} tagId The ID of the tag
+ */
+function removeBoardTaskTagHtml(taskId, tagId) {
+    let tag = findBoardTaskTagWithId(taskId, tagId);
+    tag.remove();
+}
+
+/** Remove the selected category if it has no tasks. Otherwise display an error
+ *
+ * @param {any} categoryId The ID of the category being removed
  */
 function deleteBoardCategory(categoryId) {
     let category = findBoardCategoryWithId(categoryId);
@@ -539,7 +562,7 @@ function deleteBoardTask(taskId) {
 /** Display a warning below the delete category button telling the user they
  * can not delete a category that still has tasks in it
  * 
- * @param {object} category
+ * @param {object} category The category that the user attempted to delete
  */
 function showRemoveNotEmptyCategoryWarning(category) {
     let deleteButton = category.find(".board-category-delete-button");
@@ -578,6 +601,27 @@ function findBoardTaskWithId(taskId) {
         }
     });
     return task;
+}
+
+/** Find the tag with the matching ID in the board view
+ *
+ * @param {object} taskId The ID of the task the tag belongs to
+ * @param {number} tagId The ID of the tag you want to find
+ * @returns {object} The tag you want to find
+ */
+function findBoardTaskTagWithId(taskId, tagId) {
+    let task = findBoardTaskWithId(taskId);
+    if (task == null) {
+        return null;
+    }
+
+    let tag = null;
+    task.find(".board-task-tag").each(function () {
+        if ($(this).data("tagId") == tagId) {
+            tag = $(this);
+        }
+    });
+    return tag;
 }
 
 /** Insert the dragged category into its new position and update the database

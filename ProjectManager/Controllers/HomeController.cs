@@ -60,6 +60,8 @@ namespace ProjectManager.Controllers
                         .Include(t => t.AssignedUser)
                         .Include(t => t.SubmittingUser)
                         .Include(t => t.Project)
+                        .Include(t => t.TagTasks)
+                        .ThenInclude(tt => tt.Tag)
                         .Where(t => t.Project == project)
                         .Where(t => t.Category == category)
                         .OrderBy(t => t.Order)
@@ -332,33 +334,6 @@ namespace ProjectManager.Controllers
                 taskToMove.Category = categoryAfterMove;
                 taskToMove.Order = newTaskIndex;
 
-                context.SaveChanges();
-            }
-        }
-
-        public void DeleteTask(int taskId)
-        {
-            using (var context = new DAL.MyContext())
-            {
-                var taskToDelete = context.Tasks
-                    .Include(t => t.Category)
-                    .Where(t => t.TaskId == taskId)
-                    .First();
-
-                var tasksWithHigherOrder = context.Tasks
-                    .Where(t => t.Category == taskToDelete.Category)
-                    .Where(t => t.Order > taskToDelete.Order)
-                    .ToList();
-
-                foreach (ProjectManager.Models.Task task in tasksWithHigherOrder)
-                {
-                    var entity = context.Tasks.Find(task.TaskId);
-                    entity.Order -= 1;
-                    context.Tasks.Update(entity);
-                }
-
-                context.Tasks.Attach(taskToDelete);
-                context.Tasks.Remove(taskToDelete);
                 context.SaveChanges();
             }
         }

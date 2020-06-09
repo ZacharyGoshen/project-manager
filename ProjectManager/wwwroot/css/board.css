@@ -145,6 +145,20 @@
     color: #2a9df4;
     cursor: pointer;
 }
+.board-task-fourth-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.board-task-tag {
+    background-color: #9e9e9e;
+    border-radius: 10px;
+    color: white;
+    font-size: 0.65rem;
+    padding: 0px 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
 .board-task-delete-button {
     color: #9e9e9e;
 }

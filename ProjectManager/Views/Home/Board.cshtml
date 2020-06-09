@@ -67,6 +67,13 @@
                                         }
                                     </div>
                                 </div>
+                                <div class="board-task-fourth-row">
+                                    @foreach (TagTask tagTask in task.TagTasks)
+                                    {
+                                        var tag = tagTask.Tag;
+                                        <div class="board-task-tag" data-tag-id="@tag.TagId">@tag.Name</div>
+                                    }
+                                </div>
                             </div>
                             <div class="board-task-right-section">
                                 <div class="board-task-delete-button" onclick="deleteBoardTask(@task.TaskId)">x</div>

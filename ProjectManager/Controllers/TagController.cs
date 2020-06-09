@@ -10,15 +10,11 @@ namespace ProjectManager.Controllers
 {
     public class TagController : Controller
     {
-        public void New(string tagName, int taskId, int projectId)
+        public JsonResult New(string tagName, int taskId, int projectId)
         {
-            Console.WriteLine(projectId);
-
             var context = new MyContext();
             var task = context.Tasks.Find(taskId);
             var project = context.Projects.Find(projectId);
-
-            Console.WriteLine(project);
 
             var tag = new Tag()
             {
@@ -35,6 +31,8 @@ namespace ProjectManager.Controllers
             context.Tags.Add(tag);
             context.TagTasks.Add(tagTask);
             context.SaveChanges();
+
+            return Json(tag.TagId);
         }
     }
 }

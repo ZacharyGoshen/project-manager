@@ -29,7 +29,7 @@ function setUpTagSearchResultsClickEvent(taskId) {
             let tagName = $(this).find(".task-tag").html();
 
             if (currentView == "board") {
-                //updateBoardTaskAssigneeHtml(taskId, firstName, lastName);
+                addTagHtmlToBoardTask(taskId, tagId, tagName);
             }
 
             if (!$("#taskDetailsContainer").hasClass("hidden")) {
@@ -76,6 +76,9 @@ function resetTagSearchResults() {
     });
 }
 
+/** Create a new tag in the database, and add its html to the details and
+ * current view
+ */
 function createTag() {
     let taskId = $("#taskDetailsContainer").data("taskId");
     let projectId = $("#projectDropDownDiv").data("projectId");
@@ -89,6 +92,10 @@ function createTag() {
         data: { tagName: tagName, taskId: taskId, projectId: projectId },
         success: function (tagId) {
             addTagHtmlToTaskDetails(tagId, tagName);
+
+            if (currentView == "board") {
+                addTagHtmlToBoardTask(taskId, tagId, tagName);
+            }
         }
     });
 }

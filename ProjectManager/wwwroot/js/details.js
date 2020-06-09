@@ -169,7 +169,7 @@ function removeTaskDueDate() {
     }
 }
 
-/** Removes the priority from the task in the database, the details view
+/** Remove the priority from the task in the database, the details view
  * and the current view
  */
 function removeTaskPriority() {
@@ -179,6 +179,21 @@ function removeTaskPriority() {
     updateTaskDetailsPriorityHtml(0);
     if (currentView == "board") {
         updateBoardTaskPriorityHtml(taskId, 0);
+    }
+}
+
+/** Remove the tag from the task in the database and update the details view
+ * and current view
+ * 
+ * @param {number} tagId The ID of the tag being removed
+ */
+function removeTagFromTask(tagId) {
+    let taskId = $("#taskDetailsContainer").data("taskId");
+    removeTagFromTaskInDatabase(taskId, tagId);
+
+    removeTagHtmlFromTaskDetails(tagId)
+    if (currentView == "board") {
+        removeBoardTaskTagHtml(taskId, tagId);
     }
 }
 
@@ -210,9 +225,8 @@ function openTaskDetails(taskId) {
     detailsScreen.innerWidth(window.innerWidth);
     detailsScreen.offset({ top: 0, left: 0 });
 
-    let windowHeightPercentage = 0.9;
-    let containerHeight = windowHeightPercentage * window.innerHeight;
-    let containerWidth = window.innerWidth * 0.5;
+    let containerHeight = 0.9 * window.innerHeight;
+    let containerWidth = 0.7 * window.innerWidth;
     let containerTopOffset = (window.innerHeight / 2) - (containerHeight / 2);
     let containerLeftOffset = (window.innerWidth / 2) - (containerWidth / 2);
 
@@ -269,9 +283,9 @@ function updateTaskDetailsHtml(task) {
     for (tagTask of task.tagTasks) {
         let tag = tagTask.tag;
         tagContainerHtml += `
-            <div class="task-details-tag">
+            <div class="task-details-tag" data-tag-id="` + tag.tagId + `">
                 <div class="task-details-tag-name">` + tag.name + `</div>
-                <div class="task-details-tag-remove-button">
+                <div class="task-details-tag-remove-button" onclick="removeTagFromTask(` + tag.tagId + `)">
                     <div>x</div>
                 </div>
             </div>
@@ -279,7 +293,7 @@ function updateTaskDetailsHtml(task) {
     }
 
     tagContainerHtml += `
-        <div id="taskDetailsAddTagButton" class="task-details-value" onclick="toggleDetailsTagSelectionContainer()">
+        <div id="taskDetailsAddTagButton" onclick="toggleDetailsTagSelectionContainer()">
             + Add Tag
         </div>
     `;
@@ -316,6 +330,11 @@ function updateTaskDetailsHtml(task) {
     $("#taskDetailsThirdSection").html(commentContainerHtml);
 }
 
+/** Updates the html of the button that marks if a task is completed in the
+ * details view
+ * 
+ * @param {boolean} isCompleted True if the task is completed
+ */
 function updateTaskDetailsCompletedButtonHtml(isCompleted) {
     let button = $("#taskDetailsCompletedButton");
     if (isCompleted) {
@@ -418,20 +437,29 @@ function updateTaskDetailsPriorityHtml(priority) {
  */
 function addTagHtmlToTaskDetails(tagId, tagName) {
     $("#taskDetailsAddTagButton").before(`
-        <div class="task-details-tag">
+        <div class="task-details-tag" data-tag-id="` + tagId + `">
             <div class="task-details-tag-name">` + tagName + `</div>
-            <div class="task-details-tag-remove-button">
+            <div class="task-details-tag-remove-button" onclick="removeTagFromTask(` + tagId + `)">
                 <div>x</div>
             </div>
         </div>
     `);
 }
 
+/** Remove a tag's html from the task details view
+ * 
+ * @param {number} tagId The ID of the tag being removed
+ */
+function removeTagHtmlFromTaskDetails(tagId) {
+    let tag = findTaskDetailsTagWithId(tagId);
+    tag.remove();
+}
+
 /** Update the task details view's comment html
  * 
- * @param {any} text The text of the comment being added
- * @param {any} firstName The first name of the commenter
- * @param {any} lastName The last name of the commenter
+ * @param {string} text The text of the comment being added
+ * @param {string} firstName The first name of the commenter
+ * @param {string} lastName The last name of the commenter
  */
 function addCommentHtmlToTaskDetails(text, firstName, lastName) {
     let commentCreationDate = new Date();
@@ -514,4 +542,19 @@ function toggleDetailsTagSelectionContainer() {
     let taskId = $("#taskDetailsContainer").data("taskId");
     $("#tagSelectionContainer").data("taskId", taskId);
     setUpTagSearchResultsClickEvent(taskId);
+}
+
+/** Find the tag with the matching ID in the task details view
+ * 
+ * @param {number} tagId The ID of the tag you want to find
+ * @returns {object} The tag you want to find
+ */
+function findTaskDetailsTagWithId(tagId) {
+    let tag = null;
+    $(".task-details-tag").each(function () {
+        if ($(this).data("tagId") == tagId) {
+            tag = $(this);
+        }
+    });
+    return tag;
 }
