@@ -544,6 +544,21 @@ function toggleDetailsTagSelectionContainer() {
     setUpTagSearchResultsClickEvent(taskId);
 }
 
+/** Check if the viewed task has the tag with the matching ID
+ * 
+ * @param {number} tagId The ID of the tag being checked for
+ * @returns {boolean} True if task the has the tag, false otherwise
+ */
+function checkIfTaskHasTag(tagId) {
+    let hasTag = false
+    $(".task-details-tag").each(function () {
+        if (tagId == $(this).data("tagId")) {
+            hasTag = true;
+        }
+    });
+    return hasTag;
+}
+
 /** Find the tag with the matching ID in the task details view
  * 
  * @param {number} tagId The ID of the tag you want to find

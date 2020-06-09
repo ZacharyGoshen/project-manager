@@ -23,6 +23,10 @@ function setUpTagSearchResultsClickEvent(taskId) {
         $(this).off("click");
         let tagId = $(this).data("tagId");
         $(this).click(function () {
+            if (checkIfTaskHasTag(tagId)) {
+                return;
+            }
+
             addTagToTaskInDatabase(taskId, tagId);
             toggleTagSelectionContainer(0, 0);
 
