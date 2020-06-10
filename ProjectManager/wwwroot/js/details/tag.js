@@ -136,24 +136,29 @@ function createTag() {
     let createTagButtonText = $("#createTagButton").html();
     let tagName = createTagButtonText.slice(createTagButtonText.indexOf("'") + 1, -1);
 
-    $.ajax({
+    let newTagId = null;
+    let ajaxRequest = $.ajax({
         type: "POST",
         url: "/Tag/New",
         data: { tagName: tagName, taskId: taskId, projectId: projectId },
         success: function (tagId) {
-            addTagHtmlToTaskDetails(tagId, tagName, 0);
-
-            if (currentView == "board") {
-                addTagHtmlToBoardTask(taskId, tagId, tagName, 0);
-            }
-
-            let containerOffset = $("#tagSelectionContainer").offset();
-            toggleTagSelectionContainer(0, 0);
-            $("#tagSearchBox").val("");
-            resetTagSearchResults();
-
-            $("#tagColorSelectionContainer").data("tagId", tagId);
-            toggleTagColorSelectionContainer(containerOffset.left, containerOffset.top);
+            newTagId = tagId;
         }
+    });
+
+    $.when(ajaxRequest).done(function () {
+        addTagHtmlToTaskDetails(newTagId, tagName, 0);
+
+        if (currentView == "board") {
+            addTagHtmlToBoardTask(taskId, newTagId, tagName, 0);
+        }
+
+        let containerOffset = $("#tagSelectionContainer").offset();
+        toggleTagSelectionContainer(0, 0);
+        $("#tagSearchBox").val("");
+        resetTagSearchResults();
+
+        $("#tagColorSelectionContainer").data("tagId", newTagId);
+        toggleTagColorSelectionContainer(containerOffset.left, containerOffset.top);
     });
 }

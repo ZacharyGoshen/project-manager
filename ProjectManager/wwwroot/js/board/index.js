@@ -1,5 +1,4 @@
-﻿currentView = "board";
-let mouseMoveEvent = null;
+﻿let mouseMoveEvent = null;
 let taskBeingDragged = false;
 let categoryBeingDragged = false;
 let verticalScrollIntervalId = 0;
@@ -12,6 +11,8 @@ onBoardViewLoad();
  */
 function onBoardViewLoad() {
     $(document).ready(function () {
+        currentView = "board";
+
         setUpTaskDetailsEventListeners();
 
         setBoardTaskContainerHeights();

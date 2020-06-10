@@ -88,9 +88,13 @@ input {
     padding: 5px;
     width: 100%;
 }
-.task-tag {
+.tag-search-result:hover {
+    background-color: #f0f0f0;
+}
+.tag-search-result > div {
     border-radius: 10px;
     color: white;
+    display: inline-block;
     padding: 0px 10px;
 }
 .hidden {
@@ -167,7 +171,6 @@ input {
     width: 200%;
 }
 #tagSearchResultsContainer div:hover {
-    background-color: #f0f0f0;
     cursor: pointer;
 }
 #createTagButton {
