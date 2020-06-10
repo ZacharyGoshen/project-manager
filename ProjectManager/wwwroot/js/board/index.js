@@ -33,6 +33,18 @@ function onBoardViewLoad() {
             setUpBoardCategoryEventListeners(category);
         });
 
+        $(".board-category-header").each(function () {
+            let header = $(this);
+            header.hover(
+                function () {
+                    header.parent().css("border-color", "#9e9e9e");
+                },
+                function () {
+                    header.parent().css("border-color", "white");
+                }
+            );
+        });
+
         $(".board-task").each(function () {
             let task = $(this);
             setUpBoardTaskEventListeners(task);
@@ -40,6 +52,13 @@ function onBoardViewLoad() {
             let taskId = task.data("taskId");
             let priority = task.find(".board-task-priority").data("priority");
             updateBoardTaskPriorityHtml(taskId, priority);
+
+            task.click(function () {
+                if (!getElementHovered(mouseMoveEvent, $(".board-task-assignee"))
+                    && !getElementHovered(mouseMoveEvent, $(".board-task-due-date"))) {
+                    openTaskDetails(taskId);
+                }
+            });
         });
 
         showElementOnClickOutside($("#addBoardCategoryButton"), ["#addBoardCategoryButton", "#newCategoryNameTextBox"]);

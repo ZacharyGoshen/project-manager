@@ -2,8 +2,9 @@
     color: #9e9e9e;
 }
 .nav-bar-link {
-    margin-right: 20px;
     color: #9e9e9e;
+    font-size: 15px;
+    margin-right: 10px;
 }
 .nav-bar-link:hover {
     text-decoration: none;
@@ -18,22 +19,22 @@
     justify-content: space-between;
     padding: 10px 30px 10px 30px;
     background-color: white;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 2px solid #f0f0f0;
     z-index: 1;
 }
 #navBarLeftSide {
     order: 1;
 }
+#projectDropDownDiv {
+    font-size: 20px;
+}
 #navBarRightSide {
     order: 2;
     align-self: center;
 }
-#projectDropDownDiv {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
 #navBarProfilePic {
-    height: 50px;
-    width: 50px;
+    background-color: #f0f0f0;
     border-radius: 50%;
+    height: 30px;
+    width: 30px;
 }

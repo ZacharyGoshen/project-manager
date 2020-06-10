@@ -318,7 +318,7 @@ function updateTaskDetailsHtml(task) {
         let commentCreationDateTime = commentCreationDate.toLocaleTimeString([], { hour12: true, hour: "numeric", minute: "numeric" });
 
         commentContainerHtml += `
-            <div class="taskDetailsComment">
+            <div class="task-details-comment">
                 <div class="default-profile-pic">
                     <div>` + comment.user.firstName[0] + comment.user.lastName[0] + `</div>
                 </div>

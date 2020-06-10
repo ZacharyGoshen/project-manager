@@ -56,7 +56,7 @@ function generateNewBoardTaskHtml(taskId, taskName) {
         <div class="board-task" data-task-id="` + taskId + `" data-task-index="0">
             <div class="board-task-left-section">
                 <div class="board-task-second-row">
-                    <div class="board-task-name" onclick="openTaskDetails(` + taskId + `)">` + taskName + `</div>
+                    <div class="board-task-name">` + taskName + `</div>
                 </div>
                 <div class="board-task-third-row">
                     <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(` + taskId + `)">
