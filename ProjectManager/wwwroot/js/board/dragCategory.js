@@ -319,3 +319,33 @@ function startScrollRightInterval(scrollContainer) {
         }, 20);
     }
 }
+
+/** Insert the dragged category into its new position and update the database
+ */
+function endBoardCategoryDrag() {
+    if (categoryBeingDragged) {
+        categoryBeingDragged = false;
+
+        resetCategoryMargins();
+
+        let categoryId = $("#draggedCategoryCopy").data("categoryId");
+        let newIndex = $("#boardCategoryDropAreaIndicator").data("categoryIndex");
+        let categoryToInsert = `
+                <div class="board-category" data-category-id="` + categoryId + `" data-category-index="` + newIndex + `">
+                    ` + $("#draggedCategoryCopy").html() + `
+                </div>`;
+        insertCategoryInBoard(categoryToInsert, newIndex);
+
+        $("#draggedCategoryCopy").empty();
+        $("#draggedCategoryCopy").removeData();
+        $("#draggedCategoryCopy").addClass("hidden");
+        $("#boardCategoryDropAreaIndicator").empty();
+        $("#boardCategoryDropAreaIndicator").removeData();
+        $("#boardCategoryDropAreaIndicator").addClass("hidden");
+
+        let movedCategory = findBoardCategoryWithId(categoryId);
+        setUpBoardCategoryEventListeners(movedCategory);
+
+        moveCategoryInDatabase(categoryId, newIndex);
+    }
+}

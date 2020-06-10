@@ -13,6 +13,21 @@ function toggleTagSelectionContainer(xOffset, yOffset) {
     }
 }
 
+/** Toggles the tag color selection container between open and closed
+ * 
+ * @param {number} xOffset The x offset of the container
+ * @param {number} yOffset The y offset of the container
+ */
+function toggleTagColorSelectionContainer(xOffset, yOffset) {
+    let container = $("#tagColorSelectionContainer");
+    if (container.hasClass("hidden")) {
+        container.removeClass("hidden");
+        container.offset({ top: yOffset, left: xOffset });
+    } else {
+        container.addClass("hidden");
+    }
+}
+
 /** Sets up the click events that add a tag to a task when a tag search result
  * is clicked
  *
@@ -23,21 +38,50 @@ function setUpTagSearchResultsClickEvent(taskId) {
         $(this).off("click");
         let tagId = $(this).data("tagId");
         $(this).click(function () {
-            if (checkIfTaskHasTag(tagId)) {
-                return;
-            }
-
-            addTagToTaskInDatabase(taskId, tagId);
             toggleTagSelectionContainer(0, 0);
+            $("#tagSearchBox").val("");
+            resetTagSearchResults();
 
-            let tagName = $(this).find(".task-tag").html();
+            if (!checkIfTaskHasTag(tagId)) {
+                addTagToTaskInDatabase(taskId, tagId);
 
-            if (currentView == "board") {
-                addTagHtmlToBoardTask(taskId, tagId, tagName);
+                let tagName = $(this).find(".task-tag").html();
+                let colorIndex = $(this).data("colorIndex");
+
+                if (currentView == "board") {
+                    addTagHtmlToBoardTask(taskId, tagId, tagName, colorIndex);
+                }
+
+                if (!$("#taskDetailsContainer").hasClass("hidden")) {
+                    addTagHtmlToTaskDetails(tagId, tagName, colorIndex);
+                }
             }
+        });
+    });
+}
+
+/** Sets up the click events that add a tag to a task when a tag search result
+ * is clicked
+ *
+ * @param {number} taskId The ID of the task getting a tag added to it
+ */
+function setUpTagColorClickEvent(taskId) {
+    let colorContainer = $("#tagColorSelectionContainer");
+
+    colorContainer.find(".color-option").each(function () {
+        $(this).off("click");
+        let colorIndex = $(this).data("colorIndex");
+        $(this).click(function () {
+            let tagId = colorContainer.data("tagId");
+            toggleTagColorSelectionContainer(0, 0);
+            setTagColorIndexInDatabase(tagId, colorIndex);
 
             if (!$("#taskDetailsContainer").hasClass("hidden")) {
-                addTagHtmlToTaskDetails(tagId, tagName);
+                updateTaskDetailsTagColor(tagId, colorIndex);
+            }
+
+            if (currentView == "board") {
+                updateBoardTaskTagColorHtml(taskId, tagId, colorIndex);
             }
         });
     });
@@ -78,6 +122,8 @@ function resetTagSearchResults() {
     $(".tag-search-result").each(function () {
         $(this).addClass("hidden");
     });
+
+    $("#createTagButton").html("+ Create tag named ''");
 }
 
 /** Create a new tag in the database, and add its html to the details and
@@ -95,11 +141,19 @@ function createTag() {
         url: "/Tag/New",
         data: { tagName: tagName, taskId: taskId, projectId: projectId },
         success: function (tagId) {
-            addTagHtmlToTaskDetails(tagId, tagName);
+            addTagHtmlToTaskDetails(tagId, tagName, 0);
 
             if (currentView == "board") {
-                addTagHtmlToBoardTask(taskId, tagId, tagName);
+                addTagHtmlToBoardTask(taskId, tagId, tagName, 0);
             }
+
+            let containerOffset = $("#tagSelectionContainer").offset();
+            toggleTagSelectionContainer(0, 0);
+            $("#tagSearchBox").val("");
+            resetTagSearchResults();
+
+            $("#tagColorSelectionContainer").data("tagId", tagId);
+            toggleTagColorSelectionContainer(containerOffset.left, containerOffset.top);
         }
     });
 }

@@ -6,10 +6,27 @@
     <div id="tagSearchResultsContainer" class="hidden">
         @foreach (Tag tag in Model.Tags)
         {
-            <div class="tag-search-result hidden" data-tag-id="@tag.TagId">
-                <div class="task-tag">@tag.Name</div>
+            <div class="tag-search-result hidden" data-tag-id="@tag.TagId" data-color-index="@tag.ColorIndex">
+                <div class="task-tag color-option-@tag.ColorIndex">@tag.Name</div>
             </div>
         }
         <div id="createTagButton" onclick="createTag()">+ Create tag named ''</div>
+    </div>
+</div>
+
+<div id="tagColorSelectionContainer" class="hidden">
+    <div>
+        @for (int i = 0; i < 8; i++)
+        {
+            var cssClassNames = "color-option color-option-" + i;
+            <div class="@cssClassNames" data-color-index="@i"></div>
+        }
+    </div>
+    <div>
+        @for (int i = 8; i < 16; i++)
+        {
+            var cssClassNames = "color-option color-option-" + i;
+            <div class="@cssClassNames" data-color-index="@i"></div>
+        }
     </div>
 </div>

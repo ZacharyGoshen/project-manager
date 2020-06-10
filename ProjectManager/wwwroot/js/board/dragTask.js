@@ -415,3 +415,34 @@ function startScrollDownInterval(scrollContainer) {
         }, 20);
     }
 }
+
+/** Insert the dragged task into its new column and update the database
+ */
+function endBoardTaskDrag() {
+    if (taskBeingDragged) {
+        taskBeingDragged = false;
+
+        resetTaskMargins();
+
+        let taskId = $("#draggedTaskCopy").data("taskId");
+        let newCategoryId = $("#boardTaskDropAreaIndicator").data("categoryId");
+        let newTaskIndex = $("#boardTaskDropAreaIndicator").data("taskIndex");
+        let taskToInsert = `
+                <div class="board-task" data-task-id="` + taskId + `" data-task-index="` + newTaskIndex + `">
+                    ` + $("#draggedTaskCopy").html() + `
+                </div>`;
+        insertBoardTaskInCategory(taskToInsert, newCategoryId, newTaskIndex);
+
+        $("#draggedTaskCopy").empty();
+        $("#draggedTaskCopy").removeData();
+        $("#draggedTaskCopy").addClass("hidden");
+        $("#boardTaskDropAreaIndicator").empty();
+        $("#boardTaskDropAreaIndicator").removeData();
+        $("#boardTaskDropAreaIndicator").addClass("hidden");
+
+        let movedTask = findBoardTaskWithId(taskId);
+        setUpBoardTaskEventListeners(movedTask);
+
+        moveTaskInDatabase(taskId, newCategoryId, newTaskIndex);
+    }
+}

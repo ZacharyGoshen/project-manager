@@ -68,7 +68,8 @@ function reloadAssigneeSearchResultsOnInput() {
     });
 }
 
-/** Hides all of the previous assignee search results */
+/** Hides all of the previous assignee search results
+ */
 function resetAssigneeSearchResults() {
     $(".assignee-search-result").each(function () {
         $(this).addClass("hidden");

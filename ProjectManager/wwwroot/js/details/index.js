@@ -283,7 +283,7 @@ function updateTaskDetailsHtml(task) {
     for (tagTask of task.tagTasks) {
         let tag = tagTask.tag;
         tagContainerHtml += `
-            <div class="task-details-tag" data-tag-id="` + tag.tagId + `">
+            <div class="task-details-tag color-option-` + tag.colorIndex + `" data-tag-id="` + tag.tagId + `">
                 <div class="task-details-tag-name">` + tag.name + `</div>
                 <div class="task-details-tag-remove-button" onclick="removeTagFromTask(` + tag.tagId + `)">
                     <div>x</div>
@@ -435,15 +435,22 @@ function updateTaskDetailsPriorityHtml(priority) {
  * @param {number} tagId The ID of the tag being added
  * @param {number} tagName The name of the tag being added
  */
-function addTagHtmlToTaskDetails(tagId, tagName) {
+function addTagHtmlToTaskDetails(tagId, tagName, colorIndex) {
     $("#taskDetailsAddTagButton").before(`
-        <div class="task-details-tag" data-tag-id="` + tagId + `">
+        <div class="task-details-tag color-option-` + colorIndex + `" data-tag-id="` + tagId + `">
             <div class="task-details-tag-name">` + tagName + `</div>
             <div class="task-details-tag-remove-button" onclick="removeTagFromTask(` + tagId + `)">
                 <div>x</div>
             </div>
         </div>
     `);
+}
+
+function updateTaskDetailsTagColor(tagId, colorIndex) {
+    let tag = findTaskDetailsTagWithId(tagId);
+    tag.removeClass();
+    tag.addClass("task-details-tag");
+    tag.addClass("color-option-" + colorIndex);
 }
 
 /** Remove a tag's html from the task details view
@@ -542,6 +549,7 @@ function toggleDetailsTagSelectionContainer() {
     let taskId = $("#taskDetailsContainer").data("taskId");
     $("#tagSelectionContainer").data("taskId", taskId);
     setUpTagSearchResultsClickEvent(taskId);
+    setUpTagColorClickEvent(taskId);
 }
 
 /** Check if the viewed task has the tag with the matching ID

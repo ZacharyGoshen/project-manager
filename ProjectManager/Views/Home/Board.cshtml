@@ -71,7 +71,8 @@
                                     @foreach (TagTask tagTask in task.TagTasks)
                                     {
                                         var tag = tagTask.Tag;
-                                        <div class="board-task-tag" data-tag-id="@tag.TagId">@tag.Name</div>
+                                        
+                                        <div class="board-task-tag color-option-@tag.ColorIndex" data-tag-id="@tag.TagId">@tag.Name</div>
                                     }
                                 </div>
                             </div>

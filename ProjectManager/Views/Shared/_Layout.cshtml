@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="~/css/details.css" />
     <link rel="stylesheet" href="~/css/board.css" />
     <link rel="stylesheet" href="~/css/setDueDate.css" />
+    <link rel="stylesheet" href="~/css/colorOptions.css" />
 </head>
 <body>
     <div id="navBar">
@@ -33,15 +34,28 @@
     @RenderBody()
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/ajax/category.js" asp-append-version="true"></script>
+    <script src="~/js/ajax/comment.js" asp-append-version="true"></script>
+    <script src="~/js/ajax/tag.js" asp-append-version="true"></script>
+    <script src="~/js/ajax/task.js" asp-append-version="true"></script>
+    <script src="~/js/ajax/user.js" asp-append-version="true"></script>
+    <script src="~/js/board/dragCategory.js" asp-append-version="true"></script>
+    <script src="~/js/board/dragTask.js" asp-append-version="true"></script>
+    <script src="~/js/board/index.js" asp-append-version="true"></script>
+    <script src="~/js/board/newCategory.js" asp-append-version="true"></script>
+    <script src="~/js/board/newTask.js" asp-append-version="true"></script>
+    <script src="~/js/board/removeCategory.js" asp-append-version="true"></script>
+    <script src="~/js/board/removetask.js" asp-append-version="true"></script>
+    <script src="~/js/board/taskAssignedUser.js" asp-append-version="true"></script>
+    <script src="~/js/board/taskDueDate.js" asp-append-version="true"></script>
+    <script src="~/js/board/utility.js" asp-append-version="true"></script>
+    <script src="~/js/details/assignedUser.js" asp-append-version="true"></script>
+    <script src="~/js/details/dueDate.js" asp-append-version="true"></script>
+    <script src="~/js/details/index.js" asp-append-version="true"></script>
+    <script src="~/js/details/priority.js" asp-append-version="true"></script>
+    <script src="~/js/details/tags.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/details.js" asp-append-version="true"></script>
-    <script src="~/js/assignee.js" asp-append-version="true"></script>
-    <script src="~/js/dueDate.js" asp-append-version="true"></script>
-    <script src="~/js/priority.js" asp-append-version="true"></script>
-    <script src="~/js/tag.js" asp-append-version="true"></script>
-    <script src="~/js/board.js" asp-append-version="true"></script>
-    <script src="~/js/boardMoveColumn.js" asp-append-version="true"></script>
-    <script src="~/js/boardMoveTask.js" asp-append-version="true"></script>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>
