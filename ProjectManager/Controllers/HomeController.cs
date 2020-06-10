@@ -16,6 +16,16 @@ namespace ProjectManager.Controllers
 {
     public class HomeController : BaseController
     {
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult Signup()
+        {
+            return View();
+        }
+
         public IActionResult Index()
         {
             using (var context = new DAL.MyContext())

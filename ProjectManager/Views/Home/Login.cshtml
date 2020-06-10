@@ -1,0 +1,38 @@
+﻿@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Manager</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
+</head>
+<body>
+    <div id="loginViewSoftwareTitle">Project Manager</div>
+    <div id="userLoginContainer">
+        <div id="loginContainerTitle">Log In</div>
+        <div>
+            <div>Email Address</div>
+            <input type="text" />
+        </div>
+        <div>
+            <div>Password</div>
+            <input type="password" />
+        </div>
+        <div id="loginViewLoginButton">Log In</div>
+        <div id="loginViewLinks">
+            <a asp-controller="Home" asp-action="Board">Log in as demo user</a>
+            <a asp-controller="Home" asp-action="Signup">Sign up</a>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/login/index.js"></script>
+</body>
+</html>
