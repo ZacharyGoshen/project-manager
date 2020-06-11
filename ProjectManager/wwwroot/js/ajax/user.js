@@ -13,7 +13,7 @@ function signUpUser(firstName, lastName, email, password) {
         success: function (result) {
             if (result == "success") {
                 window.location.href = "/Home/Board";
-            }
+            } 
         }
     });
 }
@@ -32,7 +32,7 @@ function logInUser(email, password) {
             if (result == "success") {
                 window.location.href = "/Home/Board";
             } else {
-
+                $("#loginErrorMessage").removeClass("hidden");
             }
         }
     });

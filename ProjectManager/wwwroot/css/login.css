@@ -38,9 +38,14 @@
 }
 #userLoginContainer > div {
     margin: 20px;
+    width: 200px;
 }
-#userLoginContainer > div {
+#loginErrorMessage {
+    background-color: #ffccbb;
+    border-radius: 5px;
+    color: black;
     margin-bottom: 10px;
+    padding: 10px;
 }
 #userLoginContainer input {
     margin-bottom: 10px;
