@@ -31,6 +31,8 @@ function logInUser(email, password) {
         success: function (result) {
             if (result == "success") {
                 window.location.href = "/Home/Board";
+            } else {
+
             }
         }
     });

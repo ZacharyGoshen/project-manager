@@ -5,19 +5,11 @@
  */
 function onLoginViewLoad() {
     $(document).ready(function () {
-        centerLoginTitle();
         centerLoginContainer();
+        centerLoginTitle();
         setUpLoginButtonClickEvent();
+        setUpSignupButtonClickEvent();
     });
-}
-
-/** Position the login page title in the top middle of the screen
- */
-function centerLoginTitle() {
-    let container = $("#loginViewSoftwareTitle");
-    let containerTop = (window.innerHeight / 8) - (container.outerHeight() / 2);
-    let containerLeft = (window.innerWidth / 2) - (container.outerWidth() / 2);
-    container.offset({ top: containerTop, left: containerLeft });
 }
 
 /** Position the login page container in the middle of the screen
@@ -29,13 +21,41 @@ function centerLoginContainer() {
     container.offset({ top: containerTop, left: containerLeft });
 }
 
+/** Position the login page title in the top middle of the screen
+ */
+function centerLoginTitle() {
+    let title = $("#loginViewSoftwareTitle");
+    let container = $("#userLoginContainer");
+    let titleTop = container.offset().top - title.outerHeight() - 10;
+    let titleLeft = (window.innerWidth / 2) - (title.outerWidth() / 2);
+    title.offset({ top: titleTop, left: titleLeft });
+}
+
 /** Set up what happens when the login button is clicked
  */
 function setUpLoginButtonClickEvent() {
-    $("#loginViewLoginButton").click(function () {
+    $("#loginButton").click(function () {
         let email = $("#userLoginEmail").val();
         let password = $("#userLoginPassword").val();
 
         logInUser(email, password);
+    });
+}
+
+/** Set up what happens when the signup button is clicked
+ */
+function setUpSignupButtonClickEvent() {
+    $("#signupButton").click(function () {
+        let firstName = $("#userSignupFirstName").val();
+        let lastName = $("#userSignupLastName").val();
+        let email = $("#userSignupEmail").val();
+        let password = $("#userSignupPassword").val();
+        let confirmPassword = $("#userSignupConfirmPassword").val();
+
+        if (password != confirmPassword) {
+            return;
+        } else {
+            signUpUser(firstName, lastName, email, password);
+        }
     });
 }

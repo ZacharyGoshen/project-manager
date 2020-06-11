@@ -15,19 +15,48 @@
 <body>
     <div id="loginViewSoftwareTitle">Project Manager</div>
     <div id="userLoginContainer">
-        <div id="loginContainerTitle">Log In</div>
-        <div>
-            <div>Email</div>
-            <input id="userLoginEmail" type="email" />
+        <div id="userLoginContainerLeftSide">
+            <div class="login-container-title">Log In</div>
+            <form>
+                <div>
+                    <div>Email</div>
+                    <input id="userLoginEmail" type="email" />
+                </div>
+                <div>
+                    <div>Password</div>
+                    <input id="userLoginPassword" type="password" />
+                </div>
+                <div id="loginButton" class="login-container-button">Log In</div>
+            </form>
+            <div id="loginViewLinks">
+                <a asp-controller="Home" asp-action="Board">Log in as demo user</a>
+            </div>
         </div>
-        <div>
-            <div>Password</div>
-            <input id="userLoginPassword" type="password" />
-        </div>
-        <div id="loginViewLoginButton">Log In</div>
-        <div id="loginViewLinks">
-            <a asp-controller="Home" asp-action="Board">Log in as demo user</a>
-            <a asp-controller="Home" asp-action="Signup">Sign up</a>
+        <div id="userLoginContainerRightSide">
+            <div class="login-container-title">Sign Up</div>
+            <form>
+                <div>
+                    <div>First Name</div>
+                    <input id="userSignupFirstName" type="text" />
+                </div>
+                <div>
+                    <div>Last Name</div>
+                    <input id="userSignupLastName" type="text" />
+                </div>
+                <div>
+                    <div>Email</div>
+                    <input id="userSignupEmail" type="email" />
+                </div>
+                <div>
+                    <div>Password</div>
+                    <input id="userSignupPassword" type="password" />
+                </div>
+                <div>
+                    <div>Confirm Password</div>
+                    <input id="userSignupConfirmPassword" type="password" />
+                </div>
+                <div id="signupButton" class="login-container-button">Sign Up</div>
+            </form>
         </div>
     </div>
 
