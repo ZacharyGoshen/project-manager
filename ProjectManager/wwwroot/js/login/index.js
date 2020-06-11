@@ -41,11 +41,18 @@ function setUpLoginButtonClickEvent() {
         $("#loginErrorMessage").html("");
         $("#loginErrorMessage").addClass("hidden");
 
-        if (checkIfEmailIsValid(email)) {
-            logInUser(email, password);
-        } else {
+        if (!checkIfEmailIsValid(email)) {
             $("#loginErrorMessage").html("Invalid email address.");
             $("#loginErrorMessage").removeClass("hidden");
+        }
+        else if (!checkIfPasswordIsValid(password)) {
+            $("#loginErrorMessage").html(`
+                Password must have 8-128 alphanumeric characters and/or special
+                characters #?!@$%^&*-.
+            `);
+            $("#loginErrorMessage").removeClass("hidden");
+        } else {
+            logInUser(email, password);
         }
     });
 }
