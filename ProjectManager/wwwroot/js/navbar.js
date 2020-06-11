@@ -15,3 +15,18 @@ function createNewProjectOnEnter() {
         }
     });
 }
+
+/** Toggle the user drop down menu between open and closed
+ */
+function toggleUserDropDownMenu() {
+    let menu = $("#userDropDownMenu");
+    if (menu.hasClass("hidden")) {
+        menu.removeClass("hidden");
+        let button = $("#loggedInUser");
+        let menuTopOffset = button.offset().top + button.outerHeight() + 5;
+        let menuLeftOffset = button.offset().left + button.outerWidth() - menu.outerWidth();
+        menu.offset({ top: menuTopOffset, left: menuLeftOffset });
+    } else {
+        menu.addClass("hidden");
+    }
+}

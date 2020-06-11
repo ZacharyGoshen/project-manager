@@ -54,13 +54,13 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPost]
-        public JsonResult Login(string email, string password)
+        public JsonResult LogIn(string email, string password)
         {
             var context = new DAL.MyContext();
             context.Database.EnsureCreated();
-            var user = context.Users.Where(e => e.Email == email).First();
-            if (user != null)
+            if (context.Users.Where(e => e.Email == email).ToList().Count == 1)
             {
+                var user = context.Users.Where(e => e.Email == email).First();
                 string encrypted = HashPassword(password, user.Salt);
                 if (encrypted == user.Password)
                 {
@@ -71,6 +71,12 @@ namespace ProjectManager.Controllers
             return Json("failure");
         }
 
+        [HttpPost]
+        public void LogOut()
+        {
+            this.UserId = 0;
+        }
+
         public void RemoveAssignedTask(int taskId, int userId)
         {
             var context = new DAL.MyContext();
@@ -79,13 +85,6 @@ namespace ProjectManager.Controllers
 
             assignedUser.AssignedTasks.Remove(assignedTask);
             context.SaveChanges();
-        }
-
-        [HttpGet]
-        public IActionResult LogOut()
-        {
-            this.UserId = 0;
-            return RedirectToAction("Index", "Home");
         }
 
         // generate a 128-bit salt using a secure PRNG

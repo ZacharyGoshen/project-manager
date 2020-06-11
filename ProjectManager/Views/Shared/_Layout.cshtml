@@ -39,8 +39,11 @@
             }
         </div>
         <div id="navBarRightSide">
-            <div id="loggedInUser" class="default-profile-pic" data-user-id="@Model.LoggedInUser.UserId" data-user-name="@Model.LoggedInUser.FirstName @Model.LoggedInUser.LastName">
+            <div id="loggedInUser" class="default-profile-pic" data-user-id="@Model.LoggedInUser.UserId" data-user-name="@Model.LoggedInUser.FirstName @Model.LoggedInUser.LastName" onclick="toggleUserDropDownMenu()">
                 <div>@Model.LoggedInUser.FirstName[0]@Model.LoggedInUser.LastName[0]</div>
+            </div>
+            <div id="userDropDownMenu" class="hidden">
+                <div id="userLogoutButton" onclick="logOutUser()">Log Out</div>
             </div>
         </div>
     </div>

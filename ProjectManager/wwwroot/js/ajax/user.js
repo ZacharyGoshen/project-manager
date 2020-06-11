@@ -26,12 +26,25 @@ function signUpUser(firstName, lastName, email, password) {
 function logInUser(email, password) {
     $.ajax({
         type: "POST",
-        url: "/User/Login",
+        url: "/User/LogIn",
         data: { email: email, password: password },
         success: function (result) {
             if (result == "success") {
                 window.location.href = "/Home/Board";
             }
+        }
+    });
+}
+
+/** Log out the user and redirect to the login view
+ */
+function logOutUser() {
+    console.log("called");
+    $.ajax({
+        type: "POST",
+        url: "/User/LogOut",
+        success: function () {
+            window.location.href = "/Home/Login";
         }
     });
 }
