@@ -67,8 +67,27 @@ function setUpSignupButtonClickEvent() {
         let password = $("#userSignupPassword").val();
         let confirmPassword = $("#userSignupConfirmPassword").val();
 
-        if (password != confirmPassword) {
-            return;
+        $("#signupErrorMessage").html("");
+        $("#signupErrorMessage").addClass("hidden");
+
+        if (!checkIfFirstNameIsValid(firstName)) {
+            $("#signupErrorMessage").html("Invalid first name");
+            $("#signupErrorMessage").removeClass("hidden");
+        } else if (!checkIfLastNameIsValid(lastName)) {
+            $("#signupErrorMessage").html("Invalid last name");
+            $("#signupErrorMessage").removeClass("hidden");
+        } else if (!checkIfEmailIsValid(email)) {
+            $("#signupErrorMessage").html("Invalid email address.");
+            $("#signupErrorMessage").removeClass("hidden");
+        } else if (!checkIfPasswordIsValid(password)) {
+            $("#signupErrorMessage").html(`
+                Password must have 8-128 alphanumeric characters and/or special
+                characters #?!@$%^&*-.
+            `);
+            $("#signupErrorMessage").removeClass("hidden");
+        } else if (password != confirmPassword) {
+            $("#signupErrorMessage").html("Passwords do not match");
+            $("#signupErrorMessage").removeClass("hidden");
         } else {
             signUpUser(firstName, lastName, email, password);
         }

@@ -13,7 +13,10 @@ function signUpUser(firstName, lastName, email, password) {
         success: function (result) {
             if (result == "success") {
                 window.location.href = "/Home/Board";
-            } 
+            } else {
+                $("#signupErrorMessage").html("A user already exists with this email.");
+                $("#signupErrorMessage").removeClass("hidden");
+            }
         }
     });
 }

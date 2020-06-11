@@ -1,4 +1,4 @@
-﻿/** Checks if an email is valid
+﻿/** Check if an email is valid
  * - Length is no greater than 254 characters
  * - Prefix only uses alphanumeric characters, underscores, periods, and dashes
  * - Prefix is atleast 1 character long
@@ -24,7 +24,7 @@ function checkIfEmailIsValid(email) {
     }
 }
 
-/** Checks if a password is valid
+/** Check if a password is valid
  * - Length is between 8 and 128 characters
  * - Password only uses alphanumeric characters and special characters #?!@$%^&*-
  * 
@@ -32,10 +32,30 @@ function checkIfEmailIsValid(email) {
  * @returns True if password is valid, false otherwise
  */
 function checkIfPasswordIsValid(password) {
-    if (password.length < 8 || password.length > 128) {
-        return false;
-    } else {
-        let regex = /[A-Za-z0-9#?!@$%^&*-]{8,32}/;
-        return password.match(regex);
-    }
+    let regex = /[A-Za-z0-9#?!@$%^&*-]{8,128}/;
+    return password.match(regex);
+}
+
+/** Check if a first name is valid
+ * - Length is between 2 and 30 characters
+ * - First name only uses letters
+ *
+ * @param {string} firstName The first name being validated
+ * @returns True if first name is valid, false otherwise
+ */
+function checkIfFirstNameIsValid(firstName) {
+    let regex = /[A-Za-z]{2,30}/
+    return firstName.match(regex);
+}
+
+/** Check if a last name is valid
+ * - Length is between 2 and 30 characters
+ * - kast name only uses letters
+ *
+ * @param {string} lastName The last name being validated
+ * @returns True if last name is valid, false otherwise
+ */
+function checkIfLastNameIsValid(lastName) {
+    let regex = /[A-Za-z]{2,30}/
+    return lastName.match(regex);
 }
