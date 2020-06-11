@@ -32,6 +32,7 @@ function logInUser(email, password) {
             if (result == "success") {
                 window.location.href = "/Home/Board";
             } else {
+                $("#loginErrorMessage").html("The username or password is not correct.");
                 $("#loginErrorMessage").removeClass("hidden");
             }
         }

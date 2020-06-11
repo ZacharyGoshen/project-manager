@@ -24,4 +24,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.4" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\validation.js" />
+  </ItemGroup>
 </Project>

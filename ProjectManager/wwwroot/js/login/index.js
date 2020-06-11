@@ -38,7 +38,15 @@ function setUpLoginButtonClickEvent() {
         let email = $("#userLoginEmail").val();
         let password = $("#userLoginPassword").val();
 
-        logInUser(email, password);
+        $("#loginErrorMessage").html("");
+        $("#loginErrorMessage").addClass("hidden");
+
+        if (checkIfEmailIsValid(email)) {
+            logInUser(email, password);
+        } else {
+            $("#loginErrorMessage").html("Invalid email address.");
+            $("#loginErrorMessage").removeClass("hidden");
+        }
     });
 }
 
