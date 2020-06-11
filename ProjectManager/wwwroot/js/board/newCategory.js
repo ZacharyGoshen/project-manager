@@ -3,13 +3,14 @@
 function addNewBoardCategoryOnEnter() {
     $("#newCategoryNameTextBox").keypress(function (event) {
         if (event.keyCode === 13) {
+            let projectId = $("#currentProjectName").data("projectId");
             let categoryName = $(this).val();
             let categoryIndex = $(this).parent().data("categoryIndex");
             event.preventDefault();
             $.ajax({
                 type: "POST",
                 url: "/Home/NewCategory",
-                data: { projectId: 1, categoryName: categoryName },
+                data: { projectId: projectId, categoryName: categoryName },
                 success: function (categoryId) {
                     let newCategoryHtml = generateNewBoardCategoryHtml(categoryId, categoryName, categoryIndex);
                     insertCategoryInBoard(newCategoryHtml, categoryIndex);

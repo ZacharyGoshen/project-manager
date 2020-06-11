@@ -1,4 +1,4 @@
-﻿@model ProjectManager.ViewModels.BoardViewModel
+﻿@model ProjectManager.ViewModels.ProjectViewModel
 
 @{
     var currentDate = DateTime.Now;
@@ -7,7 +7,7 @@
 <div id="dueDateSelectionContainer" class="hidden" data-month="@currentMonthZeroIndex" data-year="@currentDate.Year">
     <div id="dueDateSelectionContainerFirstRow">
         @{
-            var months = new string[12] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };            
+            var months = new string[12] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
             var currentMonthName = months[currentMonthZeroIndex];
         }
         <div class="due-date-selection-change-month-button" onclick="goToPreviousMonthInCalendar()"> < </div>

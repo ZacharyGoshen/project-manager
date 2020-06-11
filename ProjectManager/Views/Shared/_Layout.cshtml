@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model ProjectManager.ViewModels.ProjectViewModel
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -16,18 +18,29 @@
 <body>
     <div id="navBar">
         <div id="navBarLeftSide">
-            <div id="projectDropDownDiv" data-project-id="1">
-                <div id="currentProjectName">Task Manager</div>
-            </div>
-            <div id="navBarLinkDiv">
-                <a class="nav-bar-link" asp-controller="Home" asp-action="Index">List</a>
-                <a class="nav-bar-link" asp-controller="Home" asp-action="Board">Board</a>
-                <a class="nav-bar-link" asp-controller="" asp-action="">Calendar</a>
-            </div>
+            @if (Model.Projects.Count > 0)
+            {
+                <div id="projectDropDownDiv">
+                    <div id="currentProjectName" data-project-id="@Model.CurrentProject.ProjectId">
+                        @Model.CurrentProject.Name
+                    </div>
+                </div>
+                <div id="navBarLinkDiv">
+                    <a class="nav-bar-link" asp-controller="Home" asp-action="Index">List</a>
+                    <a class="nav-bar-link" asp-controller="Home" asp-action="Board">Board</a>
+                    <a class="nav-bar-link" asp-controller="" asp-action="">Calendar</a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <input id="newProjectTextBox" type="text" placeholder="Create a New Project" />
+                </div>
+            }
         </div>
         <div id="navBarRightSide">
-            <div id="loggedInUser" data-user-id="1" data-user-name="Zachary Goshen">
-                <img id="navBarProfilePic" src="~/images/user.png" />
+            <div id="loggedInUser" class="default-profile-pic" data-user-id="@Model.LoggedInUser.UserId" data-user-name="@Model.LoggedInUser.FirstName @Model.LoggedInUser.LastName">
+                <div>@Model.LoggedInUser.FirstName[0]@Model.LoggedInUser.LastName[0]</div>
             </div>
         </div>
     </div>
@@ -36,6 +49,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/ajax/category.js" asp-append-version="true"></script>
     <script src="~/js/ajax/comment.js" asp-append-version="true"></script>
+    <script src="~/js/ajax/project.js" asp-append-version="true"></script>
     <script src="~/js/ajax/tag.js" asp-append-version="true"></script>
     <script src="~/js/ajax/task.js" asp-append-version="true"></script>
     <script src="~/js/ajax/user.js" asp-append-version="true"></script>
@@ -54,6 +68,7 @@
     <script src="~/js/details/index.js" asp-append-version="true"></script>
     <script src="~/js/details/priority.js" asp-append-version="true"></script>
     <script src="~/js/details/tag.js" asp-append-version="true"></script>
+    <script src="~/js/navbar.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)

@@ -51,19 +51,45 @@ namespace ProjectManager.Controllers
         [HttpGet]
         public IActionResult Board()
         {
-            using (var context = new DAL.MyContext())
+            if (this.UserId == 0)
             {
-                context.Database.EnsureCreated();
+                return RedirectToAction("Login", "Home");
+            }
 
-                var project = context.Projects.First();
+            var context = new DAL.MyContext();
+            context.Database.EnsureCreated();
 
-                var categories = context.Categories
-                    .Where(c => c.Project == project)
+            var loggedInUser = context.Users.Find(this.UserId);
+
+            var userProjects = context.UserProjects
+                .Where(up => up.User == loggedInUser)
+                .Include(up => up.Project)
+                .ToList();
+            var projects = new List<Project>();
+            foreach (var userProject in userProjects)
+            {
+                projects.Add(userProject.Project);
+            }
+
+            var model = new ProjectViewModel()
+            {
+                LoggedInUser = loggedInUser,
+                Projects = projects
+            };
+
+            if (projects.Count > 0)
+            {
+                var currentProject = projects[0];
+                model.CurrentProject = currentProject;
+
+                var categoriesInCurrentProject = context.Categories
+                    .Where(c => c.Project == currentProject)
                     .OrderBy(c => c.Order)
                     .ToList(); ;
+                model.Categories = categoriesInCurrentProject;
 
                 var tasksByCategory = new List<List<ProjectManager.Models.Task>>() { };
-                foreach (ProjectManager.Models.Category category in categories)
+                foreach (Category category in categoriesInCurrentProject)
                 {
                     tasksByCategory.Add(context.Tasks
                         .Include(t => t.Category)
@@ -72,26 +98,17 @@ namespace ProjectManager.Controllers
                         .Include(t => t.Project)
                         .Include(t => t.TagTasks)
                         .ThenInclude(tt => tt.Tag)
-                        .Where(t => t.Project == project)
+                        .Where(t => t.Project == currentProject)
                         .Where(t => t.Category == category)
                         .OrderBy(t => t.Order)
                         .ToList());
                 }
+                model.Tasks = tasksByCategory;
 
-                var users = context.Users.ToList();
-
-                var tags = context.Tags.Where(t => t.Project == project).ToList();
-
-                var model = new BoardViewModel()
-                {
-                    Tasks = tasksByCategory,
-                    Categories = categories,
-                    Users = users,
-                    Tags = tags
-                };
-
-                return View(model);
+                model.Users = context.Users.ToList();
+                model.Tags = context.Tags.Where(t => t.Project == currentProject).ToList();
             }
+            return View(model);
         }
 
         public JsonResult GetCategoriesInProject(int projectId)
@@ -230,7 +247,7 @@ namespace ProjectManager.Controllers
             }
         }
 
-        public JsonResult NewTask(int categoryId, string taskName)
+        public JsonResult NewTask(int projectId, int categoryId, string taskName)
         {
             using (var context = new DAL.MyContext())
             {
@@ -241,7 +258,7 @@ namespace ProjectManager.Controllers
                     Order = 0
                 };
 
-                newTask.Project = context.Projects.Find(1);
+                newTask.Project = context.Projects.Find(projectId);
                 newTask.Category = context.Categories.Find(categoryId);
                 newTask.SubmittingUser = context.Users.Find(1);
 

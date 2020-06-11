@@ -23,26 +23,52 @@ namespace ProjectManager.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult New()
+        [HttpPost]
+        public JsonResult New(string firstName, string lastName, string email, string password)
         {
-            return View();
+            var context = new DAL.MyContext();
+            context.Database.EnsureCreated();
+            if (context.Users.Where(u => u.Email == email).ToList().Count == 0)
+            {
+                byte[] salt = GenerateSalt();
+                string hashed = HashPassword(password, salt);
+                var user = new User()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = email,
+                    Password = hashed,
+                    Salt = salt
+                };
+
+                context.Users.Add(user);
+                context.SaveChanges();
+
+                this.UserId = user.UserId;
+                return Json("success");
+            }
+            else
+            {
+                return Json("failure");
+            }
         }
 
         [HttpPost]
-        public IActionResult New(User user)
-        {         
-            byte[] salt = GenerateSalt();
-            string hashed = HashPassword(user.Password, salt);
-
-            user.Salt = salt;
-            user.Password = hashed;          
-
+        public JsonResult Login(string email, string password)
+        {
             var context = new DAL.MyContext();
-            context.Users.Add(user);
-            context.SaveChanges();
-
-            return RedirectToAction("Index");
+            context.Database.EnsureCreated();
+            var user = context.Users.Where(e => e.Email == email).First();
+            if (user != null)
+            {
+                string encrypted = HashPassword(password, user.Salt);
+                if (encrypted == user.Password)
+                {
+                    this.UserId = user.UserId;
+                    return Json("success");
+                }
+            }
+            return Json("failure");
         }
 
         public void RemoveAssignedTask(int taskId, int userId)
@@ -53,40 +79,6 @@ namespace ProjectManager.Controllers
 
             assignedUser.AssignedTasks.Remove(assignedTask);
             context.SaveChanges();
-        }
-
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Login(User user)
-        {
-            using (var context = new DAL.MyContext())
-            {
-                User entity = context.Users.Single(e => e.Email == user.Email);
-                if (entity != null)
-                {
-                    string encrypted = HashPassword(user.Password, entity.Salt);
-                    if (encrypted == entity.Password)
-                    {
-                        this.UserId = entity.UserId;
-                        Console.WriteLine(HttpContext.Session.GetInt32("UserId") + "\n");
-                        Console.WriteLine("User successfully logged in!\n");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Incorrect email or password\n");
-                    }
-                }
-                else
-                {
-                    Console.Write("User not found\n");
-                }
-            }
-            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]

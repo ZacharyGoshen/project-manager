@@ -1,8 +1,8 @@
-﻿@model ProjectManager.ViewModels.BoardViewModel
+﻿@model ProjectManager.ViewModels.ProjectViewModel
 
 <div id="assigneeSelectionContainer" class="hidden">
     <div>Assignee</div>
-    <input id="assigneeSearchBox" type="text"/>
+    <input id="assigneeSearchBox" type="text" />
     <div id="assigneeSearchResultsContainer" class="hidden">
         @foreach (User user in Model.Users)
         {

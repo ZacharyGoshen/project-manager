@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Linq;
 
 namespace ProjectManager.DAL
 {
@@ -84,9 +86,11 @@ namespace ProjectManager.DAL
                 new
                 {
                     UserId = 1,
-                    FirstName = "Zach",
+                    FirstName = "Zachary",
                     LastName = "Goshen",
-                    Email = "zachgoshen@gmail.com"
+                    Email = "zachgoshen@gmail.com",
+                    Password = "g8DKmISNL498xl1NL1cRSVNERPM3jR0eeFyfPIVbFno=",
+                    Salt = StringToByteArray("642D5272CF0349B9BC950ACC2619AB25")
                 },
                 new
                 {
@@ -262,6 +266,14 @@ namespace ProjectManager.DAL
                     ProjectId = 1
                 }
                 );
+        }
+
+        private byte[] StringToByteArray(string hex)
+        {
+            return Enumerable.Range(0, hex.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                             .ToArray();
         }
     }
 }

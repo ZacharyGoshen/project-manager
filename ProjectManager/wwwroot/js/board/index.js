@@ -13,6 +13,8 @@ function onBoardViewLoad() {
     $(document).ready(function () {
         currentView = "board";
 
+        createNewProjectOnEnter();
+
         setUpTaskDetailsEventListeners();
 
         setBoardTaskContainerHeights();

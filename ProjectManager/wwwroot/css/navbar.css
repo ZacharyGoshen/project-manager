@@ -28,6 +28,10 @@
 #projectDropDownDiv {
     font-size: 20px;
 }
+#newProjectTextBox {
+    font-size: 20px;
+    padding: 5px;
+}
 #navBarRightSide {
     order: 2;
     align-self: center;

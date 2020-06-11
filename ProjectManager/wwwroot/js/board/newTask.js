@@ -4,6 +4,7 @@
  */
 function addNewBoardTaskOnEnter(category) {
     let newTaskTextBox = category.find(".new-board-task-text-box");
+    let projectId = $("#currentProjectName").data("projectId");
     let categoryId = category.data("categoryId");
     let categoryIndex = category.data("categoryIndex");
 
@@ -14,7 +15,7 @@ function addNewBoardTaskOnEnter(category) {
             $.ajax({
                 type: "POST",
                 url: "/Home/NewTask",
-                data: { categoryId: categoryId, taskName: taskName },
+                data: { projectId: projectId, categoryId: categoryId, taskName: taskName },
                 success: function (taskId) {
                     let newTaskHtml = generateNewBoardTaskHtml(taskId, taskName);
                     insertBoardTaskInCategory(newTaskHtml, categoryId, 0);
