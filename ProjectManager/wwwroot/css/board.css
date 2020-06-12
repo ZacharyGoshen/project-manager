@@ -1,6 +1,8 @@
 ﻿.board-category {
     border: 2px solid white;
     border-radius: 10px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
     flex: 0 0 300px;
 }
 .board-category-header {
@@ -195,49 +197,7 @@
     position: absolute;
     z-index: -1;
 }
-#draggedCategoryCopy {
-    position: absolute;
-    width: 300px;
-    margin-top: 20px;
-    opacity: .8;
-}
-#draggedCategoryCopy > div {
-    padding-left: 12px;
-    padding-right: 12px;
-}
-#boardCategoryDropAreaIndicator {
-    position: absolute;
-    z-index: -1;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-}
-#boardCategoryDropAreaIndicator > div {
-    padding-left: 12px;
-    padding-right: 12px;
-}
-#draggedTaskCopy {
-    background-color: white;
-    border: 2px solid #f0f0f0;
-    border-radius: 5px;
-    box-shadow: 3px 3px 2px #888888;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    opacity: .8;
-    padding: 10px;
-    position: absolute;
-}
-#boardTaskDropAreaIndicator {
-    position: absolute;
-    padding: 10px;
-    z-index: -1;
-    border: 2px solid #f0f0f0;
-    border-radius: 5px;
-    background-color: #f0f0f0;
-}
 #boardContainer {
-    margin-top: 80px;
     height: 100%;
 }
 #boardCategoryContainer {
@@ -279,4 +239,45 @@
 }
 #boardCategoryContainerExtraWidth {
     width: 20px;
+}
+#draggedCategoryCopy {
+    position: absolute;
+    width: 300px;
+    margin-top: 20px;
+    opacity: .8;
+}
+#draggedCategoryCopy > div {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+#boardCategoryDropAreaIndicator {
+    position: absolute;
+    z-index: -1;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+}
+#boardCategoryDropAreaIndicator > div {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+#draggedTaskCopy {
+    background-color: white;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 3px 3px 2px #888888;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    opacity: .8;
+    padding: 10px;
+    position: absolute;
+}
+#boardTaskDropAreaIndicator {
+    position: absolute;
+    padding: 10px;
+    z-index: -1;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    background-color: #f0f0f0;
 }

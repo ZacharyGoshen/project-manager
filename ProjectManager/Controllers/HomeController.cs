@@ -247,7 +247,7 @@ namespace ProjectManager.Controllers
             }
         }
 
-        public JsonResult NewTask(int projectId, int categoryId, string taskName)
+        public JsonResult NewTask(int userId, int projectId, int categoryId, string taskName)
         {
             using (var context = new DAL.MyContext())
             {
@@ -258,9 +258,9 @@ namespace ProjectManager.Controllers
                     Order = 0
                 };
 
+                newTask.SubmittingUser = context.Users.Find(userId);
                 newTask.Project = context.Projects.Find(projectId);
                 newTask.Category = context.Categories.Find(categoryId);
-                newTask.SubmittingUser = context.Users.Find(1);
 
                 var tasks = context.Tasks.Where(t => t.Category == newTask.Category).ToList();
                 foreach (ProjectManager.Models.Task task in tasks)

@@ -17,6 +17,7 @@ function onBoardViewLoad() {
 
         setUpTaskDetailsEventListeners();
 
+        setBoardContainerTopMargin();
         setBoardTaskContainerHeights();
 
         $(document).mousemove(function (event) {
@@ -71,6 +72,15 @@ function onBoardViewLoad() {
         hideElementOnClickOutside($("#tagSearchResultsContainer"), ["#tagSearchBox"]);
         reloadTagSearchResultsOnInput();
     });
+}
+
+/** Set the top margin of the board view content container so that it starts
+ * right below the nav bar
+ */
+function setBoardContainerTopMargin() {
+    let navBar = $("#navBar");
+    let marginTop = navBar.outerHeight() + 10;
+    $("#boardContainer").css("margin-top", marginTop + "px");
 }
 
 /** Resize each column's scroll box so that its height fill the remainder of

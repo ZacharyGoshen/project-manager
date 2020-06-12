@@ -19,7 +19,7 @@ function checkIfEmailIsValid(email) {
     if (email.length > 254) {
         return false;
     } else {
-        let regex = /[A-Za-z0-9_\.\-]*[A-Za-z0-9]+@[A-Za-z0-9\-]+\.[A-Za-z]{2,}/;
+        let regex = /^[A-Za-z0-9_\.\-]*[A-Za-z0-9]+@[A-Za-z0-9\-]+\.[A-Za-z]{2,}$/;
         return email.match(regex);
     }
 }
@@ -32,7 +32,7 @@ function checkIfEmailIsValid(email) {
  * @returns True if password is valid, false otherwise
  */
 function checkIfPasswordIsValid(password) {
-    let regex = /[A-Za-z0-9#?!@$%^&*-]{8,128}/;
+    let regex = /^[A-Za-z0-9#?!@$%^&*-]{8,128}$/;
     return password.match(regex);
 }
 
@@ -44,7 +44,7 @@ function checkIfPasswordIsValid(password) {
  * @returns True if first name is valid, false otherwise
  */
 function checkIfFirstNameIsValid(firstName) {
-    let regex = /[A-Za-z]{2,30}/
+    let regex = /^[A-Za-z]{2,30}$/
     return firstName.match(regex);
 }
 
@@ -56,6 +56,10 @@ function checkIfFirstNameIsValid(firstName) {
  * @returns True if last name is valid, false otherwise
  */
 function checkIfLastNameIsValid(lastName) {
-    let regex = /[A-Za-z]{2,30}/
-    return lastName.match(regex);
+    if (lastName.length < 2 || lastName.length > 30) {
+        return false;
+    } else {
+        let regex = /^[A-Za-z]{2,30}$/
+        return lastName.match(regex);
+    }
 }

@@ -97,7 +97,9 @@ namespace ProjectManager.DAL
                     UserId = 2,
                     FirstName = "Erick",
                     LastName = "Goshen",
-                    Email = "erickgoshen@gmail.com"
+                    Email = "erickgoshen@gmail.com",
+                    Password = "6ku4MbX8vTRnrAekAxT6OKaTjCcIUrx9tMpqCz4dqe4=",
+                    Salt = StringToByteArray("33F706A69D130284DDDB42270C3C7C0A")
                 }
                 );
 
