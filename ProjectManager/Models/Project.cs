@@ -10,6 +10,7 @@ namespace ProjectManager.Models
         public string Description { get; set; }
         public DateTime DueDate { get; set; }
 
+        public User Owner { get; set; }
         public IList<UserProject> TeamMembers { get; set; }
         public IList<Category> Categories { get; set; }
         public IList<Task> Tasks { get; set; }
