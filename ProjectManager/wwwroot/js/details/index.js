@@ -294,7 +294,7 @@ function updateTaskDetailsHtml(task) {
 
     tagContainerHtml += `
         <div id="taskDetailsAddTagButton" onclick="toggleDetailsTagSelectionContainer()">
-            + Add Tag
+            + Add tag
         </div>
     `;
     $("#taskDetailsTags").html(tagContainerHtml);

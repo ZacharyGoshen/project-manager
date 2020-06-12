@@ -21,7 +21,7 @@ function openNewProjectView() {
     backgroundBlur.offset({ top: 0, left: 0 });
 
     //container.outerHeight(0.9 * window.innerHeight);
-    container.outerWidth(0.7 * window.innerWidth);
+    container.outerWidth(0.5 * window.innerWidth);
 
     let containerTopOffset = (window.innerHeight / 2) - (container.outerHeight() / 2);
     let containerLeftOffset = (window.innerWidth / 2) - (container.outerWidth() / 2);
@@ -90,21 +90,30 @@ function updateNewProjectViewOwnerHtml(firstName, lastName) {
                 <div>` + firstName[0] + lastName[0] + `</div>
             </div>
             <div>` + firstName + ` ` + lastName + `</div>
-            <div class="new-project-remove-button" onclick="">
+            <div class="new-project-remove-button" onclick="removeNewProjectViewOwner()">
                 <div>x</div>
             </div>
         `);
     }
 }
 
-/** Toggle the assignee selection container of a task's details view between
- * open and closed */
+/** Remove the owner from the new project view
+ */
+function removeNewProjectViewOwner() {
+    $("#newProjectOwner").removeData("userId");
+    updateNewProjectViewOwnerHtml(null, null);
+}
+
+/** Toggle the owner selection container of a new project view between open and
+ * closed
+ */
 function toggleNewProjectOwnerSelectionContainer() {
     let button = $("#newProjectOwner");
     let xOffset = button.offset().left;
     let yOffset = button.offset().top + button.outerHeight();
     toggleUserSelectionContainer(xOffset, yOffset);
 
+    reloadUserSearchResultsOnInput();
     setUpUserSearchResultClickEvents(newProjectOwnerSearchResultOnClick);
 }
 
@@ -120,5 +129,15 @@ function newProjectOwnerSearchResultOnClick(searchResult) {
     let userName = searchResult.find(".user-search-result-name").html();
     let firstName = userName.split(" ")[0];
     let lastName = userName.split(" ")[1];
-    updateNewProjectOwnerHtml(taskId, firstName, lastName);
+    updateNewProjectViewOwnerHtml(firstName, lastName);
 };
+
+/** Toggle the team member selection container of a new project view between
+ * open and closed
+ */
+function toggleNewProjectTeamMemberSelectionContainer() {
+    let button = $("#newProjectAddTeamMemberButton");
+    let xOffset = button.offset().left;
+    let yOffset = button.offset().top + button.outerHeight();
+    toggleUserSelectionContainer(xOffset, yOffset);
+}

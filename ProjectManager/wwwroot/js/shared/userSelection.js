@@ -36,29 +36,54 @@ function setUpUserSearchResultClickEvents(handler) {
  */
 function reloadUserSearchResultsOnInput() {
     let searchBox = $("#userSearchBox");
+    searchBox.off("keydown");
     $(searchBox).keydown(function (event) {
-        resetUserSearchResults()
-
-        let lastKeyPressed = String.fromCharCode(event.which)
-        let input = $("#userSelectionContainer input").val() + lastKeyPressed;
-        if (event.keyCode === 8) {
-            input = input.substring(0, input.length - 2);
+        let lastKeyPressed = String.fromCharCode(event.which);
+        let validCharacterRegex = /^[A-Za-z ]$/
+        let input = $("#userSelectionContainer input").val();
+        if (lastKeyPressed.match(validCharacterRegex)) {
+            input += lastKeyPressed;
+        } else if (event.keyCode === 8) {
+            input = input.substring(0, input.length - 1);
         }
-        input = input.toLowerCase().trim();
+        input = input.toLowerCase();
 
-        $(".user-search-result-name").each(function () {
-            let name = $(this).text().toLowerCase();
-            if (input.length != 0 && name.includes(input)) {
-                $(this).parent().removeClass("hidden");
-            }
-        });
+        if (input != "") {
+            let matchingUsers = null;
+            let request = $.ajax({
+                type: "POST",
+                url: "/User/FindFirstTenThatContainName",
+                data: { name: input, projectId: 0 },
+                success: function (users) {
+                    matchingUsers = users;
+                }
+            });
+
+            $.when(request).then(function () {
+                resetUserSearchResults();
+                updateUserSearchResultsHtml(matchingUsers);
+            });
+        } else {
+            resetUserSearchResults();
+        }
     });
+}
+
+function updateUserSearchResultsHtml(users) {
+    for (user of users) {
+        $("#userSearchResultsContainer").append(`
+            <div class="user-search-result" data-user-id="` + user.userId + `">
+                <div class="default-profile-pic">
+                    <div>` + user.firstName[0] + user.lastName[0] + `</div>
+                </div>
+                <div class="user-search-result-name">` + user.firstName + " " + user.lastName + `</div>
+            </div>
+        `);
+    }
 }
 
 /** Hides all of the previous user search results
  */
 function resetUserSearchResults() {
-    $(".user-search-result").each(function () {
-        $(this).addClass("hidden");
-    });
+    $("#userSearchResultsContainer").html("");
 }

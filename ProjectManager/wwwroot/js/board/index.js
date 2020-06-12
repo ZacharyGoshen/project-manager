@@ -57,11 +57,10 @@ function onBoardViewLoad() {
         });
 
         hideElementOnClickOutside($("#userSelectionContainer"),
-            ["#userSelectionContainer", "#newProjectOwner", "#taskDetailsAssignee", ".board-task-assignee"]);
+            ["#userSelectionContainer", "#newProjectOwner", "#newProjectAddTeamMemberButton", "#taskDetailsAssignee", ".board-task-assignee"]);
         removeFocusOnClickOutside($("#userSearchBox"), [$("#userSearchBox")]);
         showElementOnFocus($("#userSearchResultsContainer"), $("#userSearchBox"));
         hideElementOnClickOutside($("#userSearchResultsContainer"), ["#userSearchBox"]);
-        reloadUserSearchResultsOnInput();
 
         hideElementOnClickOutside($("#dueDateSelectionContainer"),
             ["#dueDateSelectionContainer", "#taskDetailsDueDate", ".board-task-due-date"]);

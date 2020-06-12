@@ -7,20 +7,43 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectManager.Controllers
 {
     public class UserController : BaseController
     {
-        public IActionResult Index()
+        public JsonResult FindFirstTenThatContainName(string name, int projectId)
         {
-            using (var context = new DAL.MyContext())
+            var context = new DAL.MyContext();
+            List<User> users = new List<User>();
+            if (projectId == 0)
             {
-                context.Database.EnsureCreated();
-                var users = context.Users.ToList();
-
-                return View(users);
+                users = context.Users.ToList();
             }
+            else
+            {
+                var project = context.Projects.Find(projectId);
+                var userProjects = context.UserProjects
+                    .Include(up => up.User)
+                    .Include(up => up.Project)
+                    .Where(up => up.Project == project);
+                foreach (var userProject in userProjects)
+                {
+                    users.Add(userProject.User);
+                }
+            }
+            var matchingUsers = new List<User>();
+            foreach (var user in users)
+            {
+                var fullName = user.FirstName.ToLower() + " " + user.LastName.ToLower();
+                if (fullName.Contains(name) && matchingUsers.Count < 10)
+                {
+                    matchingUsers.Add(user);
+                }
+            }
+
+            return Json(matchingUsers);
         }
 
         [HttpPost]

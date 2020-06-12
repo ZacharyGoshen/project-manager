@@ -13,6 +13,7 @@ function toggleBoardAssigneeSelectionContainer(taskId) {
     toggleUserSelectionContainer(containerXOffset, containerYOffset);
 
     $("#userSelectionContainer").data("taskId", taskId);
+    reloadUserSearchResultsOnInput();
     setUpUserSearchResultClickEvents(boardAssigneeSearchResultOnClick);
 }
 
