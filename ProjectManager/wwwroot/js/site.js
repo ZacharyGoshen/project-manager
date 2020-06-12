@@ -7,6 +7,8 @@ function onViewLoad() {
     $(document).ready(function () {
         $("input").attr("autocomplete", "off");
     });
+
+    hideElementOnClickOutside($("#userDropDownMenu"), [$("#userDropDownMenu"), $("#loggedInUser")]);
 }
 
 /** Removes focus from and element when clicking outside of a given set of
