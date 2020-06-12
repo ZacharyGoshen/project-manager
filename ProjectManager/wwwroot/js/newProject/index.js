@@ -96,3 +96,29 @@ function updateNewProjectViewOwnerHtml(firstName, lastName) {
         `);
     }
 }
+
+/** Toggle the assignee selection container of a task's details view between
+ * open and closed */
+function toggleNewProjectOwnerSelectionContainer() {
+    let button = $("#newProjectOwner");
+    let xOffset = button.offset().left;
+    let yOffset = button.offset().top + button.outerHeight();
+    toggleUserSelectionContainer(xOffset, yOffset);
+
+    setUpUserSearchResultClickEvents(newProjectOwnerSearchResultOnClick);
+}
+
+/** Updates the new project view's owner html when a user search result is
+ * clicked
+ * 
+ * @param {object} searchResult The user search result
+ */
+function newProjectOwnerSearchResultOnClick(searchResult) {
+    let userId = searchResult.data("userId");
+    $("#newProjectOwner").data("userId", userId);
+
+    let userName = searchResult.find(".user-search-result-name").html();
+    let firstName = userName.split(" ")[0];
+    let lastName = userName.split(" ")[1];
+    updateNewProjectOwnerHtml(taskId, firstName, lastName);
+};

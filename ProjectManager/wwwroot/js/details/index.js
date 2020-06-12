@@ -502,19 +502,40 @@ function taskDetailsToggleCompleted() {
 
 /** Toggle the assignee selection container of a task's details view between
  * open and closed */
-function toggleDetailsAssigneeSelectionContainer() {
+function toggleTaskDetailsAssigneeSelectionContainer() {
     let button = $("#taskDetailsAssignee");
     let xOffset = button.offset().left;
     let yOffset = button.offset().top + button.outerHeight();
-    toggleAssigneeSelectionContainer(xOffset, yOffset);
+    toggleUserSelectionContainer(xOffset, yOffset);
 
-    let taskId = $("#taskDetailsContainer").data("taskId");
-    setUpAssigneeSearchResultClickEvent(taskId);
+    setUpUserSearchResultClickEvents(taskDetailsAssigneeSearchResultOnClick);
 }
+
+/** Updates the database, task details view, and current view when an assignee
+ * search result is clicked in the task details view
+ * 
+ * @param {object} searchResult The assignee search result
+ */
+function taskDetailsAssigneeSearchResultOnClick(searchResult) {
+    let userId = searchResult.data("userId");
+    let taskId = $("#taskDetailsContainer").data("taskId");
+
+    assignUserToTaskInDatabase(taskId, userId);
+
+    let userName = searchResult.find(".user-search-result-name").html();
+    let firstName = userName.split(" ")[0];
+    let lastName = userName.split(" ")[1];
+
+    updateTaskDetailsAssigneeHtml(firstName, lastName);
+
+    if (currentView == "board") {
+        updateBoardTaskAssigneeHtml(taskId, firstName, lastName)
+    }
+};
 
 /** Toggle the assignee selection container of a task's details view between
  * open and closed */
-function toggleDetailsDueDateSelectionContainer() {
+function toggleTaskDetailsDueDateSelectionContainer() {
     let button = $("#taskDetailsDueDate");
     let xOffset = button.offset().left;
     let yOffset = button.offset().top + button.outerHeight();

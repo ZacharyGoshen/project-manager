@@ -10,10 +10,28 @@ function toggleBoardAssigneeSelectionContainer(taskId) {
     let buttonHeight = button.height();
     let containerXOffset = buttonCoordinates.left;
     let containerYOffset = buttonCoordinates.top + buttonHeight;
-    toggleAssigneeSelectionContainer(containerXOffset, containerYOffset, taskId);
+    toggleUserSelectionContainer(containerXOffset, containerYOffset);
 
-    setUpAssigneeSearchResultClickEvent(taskId);
+    $("#userSelectionContainer").data("taskId", taskId);
+    setUpUserSearchResultClickEvents(boardAssigneeSearchResultOnClick);
 }
+
+/** Updates the database, task details view, and current view when an assignee
+ * search result is clicked in the task details view
+ * 
+ * @param {object} searchResult The assignee search result
+ */
+function boardAssigneeSearchResultOnClick(searchResult) {
+    let userId = searchResult.data("userId");
+    let taskId = $("#userSelectionContainer").data("taskId");
+
+    assignUserToTaskInDatabase(taskId, userId);
+
+    let userName = searchResult.find(".user-search-result-name").html();
+    let firstName = userName.split(" ")[0];
+    let lastName = userName.split(" ")[1];
+    updateBoardTaskAssigneeHtml(taskId, firstName, lastName);
+};
 
 /** Update the html of the board task to show the user that was assigned
  * 

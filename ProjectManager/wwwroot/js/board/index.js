@@ -56,12 +56,12 @@ function onBoardViewLoad() {
             hideElementOnClickOutside($(this), [$(this), $(this).parent().find(".add-task-to-board-button")]);
         });
 
-        hideElementOnClickOutside($("#assigneeSelectionContainer"),
-            ["#assigneeSelectionContainer", "#taskDetailsAssignee", ".board-task-assignee"]);
-        removeFocusOnClickOutside($("#assigneeSearchBox"), [$("#assigneeSearchBox")]);
-        showElementOnFocus($("#assigneeSearchResultsContainer"), $("#assigneeSearchBox"));
-        hideElementOnClickOutside($("#assigneeSearchResultsContainer"), ["#assigneeSearchBox"]);
-        reloadAssigneeSearchResultsOnInput();
+        hideElementOnClickOutside($("#userSelectionContainer"),
+            ["#userSelectionContainer", "#newProjectOwner", "#taskDetailsAssignee", ".board-task-assignee"]);
+        removeFocusOnClickOutside($("#userSearchBox"), [$("#userSearchBox")]);
+        showElementOnFocus($("#userSearchResultsContainer"), $("#userSearchBox"));
+        hideElementOnClickOutside($("#userSearchResultsContainer"), ["#userSearchBox"]);
+        reloadUserSearchResultsOnInput();
 
         hideElementOnClickOutside($("#dueDateSelectionContainer"),
             ["#dueDateSelectionContainer", "#taskDetailsDueDate", ".board-task-due-date"]);
@@ -225,7 +225,7 @@ function removeBoardTaskTagHtml(taskId, tagId) {
 /** Hide all the pop ups of the board view
  */
 function hideBoardViewPopUps() {
-    $("#assigneeSelectionContainer").addClass("hidden");
+    $("#userSelectionContainer").addClass("hidden");
     $("#dueDateSelectionContainer").addClass("hidden");
     $("#removeBoardCategoryAlert").addClass("hidden");
     $("#addBoardCategoryButton").removeClass("hidden");

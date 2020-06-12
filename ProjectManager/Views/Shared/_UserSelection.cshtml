@@ -1,0 +1,17 @@
+﻿@model ProjectManager.ViewModels.ProjectViewModel
+
+<div id="userSelectionContainer" class="hidden">
+    <div>User</div>
+    <input id="userSearchBox" type="text" />
+    <div id="userSearchResultsContainer" class="hidden">
+        @foreach (User user in Model.Users)
+        {
+            <div class="user-search-result hidden" data-user-id="@user.UserId">
+                <div class="default-profile-pic">
+                    <div>@user.FirstName[0]@user.LastName[0]</div>
+                </div>
+                <div class="user-search-result-name">@user.FirstName @user.LastName</div>
+            </div>
+        }
+    </div>
+</div>
