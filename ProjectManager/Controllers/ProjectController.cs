@@ -25,7 +25,7 @@ namespace ProjectManager.Controllers
                 User = user,
                 Project = project
             };
-            project.UserProjects = new List<UserProject>() { userProject };
+            project.TeamMembers = new List<UserProject>() { userProject };
 
             context.Projects.Add(project);
             context.SaveChanges();

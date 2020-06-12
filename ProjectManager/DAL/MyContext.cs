@@ -50,7 +50,7 @@ namespace ProjectManager.DAL
                 .HasMany(u => u.UserProjects)
                 .WithOne(up => up.User);
             modelBuilder.Entity<Project>()
-                .HasMany(p => p.UserProjects)
+                .HasMany(p => p.TeamMembers)
                 .WithOne(up => up.Project);
 
             // Create many to many relationship between tags and tasks
@@ -108,7 +108,8 @@ namespace ProjectManager.DAL
                 new
                 {
                     ProjectId = 1,
-                    Name = "Task Manager"
+                    Name = "Task Manager",
+                    DueDate = new DateTime()
                 }
                 );
 
