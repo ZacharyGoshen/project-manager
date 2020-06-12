@@ -7,13 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project Manager</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/navbar.css" />
-    <link rel="stylesheet" href="~/css/list.css" />
-    <link rel="stylesheet" href="~/css/details.css" />
     <link rel="stylesheet" href="~/css/board.css" />
-    <link rel="stylesheet" href="~/css/setDueDate.css" />
     <link rel="stylesheet" href="~/css/colorOptions.css" />
+    <link rel="stylesheet" href="~/css/details.css" />
+    <link rel="stylesheet" href="~/css/list.css" />
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/newProject.css" />
+    <link rel="stylesheet" href="~/css/setDueDate.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <div id="navBar">
@@ -25,7 +26,7 @@
                     <div id="projectDropDownButton" onclick="toggleProjectDropDownMenu()">&#9660</div>
                 </div>
                 <div id="projectDropDownMenu" class="hidden">
-                    <div id="newProjectButton">+ Create new project</div>
+                    <div id="newProjectButton" onclick="openNewProjectView()">+ Create new project</div>
                 </div>
                 <div id="navBarLinkDiv">
                     <a class="nav-bar-link" asp-controller="" asp-action="">List</a>
@@ -73,6 +74,7 @@
     <script src="~/js/details/index.js" asp-append-version="true"></script>
     <script src="~/js/details/priority.js" asp-append-version="true"></script>
     <script src="~/js/details/tag.js" asp-append-version="true"></script>
+    <script src="~/js/newProject/index.js" asp-append-version="true"></script>
     <script src="~/js/navbar.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/validation.js" asp-append-version="true"></script>

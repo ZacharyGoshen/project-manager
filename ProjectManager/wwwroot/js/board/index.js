@@ -15,6 +15,7 @@ function onBoardViewLoad() {
 
         createNewProjectOnEnter();
 
+        setUpNewProjectViewEventListeners()
         setUpTaskDetailsEventListeners();
 
         setBoardContainerTopMargin();

@@ -49,7 +49,7 @@
     position: absolute;
 }
 #projectDropDownMenu > div {
-    font-size: 15px;
+    font-size: 12px;
     padding: 10px;
 }
 #projectDropDownMenu > div:hover {

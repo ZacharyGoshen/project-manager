@@ -1,0 +1,36 @@
+﻿<div id="newProjectBackgroundBlur" class="hidden"></div>
+
+<div id="newProjectContainer" class="hidden">
+    <div id="newProjectFirstSection">
+        <input id="newProjectName" type="text" spellcheck="false" value="New Project">
+        <textarea id="newProjectDescription">Add a description to this project</textarea>
+    </div>
+    <div id="newProjectSecondSection">
+        <div>
+            <div class="new-project-label">Owned By:</div>
+            <div id="newProjectOwner" class="new-project-value" onclick="">
+                <input class="unassigned-user-icon" type="image" src="../images/user.png" />
+                <div>None</div>
+            </div>
+        </div>
+        <div>
+            <div class="new-project-label">Team Members:</div>
+            <div id="newProjectTeamMembers">
+                <div id="newProjectAddTeamMemberButton" onclick="">
+                    + Add Team Member
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="new-project-label">Due Date:</div>
+            <div id="newProjectDueDate" class="new-project-value" onclick="">
+                <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
+                <div>None</div>
+            </div>
+        </div>
+    </div>
+    <div id="newProjectThirdSection">
+        <div>Create New Project</div>
+        <div onclick="closeNewProjectView()">Cancel</div>
+    </div>
+</div>

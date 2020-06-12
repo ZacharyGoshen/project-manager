@@ -241,10 +241,12 @@
     width: 20px;
 }
 #draggedCategoryCopy {
-    position: absolute;
-    width: 300px;
+    border: 2px solid transparent;
+    border-radius: 5px;
     margin-top: 20px;
     opacity: .8;
+    position: absolute;
+    width: 300px;
 }
 #draggedCategoryCopy > div {
     padding-left: 12px;
