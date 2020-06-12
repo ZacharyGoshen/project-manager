@@ -5,7 +5,7 @@
 function addNewBoardTaskOnEnter(category) {
     let newTaskTextBox = category.find(".new-board-task-text-box");
     let userId = $("#loggedInUser").data("userId");
-    let projectId = $("#currentProjectName").data("projectId");
+    let projectId = $("#currentProject").data("projectId");
     let categoryId = category.data("categoryId");
     let categoryIndex = category.data("categoryIndex");
 

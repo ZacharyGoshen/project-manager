@@ -20,13 +20,15 @@
         <div id="navBarLeftSide">
             @if (Model.Projects.Count > 0)
             {
-                <div id="projectDropDownDiv">
-                    <div id="currentProjectName" data-project-id="@Model.CurrentProject.ProjectId">
-                        @Model.CurrentProject.Name
-                    </div>
+                <div id="currentProject" data-project-id="@Model.CurrentProject.ProjectId">
+                    <div id="currentProjectName">@Model.CurrentProject.Name</div>
+                    <div id="projectDropDownButton" onclick="toggleProjectDropDownMenu()">&#9660</div>
+                </div>
+                <div id="projectDropDownMenu" class="hidden">
+                    <div id="newProjectButton">+ Create new project</div>
                 </div>
                 <div id="navBarLinkDiv">
-                    <a class="nav-bar-link" asp-controller="Home" asp-action="Index">List</a>
+                    <a class="nav-bar-link" asp-controller="" asp-action="">List</a>
                     <a class="nav-bar-link" asp-controller="Home" asp-action="Board">Board</a>
                     <a class="nav-bar-link" asp-controller="" asp-action="">Calendar</a>
                 </div>

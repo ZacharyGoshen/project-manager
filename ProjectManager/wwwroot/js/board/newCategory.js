@@ -3,7 +3,7 @@
 function addNewBoardCategoryOnEnter() {
     $("#newCategoryNameTextBox").keypress(function (event) {
         if (event.keyCode === 13) {
-            let projectId = $("#currentProjectName").data("projectId");
+            let projectId = $("#currentProject").data("projectId");
             let categoryName = $(this).val();
             let categoryIndex = $(this).parent().data("categoryIndex");
             event.preventDefault();

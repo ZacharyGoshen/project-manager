@@ -16,6 +16,21 @@ function createNewProjectOnEnter() {
     });
 }
 
+/** Toggle the project drop down menu between open and closed
+ */
+function toggleProjectDropDownMenu() {
+    let menu = $("#projectDropDownMenu");
+    if (menu.hasClass("hidden")) {
+        menu.removeClass("hidden");
+        let name = $("#currentProjectName");
+        let menuTopOffset = name.offset().top + name.outerHeight() + 5;
+        let menuLeftOffset = name.offset().left;
+        menu.offset({ top: menuTopOffset, left: menuLeftOffset });
+    } else {
+        menu.addClass("hidden");
+    }
+}
+
 /** Toggle the user drop down menu between open and closed
  */
 function toggleUserDropDownMenu() {

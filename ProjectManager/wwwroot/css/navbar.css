@@ -25,8 +25,39 @@
 #navBarLeftSide {
     order: 1;
 }
-#projectDropDownDiv {
+#currentProject {
+    display: flex;
+    flex-direction: row;
+}
+#currentProjectName {
     font-size: 20px;
+}
+#projectDropDownButton {
+    color: #9e9e9e;
+    font-size: 12px;
+    margin-top: 8px;
+    margin-left: 10px;
+}
+#projectDropDownButton:hover {
+    color: #3f3f3f;
+    cursor: pointer;
+}
+#projectDropDownMenu {
+    background-color: white;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    position: absolute;
+}
+#projectDropDownMenu > div {
+    font-size: 15px;
+    padding: 10px;
+}
+#projectDropDownMenu > div:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+#newProjectButton {
+    color: #9e9e9e;
 }
 #newProjectTextBox {
     font-size: 20px;

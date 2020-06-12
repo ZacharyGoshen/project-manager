@@ -8,6 +8,7 @@ function onViewLoad() {
         $("input").attr("autocomplete", "off");
     });
 
+    hideElementOnClickOutside($("#projectDropDownMenu"), [$("#projectDropDownMenu"), $("#projectDropDownButton")]);
     hideElementOnClickOutside($("#userDropDownMenu"), [$("#userDropDownMenu"), $("#loggedInUser")]);
 }
 
