@@ -13,12 +13,11 @@ function toggleBoardAssigneeSelectionContainer(taskId) {
     toggleUserSelectionContainer(containerXOffset, containerYOffset);
 
     $("#userSelectionContainer").data("taskId", taskId);
-    reloadUserSearchResultsOnInput();
-    setUpUserSearchResultClickEvents(boardAssigneeSearchResultOnClick);
+    reloadUserSearchResultsOnInput(boardAssigneeSearchResultOnClick, true);
 }
 
-/** Updates the database, task details view, and current view when an assignee
- * search result is clicked in the task details view
+/** Updates the database and board view when an assignee search result is
+ * clicked in the board view
  * 
  * @param {object} searchResult The assignee search result
  */

@@ -63,7 +63,7 @@ function onBoardViewLoad() {
         hideElementOnClickOutside($("#userSearchResultsContainer"), ["#userSearchBox"]);
 
         hideElementOnClickOutside($("#dueDateSelectionContainer"),
-            ["#dueDateSelectionContainer", "#taskDetailsDueDate", ".board-task-due-date"]);
+            ["#dueDateSelectionContainer", "#newProjectDueDate", "#taskDetailsDueDate", ".board-task-due-date"]);
 
         hideElementOnClickOutside($("#tagSelectionContainer"),
             ["#tagSelectionContainer", "#taskDetailsAddTagButton", "#createTagButton"]);

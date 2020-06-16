@@ -1,4 +1,4 @@
-﻿/** Sets the location of the due date selection container to right below the
+﻿/** Set the location of the due date selection container to right below the
  * button clicked and then toggle it between open and closed
  * 
  * @param {number} taskId The ID of the task whose due date is being selected
@@ -10,11 +10,28 @@ function toggleBoardDueDateSelectionContainer(taskId) {
     let buttonHeight = button.height();
     let containerXOffset = buttonCoordinates.left;
     let containerYOffset = buttonCoordinates.top + buttonHeight;
-    toggleDueDateSelectionContainer(containerXOffset, containerYOffset, taskId);
+    toggleDueDateSelectionContainer(containerXOffset, containerYOffset);
 
     $("#dueDateSelectionContainer").data("taskId", taskId);
-    setUpCalendarDateClickEvent(taskId);
+    setUpCalendarClickEvents(boardCalendarDateOnClick);
 }
+
+/** Update the database and board view when a calendar date is clicked in the
+ * board view
+ * 
+ * @param {object} calendarDate The calendar date
+ */
+function boardCalendarDateOnClick(calendarDate) {
+    let day = calendarDate.data("day");
+    let month = calendarDate.data("month");
+    let year = calendarDate.data("year");
+    let taskId = $("#dueDateSelectionContainer").data("taskId");
+
+    setDueDateInDatabase(taskId, day, month + 1, year);
+
+    let dueDate = new Date(year, month, day);
+    updateBoardTaskDueDateHtml(taskId, dueDate);
+};
 
 /** Update the html of the board task to show the updated due date
  * 

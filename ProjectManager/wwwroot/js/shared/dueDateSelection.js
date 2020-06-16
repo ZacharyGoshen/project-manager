@@ -5,39 +5,41 @@
  */
 function toggleDueDateSelectionContainer(xOffset, yOffset) {
     let container = $("#dueDateSelectionContainer");
+    goToCurrentMonthInCalendar();
     if (container.hasClass("hidden")) {
         container.removeClass("hidden");
         container.offset({ top: yOffset, left: xOffset });
     } else {
-        goToCurrentMonthInCalendar();
         container.addClass("hidden");
     }
 }
 
-/** Sets up the click events that update a task's due date when a calendar
- * date is clicked
+/** Set up the click events that occur when you click any of the buttons or
+ * dates in the calendar
  * 
- * @param {number} taskId
+ * @param {object} handler A function that should be executed when a calendar date is clicked
  */
-function setUpCalendarDateClickEvent(taskId) {
+function setUpCalendarClickEvents(handler) {
+    $("#dueDateSelectionPreviousMonthButton").off("click");
+    $("#dueDateSelectionPreviousMonthButton").click(function () {
+        goToPreviousMonthInCalendar(handler);
+    });
+
+    $("#dueDateSelectionNextMonthButton").off("click");
+    $("#dueDateSelectionNextMonthButton").click(function () {
+        goToNextMonthInCalendar(handler);
+    });
+
+    setUpCalendarDateClickEvents(handler);
+}
+
+function setUpCalendarDateClickEvents(handler) {
     $(".due-date-selection-calendar-date").each(function () {
-        $(this).off("click");
-        let day = $(this).data("day");
-        let month = $(this).data("month");
-        let year = $(this).data("year");
-        $(this).click(function () {
-            setDueDateInDatabase(taskId, day, month + 1, year);
+        let calendarDate = $(this);
+        calendarDate.off("click");
+        calendarDate.click(function () {
+            handler(calendarDate);
             toggleDueDateSelectionContainer(0, 0);
-
-            let dueDate = new Date(year, month, day);
-
-            if (currentView == "board") {
-                updateBoardTaskDueDateHtml(taskId, dueDate);
-            }
-
-            if (!$("#taskDetailsContainer").hasClass("hidden")) {
-                updateTaskDetailsDueDateHtml(dueDate);
-            }
         });
     });
 }
@@ -51,13 +53,10 @@ function goToCurrentMonthInCalendar() {
 
     $("#dueDateSelectionContainer").data("month", currentMonth);
     $("#dueDateSelectionContainer").data("year", currentYear);
-
-    let taskId = $("#dueDateSelectionContainer").data("taskId");
-    setUpCalendarDateClickEvent(taskId);
 }
 
 /** Updates the due date selection calendar to display the previous month */
-function goToPreviousMonthInCalendar() {
+function goToPreviousMonthInCalendar(handler) {
     let currentMonth = $("#dueDateSelectionContainer").data("month");
     let yearOfCurrentMonth = $("#dueDateSelectionContainer").data("year");
 
@@ -73,12 +72,11 @@ function goToPreviousMonthInCalendar() {
     $("#dueDateSelectionContainer").data("month", previousMonth);
     $("#dueDateSelectionContainer").data("year", yearOfPreviousMonth);
 
-    let taskId = $("#dueDateSelectionContainer").data("taskId");
-    setUpCalendarDateClickEvent(taskId);
+    setUpCalendarDateClickEvents(handler);
 }
 
 /** Updates the due date selection calendar to display the next month */
-function goToNextMonthInCalendar() {
+function goToNextMonthInCalendar(handler) {
     let currentMonth = $("#dueDateSelectionContainer").data("month");
     let yearOfCurrentMonth = $("#dueDateSelectionContainer").data("year");
 
@@ -94,8 +92,7 @@ function goToNextMonthInCalendar() {
     $("#dueDateSelectionContainer").data("month", nextMonth);
     $("#dueDateSelectionContainer").data("year", yearOfNextMonth);
 
-    let taskId = $("#dueDateSelectionContainer").data("taskId");
-    setUpCalendarDateClickEvent(taskId);
+    setUpCalendarDateClickEvents(handler);
 }
 
 /** Returns the number of days in a month in a particular year

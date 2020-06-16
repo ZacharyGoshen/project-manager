@@ -162,7 +162,7 @@
     font-size: 12px;
 }
 .board-task-due-date > div:hover {
-    color: #2a9df4;
+    color: #3f3f3f;
     cursor: pointer;
 }
 .board-task-fourth-row {

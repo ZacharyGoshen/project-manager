@@ -1,4 +1,6 @@
-﻿<div id="newProjectBackgroundBlur" class="hidden"></div>
+﻿@model ProjectManager.ViewModels.ProjectViewModel
+
+<div id="newProjectBackgroundBlur" class="hidden"></div>
 
 <div id="newProjectContainer" class="hidden">
     <div id="newProjectFirstSection">
@@ -7,10 +9,19 @@
     </div>
     <div id="newProjectSecondSection">
         <div>
-            <div class="new-project-label">Owned By:</div>
-            <div id="newProjectOwner" class="new-project-value" onclick="toggleNewProjectOwnerSelectionContainer()">
-                <input class="unassigned-user-icon" type="image" src="../images/user.png" />
+            <div class="new-project-label">Due Date:</div>
+            <div id="newProjectDueDate" class="new-project-value" onclick="toggleNewProjectDueDateSelectionContainer()">
+                <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
                 <div>None</div>
+            </div>
+        </div>
+        <div>
+            <div class="new-project-label">Owned By:</div>
+            <div id="newProjectOwner" class="new-project-value" onclick="toggleNewProjectOwnerSelectionContainer()" data-user-id="@Model.LoggedInUser.UserId">
+                <div class="default-profile-pic">
+                    <div>@Model.LoggedInUser.FirstName[0]@Model.LoggedInUser.LastName[0]</div>
+                </div>
+                <div>@Model.LoggedInUser.FirstName @Model.LoggedInUser.LastName</div>
             </div>
         </div>
         <div>
@@ -21,16 +32,9 @@
                 </div>
             </div>
         </div>
-        <div>
-            <div class="new-project-label">Due Date:</div>
-            <div id="newProjectDueDate" class="new-project-value" onclick="">
-                <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
-                <div>None</div>
-            </div>
-        </div>
     </div>
     <div id="newProjectThirdSection">
-        <div>Create New Project</div>
+        <div onclick="createNewProject()">Create New Project</div>
         <div onclick="closeNewProjectView()">Cancel</div>
     </div>
 </div>

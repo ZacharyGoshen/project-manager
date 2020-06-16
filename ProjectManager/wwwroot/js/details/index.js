@@ -430,38 +430,6 @@ function updateTaskDetailsPriorityHtml(priority) {
     }
 }
 
-/** Update the task details view's tag html
- * 
- * @param {number} tagId The ID of the tag being added
- * @param {number} tagName The name of the tag being added
- */
-function addTagHtmlToTaskDetails(tagId, tagName, colorIndex) {
-    $("#taskDetailsAddTagButton").before(`
-        <div class="task-details-tag color-option-` + colorIndex + `" data-tag-id="` + tagId + `">
-            <div class="task-details-tag-name">` + tagName + `</div>
-            <div class="task-details-tag-remove-button" onclick="removeTagFromTask(` + tagId + `)">
-                <div>x</div>
-            </div>
-        </div>
-    `);
-}
-
-function updateTaskDetailsTagColor(tagId, colorIndex) {
-    let tag = findTaskDetailsTagWithId(tagId);
-    tag.removeClass();
-    tag.addClass("task-details-tag");
-    tag.addClass("color-option-" + colorIndex);
-}
-
-/** Remove a tag's html from the task details view
- * 
- * @param {number} tagId The ID of the tag being removed
- */
-function removeTagHtmlFromTaskDetails(tagId) {
-    let tag = findTaskDetailsTagWithId(tagId);
-    tag.remove();
-}
-
 /** Update the task details view's comment html
  * 
  * @param {string} text The text of the comment being added
@@ -508,7 +476,7 @@ function toggleTaskDetailsAssigneeSelectionContainer() {
     let yOffset = button.offset().top + button.outerHeight();
     toggleUserSelectionContainer(xOffset, yOffset);
 
-    setUpUserSearchResultClickEvents(taskDetailsAssigneeSearchResultOnClick);
+    reloadUserSearchResultsOnInput(taskDetailsAssigneeSearchResultOnClick, true);
 }
 
 /** Updates the database, task details view, and current view when an assignee
@@ -541,10 +509,29 @@ function toggleTaskDetailsDueDateSelectionContainer() {
     let yOffset = button.offset().top + button.outerHeight();
     toggleDueDateSelectionContainer(xOffset, yOffset);
 
-    let taskId = $("#taskDetailsContainer").data("taskId");
-    $("#dueDateSelectionContainer").data("taskId", taskId);
-    setUpCalendarDateClickEvent(taskId);
+    setUpCalendarClickEvents(taskDetailsCalendarDateOnClick);
 }
+
+/** Update the database, task details view, and current view when a calendar
+ * date is clicked in the task details view
+ * 
+ * @param {object} calendarDate The calendar date
+ */
+function taskDetailsCalendarDateOnClick(calendarDate) {
+    let day = calendarDate.data("day");
+    let month = calendarDate.data("month");
+    let year = calendarDate.data("year");
+    let taskId = $("#taskDetailsContainer").data("taskId");
+
+    setDueDateInDatabase(taskId, day, month + 1, year);
+
+    let dueDate = new Date(year, month, day);
+    updateTaskDetailsDueDateHtml(dueDate);
+
+    if (currentView == "board") {
+        updateBoardTaskDueDateHtml(taskId, dueDate);
+    }
+};
 
 /** Toggle the priority selection container of a task's details view between
  * open and closed */
@@ -557,48 +544,4 @@ function toggleDetailsPrioritySelectionContainer() {
     let taskId = $("#taskDetailsContainer").data("taskId");
     $("#prioritySelectionContainer").data("taskId", taskId);
     setUpPriorityClickEvent(taskId);
-}
-
-/** Toggle the tag selection container of a task's details view between
- * open and closed */
-function toggleDetailsTagSelectionContainer() {
-    let button = $("#taskDetailsAddTagButton");
-    let xOffset = button.offset().left;
-    let yOffset = button.offset().top + button.outerHeight();
-    toggleTagSelectionContainer(xOffset, yOffset);
-
-    let taskId = $("#taskDetailsContainer").data("taskId");
-    $("#tagSelectionContainer").data("taskId", taskId);
-    setUpTagSearchResultsClickEvent(taskId);
-    setUpTagColorClickEvent(taskId);
-}
-
-/** Check if the viewed task has the tag with the matching ID
- * 
- * @param {number} tagId The ID of the tag being checked for
- * @returns {boolean} True if task the has the tag, false otherwise
- */
-function checkIfTaskHasTag(tagId) {
-    let hasTag = false
-    $(".task-details-tag").each(function () {
-        if (tagId == $(this).data("tagId")) {
-            hasTag = true;
-        }
-    });
-    return hasTag;
-}
-
-/** Find the tag with the matching ID in the task details view
- * 
- * @param {number} tagId The ID of the tag you want to find
- * @returns {object} The tag you want to find
- */
-function findTaskDetailsTagWithId(tagId) {
-    let tag = null;
-    $(".task-details-tag").each(function () {
-        if ($(this).data("tagId") == tagId) {
-            tag = $(this);
-        }
-    });
-    return tag;
 }

@@ -20,7 +20,6 @@ function openNewProjectView() {
     backgroundBlur.innerWidth(window.innerWidth);
     backgroundBlur.offset({ top: 0, left: 0 });
 
-    //container.outerHeight(0.9 * window.innerHeight);
     container.outerWidth(0.5 * window.innerWidth);
 
     let containerTopOffset = (window.innerHeight / 2) - (container.outerHeight() / 2);
@@ -29,12 +28,16 @@ function openNewProjectView() {
         top: containerTopOffset,
         left: containerLeftOffset
     });
+
+
 }
 
-/** Close the new project view */
+/** Close the new project view
+ */
 function closeNewProjectView() {
     $("#newProjectBackgroundBlur").addClass("hidden");
     $("#newProjectContainer").addClass("hidden");
+    resetUserSelectionContainer();
 }
 
 /** Show the placeholder text if none is supplied when the new project name
@@ -73,38 +76,110 @@ function setUpNewProjectDescriptionOnFocus() {
     });
 }
 
-/** Update the new project view's owner html
+/** Update the new project view's due date html
  * 
- * @param {string} firstName The first name of the owner
- * @param {string} lastName The last name of the owner
+ * @param {object} dueDate The new project's due date
  */
-function updateNewProjectViewOwnerHtml(firstName, lastName) {
-    if (firstName == null && lastName == null) {
-        $("#newProjectOwner").html(`
-            <input class="unassigned-user-icon" type="image" src="../images/user.png" />
+function updateNewProjectViewDueDateHtml(dueDate) {
+    if (dueDate.getTime() == new Date("0001-01-01T00:00:00Z").getTime()) {
+        $("#newProjectDueDate").html(`
+            <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
             <div>None</div>
         `);
     } else {
-        $("#newProjectOwner").html(`
-            <div class="default-profile-pic">
-                <div>` + firstName[0] + lastName[0] + `</div>
-            </div>
-            <div>` + firstName + ` ` + lastName + `</div>
-            <div class="new-project-remove-button" onclick="removeNewProjectViewOwner()">
+        $("#newProjectDueDate").html(`
+            <input class="unassigned-due-date-icon" type="image" src="../images/clock.png" />
+            <div>` + dueDate.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + `</div>
+            <div class="new-project-remove-button" onclick="removeNewProjectViewDueDate()">
                 <div>x</div>
             </div>
         `);
     }
 }
 
-/** Remove the owner from the new project view
+/** Update the new project view's owner html
+ * 
+ * @param {string} firstName The first name of the owner
+ * @param {string} lastName The last name of the owner
  */
-function removeNewProjectViewOwner() {
-    $("#newProjectOwner").removeData("userId");
-    updateNewProjectViewOwnerHtml(null, null);
+function updateNewProjectViewOwnerHtml(firstName, lastName) {
+    $("#newProjectOwner").html(`
+        <div class="default-profile-pic">
+            <div>` + firstName[0] + lastName[0] + `</div>
+        </div>
+        <div>` + firstName + ` ` + lastName + `</div>
+    `);
 }
 
-/** Toggle the owner selection container of a new project view between open and
+/** Update the new project view's team members html
+ * 
+ * @param {string} firstName The first name of the owner
+ * @param {string} lastName The last name of the owner
+ */
+function updateNewProjectViewTeamMembersHtml(userId, firstName, lastName) {
+    $("#newProjectAddTeamMemberButton").before(`
+        <div class="new-project-team-member" data-user-id=` + userId + `>
+            <div class="default-profile-pic">
+                <div>` + firstName[0] + lastName[0] + `</div>
+            </div>
+            <div>` + firstName + ` ` + lastName + `</div>
+            <div class="new-project-remove-button" onclick="removeNewProjectViewTeamMember(` + userId + `)">
+                <div>x</div>
+            </div>
+        </div>
+    `);
+}
+
+/** Remove the due date from the new project view
+ */
+function removeNewProjectViewDueDate() {
+    $("#newProjectDueDate").data("day", -1);
+    $("#newProjectDueDate").data("month", -1);
+    $("#newProjectDueDate").data("year", -1);
+
+    updateNewProjectViewDueDateHtml(new Date("0001-01-01T00:00:00Z"));
+}
+
+/** Remove the team member from the new project view
+ * 
+ * @param {object} userId The ID of the team member you want to remove
+ */
+function removeNewProjectViewTeamMember(userId) {
+    let teamMember = findNewProjectTeamMemberWithId(userId);
+    teamMember.remove();
+}
+
+/** Toggle the due date selection container of the new project view between
+ * open and closed
+ */
+function toggleNewProjectDueDateSelectionContainer() {
+    let button = $("#newProjectDueDate");
+    let xOffset = button.offset().left;
+    let yOffset = button.offset().top + button.outerHeight();
+    toggleDueDateSelectionContainer(xOffset, yOffset);
+
+    setUpCalendarClickEvents(newProjectCalendarDateOnClick);
+}
+
+/** Updates the new project view's due date html when a calendar date is
+ * clicked
+ * 
+ * @param {object} calendarDate The calendar date
+ */
+function newProjectCalendarDateOnClick(calendarDate) {
+    let day = calendarDate.data("day");
+    let month = calendarDate.data("month");
+    let year = calendarDate.data("year");
+
+    $("#newProjectDueDate").data("day", day);
+    $("#newProjectDueDate").data("month", month);
+    $("#newProjectDueDate").data("year", year);
+
+    let dueDate = new Date(year, month, day);
+    updateNewProjectViewDueDateHtml(dueDate);
+};
+
+/** Toggle the owner selection container of the new project view between open and
  * closed
  */
 function toggleNewProjectOwnerSelectionContainer() {
@@ -113,8 +188,7 @@ function toggleNewProjectOwnerSelectionContainer() {
     let yOffset = button.offset().top + button.outerHeight();
     toggleUserSelectionContainer(xOffset, yOffset);
 
-    reloadUserSearchResultsOnInput();
-    setUpUserSearchResultClickEvents(newProjectOwnerSearchResultOnClick);
+    reloadUserSearchResultsOnInput(newProjectOwnerSearchResultOnClick, false);
 }
 
 /** Updates the new project view's owner html when a user search result is
@@ -125,6 +199,10 @@ function toggleNewProjectOwnerSelectionContainer() {
 function newProjectOwnerSearchResultOnClick(searchResult) {
     let userId = searchResult.data("userId");
     $("#newProjectOwner").data("userId", userId);
+
+    if (checkIfNewProjectHasTeamMember(userId)) {
+        removeNewProjectViewTeamMember(userId);
+    }
 
     let userName = searchResult.find(".user-search-result-name").html();
     let firstName = userName.split(" ")[0];
@@ -140,4 +218,82 @@ function toggleNewProjectTeamMemberSelectionContainer() {
     let xOffset = button.offset().left;
     let yOffset = button.offset().top + button.outerHeight();
     toggleUserSelectionContainer(xOffset, yOffset);
+
+    reloadUserSearchResultsOnInput(newProjectTeamMemberSearchResultOnClick, false);
+}
+
+/** Updates the new project view's owner html when a user search result is
+ * clicked
+ * 
+ * @param {object} searchResult The user search result
+ */
+function newProjectTeamMemberSearchResultOnClick(searchResult) {
+    let userId = searchResult.data("userId");
+
+    if ($("#newProjectOwner").data("userId") != userId &&
+        checkIfNewProjectHasTeamMember(userId) == false) {
+        let userName = searchResult.find(".user-search-result-name").html();
+        let firstName = userName.split(" ")[0];
+        let lastName = userName.split(" ")[1];
+        updateNewProjectViewTeamMembersHtml(userId, firstName, lastName);
+    }
+};
+
+/** Check if the new project has a team member with the matching ID
+ * 
+ * @param {number} userId The ID of the team member being checked for
+ * @returns {boolean} True if the new project has the team member, false otherwise
+ */
+function checkIfNewProjectHasTeamMember(userId) {
+    let hasTeamMember = false
+    $(".new-project-team-member").each(function () {
+        if (userId == $(this).data("userId")) {
+            hasTeamMember = true;
+        }
+    });
+    return hasTeamMember;
+}
+
+/** Find the team member with the matching ID in the new project view
+ * 
+ * @param {number} userId The ID of the team member being checked for
+ * @returns {object} The team member you want to find
+ */
+function findNewProjectTeamMemberWithId(userId) {
+    let teamMember = null;
+    $(".new-project-team-member").each(function () {
+        if ($(this).data("userId") == userId) {
+            teamMember = $(this);
+        }
+    });
+    return teamMember;
+}
+
+/** Retrieve the data from the new project form and create a new project in the
+ * database
+ */
+function createNewProject() {
+    let name = $("#newProjectName").val();
+
+    let description = $("#newProjectDescription").val();
+    if (description == "Add a description to this project") {
+        description = "";
+    }
+
+    let day = $("#newProjectDueDate").data("day");
+
+    let month = $("#newProjectDueDate").data("month");
+    if (month != -1) {
+        month += 1;
+    }
+
+    let year = $("#newProjectDueDate").data("year");
+    let ownerId = $("#newProjectOwner").data("userId");
+
+    let teamMemberIds = [];
+    $(".new-project-team-member").each(function () {
+        teamMemberIds.push($(this).data("userId"));
+    });
+
+    addProjectToDatabase(name, description, day, month, year, ownerId, teamMemberIds);
 }

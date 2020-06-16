@@ -9,14 +9,12 @@ function toggleUserSelectionContainer(xOffset, yOffset) {
         container.removeClass("hidden");
         container.offset({ top: yOffset, left: xOffset });
     } else {
-        resetUserSearchResults()
-        $("#userSearchBox").val("");
-        $("#userSearchBox").blur();
+        resetUserSelectionContainer();
         container.addClass("hidden");
     }
 }
 
-/** Set up the click events that occurs when a user search result is clicked
+/** Set up the click event that occurs when a user search result is clicked
  *
  * @param {object} handler The handler that is called when the result is clicked
  */
@@ -33,27 +31,36 @@ function setUpUserSearchResultClickEvents(handler) {
 
 /** Finds all users whose name matches the input of the user search box and
  * displays them
+ *
+ * @param {object} handler The handler that is called when the result is clicked
+ * @param {boolean} onlyFindUsersInProject If true, only find the users that are team members of the current project. Otherwise, find all users
  */
-function reloadUserSearchResultsOnInput() {
+function reloadUserSearchResultsOnInput(handler, onlyFindUsersInProject) {
     let searchBox = $("#userSearchBox");
     searchBox.off("keydown");
     $(searchBox).keydown(function (event) {
         let lastKeyPressed = String.fromCharCode(event.which);
         let validCharacterRegex = /^[A-Za-z ]$/
         let input = $("#userSelectionContainer input").val();
+        let backSpaceKeyCode = 8;
         if (lastKeyPressed.match(validCharacterRegex)) {
             input += lastKeyPressed;
-        } else if (event.keyCode === 8) {
+        } else if (event.keyCode === backSpaceKeyCode) { 
             input = input.substring(0, input.length - 1);
         }
         input = input.toLowerCase();
 
         if (input != "") {
+            let projectId = 0;
+            if (onlyFindUsersInProject) {
+                projectId = $("#currentProject").data("projectId");
+            }
+
             let matchingUsers = null;
             let request = $.ajax({
                 type: "POST",
                 url: "/User/FindFirstTenThatContainName",
-                data: { name: input, projectId: 0 },
+                data: { name: input, projectId: projectId },
                 success: function (users) {
                     matchingUsers = users;
                 }
@@ -62,6 +69,7 @@ function reloadUserSearchResultsOnInput() {
             $.when(request).then(function () {
                 resetUserSearchResults();
                 updateUserSearchResultsHtml(matchingUsers);
+                setUpUserSearchResultClickEvents(handler);
             });
         } else {
             resetUserSearchResults();
@@ -69,6 +77,11 @@ function reloadUserSearchResultsOnInput() {
     });
 }
 
+/** Update the html of the user selection results container to display the users
+ * found
+ * 
+ * @param {object} users The users to display
+ */
 function updateUserSearchResultsHtml(users) {
     for (user of users) {
         $("#userSearchResultsContainer").append(`
@@ -82,8 +95,16 @@ function updateUserSearchResultsHtml(users) {
     }
 }
 
-/** Hides all of the previous user search results
+/** Removes all of the previous user search results
  */
 function resetUserSearchResults() {
     $("#userSearchResultsContainer").html("");
+}
+
+/** Removes all of the previous user search results and clears the input
+ */
+function resetUserSelectionContainer() {
+    resetUserSearchResults();
+    $("#userSearchBox").val("");
+    $("#userSearchBox").blur();
 }

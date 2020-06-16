@@ -1,7 +1,4 @@
-﻿.due-date-selection-change-month-button:hover {
-    cursor: pointer;
-}
-.due-date-selection-calendar-row {
+﻿.due-date-selection-calendar-row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -50,6 +47,12 @@
     font-size: 15px;
     justify-content: space-between;
     margin-bottom: 10px;
+}
+#dueDateSelectionPreviousMonthButton:hover {
+    cursor: pointer;
+}
+#dueDateSelectionNextMonthButton:hover {
+    cursor: pointer;
 }
 #dueDateSelectionContainerSecondRow {
     border-bottom: 2px solid #f0f0f0;
