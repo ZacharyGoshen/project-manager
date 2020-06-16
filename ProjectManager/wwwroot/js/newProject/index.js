@@ -295,5 +295,9 @@ function createNewProject() {
         teamMemberIds.push($(this).data("userId"));
     });
 
-    addProjectToDatabase(name, description, day, month, year, ownerId, teamMemberIds);
+    let ajaxRequest = addProjectToDatabase(name, description, day, month, year, ownerId, teamMemberIds);
+
+    $.when(ajaxRequest).done(function () {
+        changeCurrentProject()
+    });
 }

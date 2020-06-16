@@ -26,6 +26,13 @@
                     <div id="projectDropDownButton" onclick="toggleProjectDropDownMenu()">&#9660</div>
                 </div>
                 <div id="projectDropDownMenu" class="hidden">
+                    @foreach (var project in Model.Projects)
+                    {
+                        if (project.ProjectId != Model.CurrentProject.ProjectId)
+                        {
+                            <div onclick="changeCurrentProject(@project.ProjectId)">@project.Name</div>
+                        }
+                    }
                     <div id="newProjectButton" onclick="openNewProjectView()">+ Create new project</div>
                 </div>
                 <div id="navBarLinkDiv">

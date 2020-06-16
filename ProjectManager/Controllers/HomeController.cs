@@ -71,6 +71,14 @@ namespace ProjectManager.Controllers
                 projects.Add(userProject.Project);
             }
 
+            var ownedProjects = context.Projects
+                .Where(p => p.Owner == loggedInUser)
+                .ToList();
+            foreach (var ownedProject in ownedProjects)
+            {
+                projects.Add(ownedProject);
+            }
+
             var model = new ProjectViewModel()
             {
                 LoggedInUser = loggedInUser,
@@ -80,6 +88,10 @@ namespace ProjectManager.Controllers
             if (projects.Count > 0)
             {
                 var currentProject = projects[0];
+                if (this.CurrentProjectId != 0)
+                {
+                    currentProject = context.Projects.Find(CurrentProjectId);
+                }
                 model.CurrentProject = currentProject;
 
                 var categoriesInCurrentProject = context.Categories

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ProjectManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace ProjectManager.Controllers
@@ -98,6 +96,7 @@ namespace ProjectManager.Controllers
         public void LogOut()
         {
             this.UserId = 0;
+            this.CurrentProjectId = 0;
         }
 
         public void RemoveAssignedTask(int taskId, int userId)

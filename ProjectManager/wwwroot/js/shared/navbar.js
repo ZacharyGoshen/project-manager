@@ -1,4 +1,16 @@
-﻿/** Create a new project and refresh the page when the enter key is pressed in
+﻿function changeCurrentProject(projectId) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/Project/SetCurrentProject",
+        data: { projectId: projectId }
+    });
+
+    $.when(ajaxRequest).then(function () {
+        location.reload();
+    });
+}
+
+/** Create a new project and refresh the page when the enter key is pressed in
  * the new project text box
  */
 function createNewProjectOnEnter() {

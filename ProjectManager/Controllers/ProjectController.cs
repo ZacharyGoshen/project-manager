@@ -8,9 +8,9 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
-    public class ProjectController : Controller
+    public class ProjectController : BaseController
     {
-        public void New(string name, string description, int day, int month, int year, int ownerId, int[] teamMembersIds)
+        public JsonResult New(string name, string description, int day, int month, int year, int ownerId, int[] teamMemberIds)
         {
             var context = new MyContext();
 
@@ -27,7 +27,7 @@ namespace ProjectManager.Controllers
             }
 
             var teamMemberUserProjects = new List<UserProject>();
-            foreach(var teamMemberId in teamMembersIds)
+            foreach (var teamMemberId in teamMemberIds)
             {
                 var teamMember = context.Users.Find(teamMemberId);
                 var teamMemberUserProject = new UserProject()
@@ -36,11 +36,19 @@ namespace ProjectManager.Controllers
                     Project = project
                 };
                 teamMemberUserProjects.Add(teamMemberUserProject);
+                //context.UserProjects.Add(teamMemberUserProject);
             }
             project.TeamMembers = teamMemberUserProjects;
 
             context.Projects.Add(project);
             context.SaveChanges();
+
+            return Json(project.ProjectId);
+        }
+
+        public void SetCurrentProject(int projectId)
+        {
+            this.CurrentProjectId = projectId;
         }
     }
 }

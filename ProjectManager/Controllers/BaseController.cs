@@ -15,6 +15,10 @@ namespace ProjectManager.Controllers
             set { HttpContext.Session.SetInt32("UserId", value); }
         }
 
-        protected int CurrentProjectId { get; set; }
+        protected int CurrentProjectId
+        {
+            get { return HttpContext.Session.GetInt32("CurrentProjectId") ?? 0; }
+            set { HttpContext.Session.SetInt32("CurrentProjectId", value); }
+        }
     }
 }
