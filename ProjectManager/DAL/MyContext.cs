@@ -109,7 +109,9 @@ namespace ProjectManager.DAL
                 {
                     ProjectId = 1,
                     Name = "Task Manager",
-                    DueDate = new DateTime()
+                    Description = "This is a project called task manager",
+                    DueDate = new DateTime(),
+                    OwnerUserId = 2
                 }
                 );
 

@@ -10,26 +10,18 @@ namespace ProjectManager.Controllers
 {
     public class TagController : Controller
     {
-        public JsonResult New(string tagName, int taskId, int projectId)
+        public JsonResult New(int projectId, string name)
         {
             var context = new MyContext();
-            var task = context.Tasks.Find(taskId);
             var project = context.Projects.Find(projectId);
 
             var tag = new Tag()
             {
-                Name = tagName,
+                Name = name,
                 Project = project
             };
 
-            var tagTask = new TagTask()
-            {
-                Tag = tag,
-                Task = task
-            };
-
             context.Tags.Add(tag);
-            context.TagTasks.Add(tagTask);
             context.SaveChanges();
 
             return Json(tag.TagId);
@@ -40,6 +32,24 @@ namespace ProjectManager.Controllers
             var context = new MyContext();
             var tag = context.Tags.Find(tagId);
             tag.ColorIndex = colorIndex;
+            context.SaveChanges();
+        }
+
+        public void Remove(int tagId)
+        {
+            var context = new MyContext();
+            var tag = context.Tags.Find(tagId);
+
+            var tagTasks = context.TagTasks
+                .Where(tt => tt.Tag == tag)
+                .ToList();
+            foreach (var tagTask in tagTasks) {
+                context.TagTasks.Attach(tagTask);
+                context.TagTasks.Remove(tagTask);
+            }
+
+            context.Tags.Attach(tag);
+            context.Tags.Remove(tag);
             context.SaveChanges();
         }
     }

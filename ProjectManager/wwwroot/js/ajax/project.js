@@ -28,3 +28,89 @@ function addProjectToDatabase(name, description, day, month, year, ownerId, team
     return ajaxRequest;
 }
 
+/** Set the name of a project in the database
+ * 
+ * @param {number} projectId The ID of the project
+ * @param {string} name The name of the project
+ */
+function setProjectNameInDatabase(projectId, name) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/Project/SetName",
+        data: { projectId: projectId, name: name }
+    });
+    return ajaxRequest;
+}
+
+/** Set the description of a project in the database
+ * 
+ * @param {number} projectId The ID of the project
+ * @param {string} description The description of the project
+ */
+function setProjectDescriptionInDatabase(projectId, description) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/Project/SetDescription",
+        data: { projectId: projectId, description: description }
+    });
+    return ajaxRequest;
+}
+
+/** Set the due date of a project in the database
+ *
+ * @param {number} projectId The ID of the project
+ * @param {number} day The day of the due date
+ * @param {number} month The month of the due date
+ * @param {number} year The year of the due date
+ */
+function setProjectDueDateInDatabase(projectId, day, month, year) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/Project/SetDueDate",
+        data: { projectId: projectId, day: day, month: month, year: year }
+    });
+    return ajaxRequest;
+}
+
+/** Set the owner of a project in the database
+ * 
+ * @param {number} projectId The ID of the project
+ * @param {number} userId The ID of the owner of the project
+ */
+function setProjectOwnerInDatabase(projectId, userId) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/Project/SetOwner",
+        data: { projectId: projectId, userId: userId }
+    });
+    return ajaxRequest;
+}
+
+/** Add a team member to a project in the database
+ * 
+ * @param {number} projectId The ID of the project
+ * @param {number} userId The ID of the team member
+ */
+function addProjectTeamMemberInDatabase(projectId, userId) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/Project/AddTeamMember",
+        data: { projectId: projectId, userId: userId }
+    });
+    return ajaxRequest;
+}
+
+/** Remove a team member from a project in the database
+ * 
+ * @param {number} projectId The ID of the project
+ * @param {number} userId The ID of the team member
+ */
+function removeProjectTeamMemberInDatabase(projectId, userId) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/Project/RemoveTeamMember",
+        data: { projectId: projectId, userId: userId }
+    });
+    return ajaxRequest;
+}
+

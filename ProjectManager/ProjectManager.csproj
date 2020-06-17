@@ -12,10 +12,11 @@
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\js\board\" />
     <Folder Include="wwwroot\js\ajax\" />
-    <Folder Include="wwwroot\js\details\" />
+    <Folder Include="wwwroot\js\taskDetails\" />
     <Folder Include="wwwroot\js\login\" />
     <Folder Include="wwwroot\js\newProject\" />
     <Folder Include="wwwroot\js\shared\" />
+    <Folder Include="wwwroot\js\projectDetails\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />

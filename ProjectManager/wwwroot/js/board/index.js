@@ -57,16 +57,16 @@ function onBoardViewLoad() {
         });
 
         hideElementOnClickOutside($("#userSelectionContainer"),
-            ["#userSelectionContainer", "#newProjectOwner", "#newProjectAddTeamMemberButton", "#taskDetailsAssignee", ".board-task-assignee"]);
+            ["#userSelectionContainer", "#newProjectOwner", , "#projectDetailsOwner", "#newProjectAddTeamMemberButton", "#projectDetailsAddTeamMemberButton",  "#taskDetailsAssignee", ".board-task-assignee"]);
         removeFocusOnClickOutside($("#userSearchBox"), [$("#userSearchBox")]);
         showElementOnFocus($("#userSearchResultsContainer"), $("#userSearchBox"));
         hideElementOnClickOutside($("#userSearchResultsContainer"), ["#userSearchBox"]);
 
         hideElementOnClickOutside($("#dueDateSelectionContainer"),
-            ["#dueDateSelectionContainer", "#newProjectDueDate", "#taskDetailsDueDate", ".board-task-due-date"]);
+            ["#dueDateSelectionContainer", "#newProjectDueDate", ,"#projectDetailsDueDate", "#taskDetailsDueDate", ".board-task-due-date"]);
 
         hideElementOnClickOutside($("#tagSelectionContainer"),
-            ["#tagSelectionContainer", "#taskDetailsAddTagButton", "#createTagButton"]);
+            ["#tagSelectionContainer", "#projectDetailsAddTagButton", "#taskDetailsAddTagButton"]);
         removeFocusOnClickOutside($("#tagSearchBox"), [$("#tagSearchBox")]);
         showElementOnFocus($("#tagSearchResultsContainer"), $("#tagSearchBox"));
         hideElementOnClickOutside($("#tagSearchResultsContainer"), ["#tagSearchBox"]);

@@ -105,11 +105,12 @@
             <div id="draggedTaskCopy" class="hidden"></div>
             <div id="boardTaskDropAreaIndicator"></div>
 
+            @Html.Partial("_DueDateSelection")
             @Html.Partial("_NewProject")
+            @Html.Partial("_PrioritySelection")
+            @Html.Partial("_ProjectDetails")
+            @Html.Partial("_TagSelection")
             @Html.Partial("_TaskDetails")
-            @Html.Partial("_DueDateSelection", @Model)
-            @Html.Partial("_UserSelection", @Model)
-            @Html.Partial("_PrioritySelection", @Model)
-            @Html.Partial("_TagSelection", @Model)
+            @Html.Partial("_UserSelection")
         }
     </div>

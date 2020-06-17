@@ -1,14 +1,13 @@
 ﻿/** Adds a new tag to the database
  * 
- * @param {string} tagName The name of the tag
  * @param {number} projectId The ID of project the tag belongs to
- * @param {number} taskId The ID of the task that is getting the tag
+ * @param {string} name The name of the tag
  */
-function addTagToDatabase(tagName, taskId, projectId) {
+function addTagToDatabase(projectId, name) {
     $.ajax({
         type: "POST",
         url: "/Tag/New",
-        data: { tagName: tagName, taskId: taskId, projectId: projectId }
+        data: { projectId: projectId, name: name }
     });
 }
 
@@ -22,5 +21,17 @@ function setTagColorIndexInDatabase(tagId, colorIndex) {
         type: "POST",
         url: "/Tag/SetColorIndex",
         data: { tagId: tagId, colorIndex: colorIndex }
+    });
+}
+
+/** Adds a new tag to the database
+ * 
+ * @param {number} tagId The ID of the tag
+ */
+function removeTagFromDatabase(tagId) {
+    $.ajax({
+        type: "POST",
+        url: "/Tag/Remove",
+        data: { tagId: tagId }
     });
 }

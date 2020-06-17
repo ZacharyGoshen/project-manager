@@ -9,12 +9,13 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/board.css" />
     <link rel="stylesheet" href="~/css/colorOptions.css" />
-    <link rel="stylesheet" href="~/css/details.css" />
     <link rel="stylesheet" href="~/css/list.css" />
     <link rel="stylesheet" href="~/css/navbar.css" />
     <link rel="stylesheet" href="~/css/newProject.css" />
+    <link rel="stylesheet" href="~/css/projectDetails.css" />
     <link rel="stylesheet" href="~/css/setDueDate.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/taskDetails.css" />
 </head>
 <body>
     <div id="navBar">
@@ -22,7 +23,7 @@
             @if (Model.Projects.Count > 0)
             {
                 <div id="currentProject" data-project-id="@Model.CurrentProject.ProjectId">
-                    <div id="currentProjectName">@Model.CurrentProject.Name</div>
+                    <div id="currentProjectName" onclick="openProjectDetailsView()">@Model.CurrentProject.Name</div>
                     <div id="projectDropDownButton" onclick="toggleProjectDropDownMenu()">&#9660</div>
                 </div>
                 <div id="projectDropDownMenu" class="hidden">
@@ -76,15 +77,16 @@
     <script src="~/js/board/taskAssignedUser.js" asp-append-version="true"></script>
     <script src="~/js/board/taskDueDate.js" asp-append-version="true"></script>
     <script src="~/js/board/utility.js" asp-append-version="true"></script>
-    <script src="~/js/details/index.js" asp-append-version="true"></script>
-    <script src="~/js/details/priority.js" asp-append-version="true"></script>
-    <script src="~/js/details/tag.js" asp-append-version="true"></script>
     <script src="~/js/newProject/index.js" asp-append-version="true"></script>
+    <script src="~/js/projectDetails/index.js" asp-append-version="true"></script>
     <script src="~/js/shared/dueDateSelection.js" asp-append-version="true"></script>
     <script src="~/js/shared/navbar.js" asp-append-version="true"></script>
     <script src="~/js/shared/site.js" asp-append-version="true"></script>
     <script src="~/js/shared/userSelection.js" asp-append-version="true"></script>
     <script src="~/js/shared/validation.js" asp-append-version="true"></script>
+    <script src="~/js/taskDetails/index.js" asp-append-version="true"></script>
+    <script src="~/js/taskDetails/priority.js" asp-append-version="true"></script>
+    <script src="~/js/taskDetails/tag.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -106,14 +106,14 @@ function reloadTagSearchResultsOnInput() {
         }
         $("#createTagButton").html("+ Create tag named '" + input + "'");
 
-        input = input.toLowerCase().trim();
+        //input = input.toLowerCase().trim();
 
-        $(".tag-search-result .task-tag").each(function () {
-            let name = $(this).text().toLowerCase();
-            if (input.length != 0 && name.includes(input)) {
-                $(this).parent().removeClass("hidden");
-            }
-        });
+        //$(".tag-search-result .task-tag").each(function () {
+        //    let name = $(this).text().toLowerCase();
+        //    if (input.length != 0 && name.includes(input)) {
+        //        $(this).parent().removeClass("hidden");
+        //    }
+        //});
     });
 }
 
@@ -131,7 +131,7 @@ function resetTagSearchResults() {
  */
 function createTag() {
     let taskId = $("#taskDetailsContainer").data("taskId");
-    let projectId = $("#projectDropDownDiv").data("projectId");
+    let projectId = $("#currentProject").data("projectId");
 
     let createTagButtonText = $("#createTagButton").html();
     let tagName = createTagButtonText.slice(createTagButtonText.indexOf("'") + 1, -1);

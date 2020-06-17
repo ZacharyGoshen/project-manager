@@ -501,7 +501,7 @@ function taskDetailsAssigneeSearchResultOnClick(searchResult) {
     }
 };
 
-/** Toggle the assignee selection container of a task's details view between
+/** Toggle the due date selection container of a task's details view between
  * open and closed */
 function toggleTaskDetailsDueDateSelectionContainer() {
     let button = $("#taskDetailsDueDate");

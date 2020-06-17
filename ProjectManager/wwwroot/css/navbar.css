@@ -32,6 +32,9 @@
 #currentProjectName {
     font-size: 20px;
 }
+#currentProjectName:hover {
+    cursor: pointer;
+}
 #projectDropDownButton {
     color: #9e9e9e;
     font-size: 12px;
