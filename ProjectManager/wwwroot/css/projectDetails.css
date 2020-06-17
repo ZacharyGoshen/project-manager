@@ -21,6 +21,11 @@
 .project-details-value:hover .project-details-remove-button > div {
     color: #9e9e9e;
 }
+.project-details-value-read-only {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
 .project-details-remove-button {
     background-color: white;
     border-radius: 50%;
@@ -66,6 +71,15 @@
 .project-details-team-member:hover .project-details-remove-button > div {
     color: #9e9e9e;
 }
+.project-details-team-member-read-only {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    margin-right: 10px;
+}
+.project-details-team-member-read-only > div:first-child {
+    margin-right: 10px;
+}
 .project-details-tag {
     align-items: center;
     border-radius: 10px;
@@ -79,6 +93,9 @@
 .project-details-tag-name {
     color: white;
     margin-right: 10px;
+}
+.project-details-tag-name-read-only {
+    color: white;
 }
 .project-details-tag-remove-button {
     background-color: white;
@@ -110,7 +127,6 @@
     border-radius: 10px;
     font-size: 1rem;
     overflow-y: scroll;
-    padding: 0px 20px;
     position: absolute;
     z-index: 3;
 }
@@ -118,7 +134,7 @@
     border-bottom: 2px solid #f0f0f0;
     display: flex;
     flex-direction: row-reverse;
-    padding: 10px 0px;
+    padding: 10px 20px;
 }
 #closeProjectDetailsButton > div {
     color: #9e9e9e;
@@ -130,6 +146,7 @@
 #projectDetailsSecondSection {
     border-bottom: 2px solid #f0f0f0;
     font-size: 12px;
+    margin: 0px 20px;
     padding: 10px;
 }
 #projectDetailsName {
@@ -137,6 +154,10 @@
     font-size: 20px;
     margin-bottom: 10px;
     padding: 5px;
+    width: 100%;
+}
+#projectDetailsNameReadOnly {
+    font-size: 20px;
     width: 100%;
 }
 #projectDetailsName:focus {
@@ -153,19 +174,26 @@
     padding: 5px;
     width: 100%;
 }
+#projectDetailsDescriptionReadOnly {
+    font-size: 12px;
+    width: 100%;
+}
 #projectDetailsDescription:focus {
     border-color: #9e9e9e;
 }
 #projectDetailsThirdSection {
-    height: 400px;
     font-size: 12px;
-    padding: 10px;
+    padding: 10px 30px;
 }
 #projectDetailsThirdSection > div {
     align-items: center;
     display: flex;
     flex-direction: row;
     margin-bottom: 5px;
+}
+#projectDetailsThirdSection > div:nth-child(2) .project-details-value-read-only {
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 #projectDetailsThirdSection > div:nth-child(3) {
     align-items: baseline;

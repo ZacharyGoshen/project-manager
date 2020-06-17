@@ -19,8 +19,14 @@ function openProjectDetailsView() {
         url: "/Project/Get",
         data: { projectId: projectId },
         success: function (project) {
-            loadProjectDetailsViewEditable(project);
-            setUpProjectDetailsViewEditableEventListeners();
+            let currentUserId = $("#loggedInUser").data("userId");
+            if (project.owner.userId == currentUserId) {
+                loadProjectDetailsViewEditable(project);
+                setUpProjectDetailsViewEditableEventListeners();
+            } else {
+                loadProjectDetailsViewReadOnly(project);
+            }
+
             setProjectDetailsViewSizeAndPosition();
         }
     });
@@ -30,8 +36,8 @@ function openProjectDetailsView() {
  */
 function setProjectDetailsViewSizeAndPosition() {
     let container = $("#projectDetailsContainer");
-    container.outerHeight(0.9 * window.innerHeight);
-    container.outerWidth(0.7 * window.innerWidth);
+    container.outerHeight(0.7 * window.innerHeight);
+    container.outerWidth(0.5 * window.innerWidth);
 
     let containerTopOffset = (window.innerHeight / 2) - (container.outerHeight() / 2);
     let containerLeftOffset = (window.innerWidth / 2) - (container.outerWidth() / 2);
@@ -73,14 +79,31 @@ function loadProjectDetailsViewEditable(project) {
         $("#projectDetailsDescription").val(project.description);
     }
 
+    $("#projectDetailsThirdSection").html(`
+        <div>
+            <div class="project-details-label">Due Date:</div>
+            <div id="projectDetailsDueDate" class="project-details-value"></div>
+        </div>
+    `);
     let dueDate = new Date(project.dueDate + "Z");
     updateProjectDetailsViewDueDateHtml(dueDate);
 
+    $("#projectDetailsThirdSection").append(`
+        <div>
+            <div class="project-details-label">Owned By:</div>
+            <div id="projectDetailsOwner" class="project-details-value"></div>
+        </div>
+    `);
     updateProjectDetailsViewOwnerHtml(project.owner.userId, project.owner.firstName, project.owner.lastName)
 
-    $("#projectDetailsTeamMembers").html(`
-        <div id="projectDetailsAddTeamMemberButton">
-            + Add team member
+    $("#projectDetailsThirdSection").append(`
+        <div>
+            <div class="project-details-label">Team Members:</div>
+            <div id="projectDetailsTeamMembers">
+                <div id="projectDetailsAddTeamMemberButton">
+                    + Add team member
+                </div>
+            </div>
         </div>
     `);
     for (userProject of project.teamMembers) {
@@ -98,9 +121,14 @@ function loadProjectDetailsViewEditable(project) {
         `);
     }
 
-    $("#projectDetailsTags").html(`
-        <div id="projectDetailsAddTagButton">
-            + Add tag
+    $("#projectDetailsThirdSection").append(`
+        <div>
+            <div class="project-details-label">Tags:</div>
+            <div id="projectDetailsTags">
+                <div id="projectDetailsAddTagButton">
+                    + Add tag
+                </div>
+            </div>
         </div>
     `);
     for (tag of project.tags) {
@@ -375,6 +403,7 @@ function projectDetailsOwnerSearchResultOnClick(searchResult) {
     let lastName = userName.split(" ")[1];
 
     updateProjectDetailsViewOwnerHtml(userId, firstName, lastName);
+    location.reload();
 };
 
 /** Toggle the team member selection container of the project details view
@@ -538,4 +567,78 @@ function findProjectDetailsTagWithId(tagId) {
         }
     });
     return tag;
+}
+
+function loadProjectDetailsViewReadOnly(project) {
+    $("#projectDetailsSecondSection").html(`
+        <div id="projectDetailsNameReadOnly">` + project.name + `</div>
+        <div id="projectDetailsDescriptionReadOnly" class="project-details-value-read-only">
+            ` + project.description + `
+        </div>
+    `);
+
+    $("#projectDetailsThirdSection").html(`
+        <div>
+            <div class="project-details-label">Due Date:</div>
+            <div id="projectDetailsDueDate" class="project-details-value-read-only"></div>
+        </div>
+    `);
+    let dueDate = new Date(project.dueDate + "Z");
+    if (dueDate.getTime() == new Date("0001-01-01T00:00:00Z").getTime()) {
+        $("#projectDetailsDueDate").html(`
+            <div>None</div>
+        `);
+    } else {
+        $("#projectDetailsDueDate").html(`
+            <div>` + dueDate.toLocaleDateString(undefined, { month: "long", day: "numeric" }) + `</div>
+            <div class="project-details-remove-button">
+                <div>x</div>
+            </div>
+        `);
+    }
+
+    $("#projectDetailsThirdSection").append(`
+        <div>
+            <div class="project-details-label">Owned By:</div>
+            <div id="projectDetailsOwner" class="project-details-value-read-only"></div>
+        </div>
+    `);
+    $("#projectDetailsOwner").html(`
+        <div class="default-profile-pic">
+            <div>` + project.owner.firstName[0] + project.owner.lastName[0] + `</div>
+        </div>
+        <div>` + project.owner.firstName + " " + project.owner.lastName + `</div>
+    `);
+
+    $("#projectDetailsThirdSection").append(`
+        <div>
+            <div class="project-details-label">Team Members:</div>
+            <div id="projectDetailsTeamMembers"></div>
+        </div>
+    `);
+    for (userProject of project.teamMembers) {
+        let teamMember = userProject.user;
+        $("#projectDetailsTeamMembers").append(`
+            <div class="project-details-team-member-read-only">
+                <div class="default-profile-pic">
+                    <div>` + teamMember.firstName[0] + teamMember.lastName[0] + `</div>
+                </div>
+                <div>` + teamMember.firstName + ` ` + teamMember.lastName + `</div>
+            </div>
+        `);
+    }
+
+    $("#projectDetailsThirdSection").append(`
+        <div>
+            <div class="project-details-label">Tags:</div>
+            <div id="projectDetailsTags"></div>
+        </div>
+    `);
+    for (tag of project.tags) {
+        $("#projectDetailsTags").append(`
+            <div class="project-details-tag color-option-` + tag.colorIndex + `">
+                <div class="project-details-tag-name-read-only">` + tag.name + `</div>
+            </div>
+        `);
+    }
 }
