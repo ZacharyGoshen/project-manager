@@ -21,13 +21,13 @@ namespace ProjectManager.Controllers
             return View();
         }
 
-        public IActionResult Signup()
+        public IActionResult List()
         {
-            return View();
-        }
+            if (this.UserId == 0)
+            {
+                return RedirectToAction("Login", "Home");
+            }
 
-        public IActionResult Index()
-        {
             using (var context = new DAL.MyContext())
             {
                 context.Database.EnsureCreated();
@@ -76,7 +76,10 @@ namespace ProjectManager.Controllers
                 .ToList();
             foreach (var ownedProject in ownedProjects)
             {
-                projects.Add(ownedProject);
+                if (projects.IndexOf(ownedProject) == -1)
+                {
+                    projects.Add(ownedProject);
+                }
             }
 
             var model = new ProjectViewModel()
@@ -84,6 +87,7 @@ namespace ProjectManager.Controllers
                 LoggedInUser = loggedInUser,
                 Projects = projects
             };
+
 
             if (projects.Count > 0)
             {
@@ -93,7 +97,6 @@ namespace ProjectManager.Controllers
                     currentProject = context.Projects.Find(CurrentProjectId);
                 }
                 model.CurrentProject = currentProject;
-
                 var categoriesInCurrentProject = context.Categories
                     .Where(c => c.Project == currentProject)
                     .OrderBy(c => c.Order)
@@ -119,6 +122,14 @@ namespace ProjectManager.Controllers
 
                 model.Users = context.Users.ToList();
                 model.Tags = context.Tags.Where(t => t.Project == currentProject).ToList();
+            }
+            else
+            {
+                model.CurrentProject = null;
+                model.Categories = new List<Category>();
+                model.Tasks = new List<List<Models.Task>>();
+                model.Users = new List<User>();
+                model.Tags = new List<Tag>();
             }
             return View(model);
         }

@@ -293,11 +293,12 @@ function updateTaskDetailsHtml(task) {
     }
 
     tagContainerHtml += `
-        <div id="taskDetailsAddTagButton" onclick="toggleDetailsTagSelectionContainer()">
+        <div id="taskDetailsAddTagButton">
             + Add tag
         </div>
     `;
     $("#taskDetailsTags").html(tagContainerHtml);
+    toggleTaskDetailsTagSelectionContainerOnClick();
 
     let creationDate = convertUTCStringToUTCDate(task.creationTime);
     let creationDateDay = creationDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });

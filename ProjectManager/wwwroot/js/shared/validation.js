@@ -20,7 +20,11 @@ function checkIfEmailIsValid(email) {
         return false;
     } else {
         let regex = /^[A-Za-z0-9_\.\-]*[A-Za-z0-9]+@[A-Za-z0-9\-]+\.[A-Za-z]{2,}$/;
-        return email.match(regex);
+        if (email.match(regex)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
@@ -33,7 +37,11 @@ function checkIfEmailIsValid(email) {
  */
 function checkIfPasswordIsValid(password) {
     let regex = /^[A-Za-z0-9#?!@$%^&*-]{8,128}$/;
-    return password.match(regex);
+    if (password.match(regex)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /** Check if a first name is valid
@@ -45,21 +53,25 @@ function checkIfPasswordIsValid(password) {
  */
 function checkIfFirstNameIsValid(firstName) {
     let regex = /^[A-Za-z]{2,30}$/
-    return firstName.match(regex);
+    if (firstName.match(regex)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /** Check if a last name is valid
  * - Length is between 2 and 30 characters
- * - kast name only uses letters
+ * - Last name only uses letters
  *
  * @param {string} lastName The last name being validated
  * @returns True if last name is valid, false otherwise
  */
 function checkIfLastNameIsValid(lastName) {
-    if (lastName.length < 2 || lastName.length > 30) {
-        return false;
+    let regex = /^[A-Za-z]{2,30}$/
+    if (lastName.match(regex)) {
+        return true;
     } else {
-        let regex = /^[A-Za-z]{2,30}$/
-        return lastName.match(regex);
+        return false;
     }
 }

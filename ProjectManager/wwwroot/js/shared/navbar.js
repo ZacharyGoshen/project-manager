@@ -1,4 +1,8 @@
-﻿function changeCurrentProject(projectId) {
+﻿/** Change the current project
+ * 
+ * @param {any} projectId The ID of the project you want to view
+ */
+function changeCurrentProject(projectId) {
     let ajaxRequest = $.ajax({
         type: "POST",
         url: "/Project/SetCurrentProject",

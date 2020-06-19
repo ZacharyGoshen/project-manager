@@ -29,6 +29,13 @@ textarea {
 textarea:focus {
     outline: none;
 }
+.error-message {
+    background-color: #ffccbb;
+    border-radius: 5px;
+    color: black;
+    margin-bottom: 10px;
+    padding: 10px;
+}
 .default-profile-pic {
     background-color: #2a9df4;
     border: 2px solid transparent;
@@ -137,11 +144,13 @@ textarea:focus {
     outline: none;
 }
 #userSearchResultsContainer {
-    position: absolute;
     background-color: white;
     border: 2px solid #f0f0f0;
-    width: 100%;
     min-height: 39px;
+    max-height: 200px;
+    overflow-y: scroll;
+    position: absolute;
+    width: 100%;
 }
 #userSearchResultsContainer div:hover {
     background-color: #f0f0f0;
@@ -185,8 +194,11 @@ textarea:focus {
 #tagSearchResultsContainer {
     background-color: white;
     border: 2px solid #f0f0f0;
+    min-height: 32px;
+    max-height: 200px;
+    overflow-y: scroll;
     position: absolute;
-    width: 150%;
+    width: 100%;
 }
 #tagSearchResultsContainer div:hover {
     cursor: pointer;

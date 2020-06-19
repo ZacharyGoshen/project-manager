@@ -483,6 +483,30 @@ function toggleProjectDetailsTagSelectionContainerOnClick() {
         let xOffset = button.offset().left;
         let yOffset = button.offset().top + button.outerHeight();
         toggleTagSelectionContainer(xOffset, yOffset);
+        $("#createTagButton").removeClass("hidden");
+
+        updateCreateTagButtonHtmlOnInput();
+    });
+}
+
+/** Updates the create tag button to match the tag search box input whenever
+ * the user types
+ */
+function updateCreateTagButtonHtmlOnInput() {
+    let searchBox = $("#tagSearchBox");
+    searchBox.keydown(function (event) {
+        resetTagSearchResults();
+
+        let lastKeyPressed = String.fromCharCode(event.which)
+        if (!event.shiftKey) {
+            lastKeyPressed = lastKeyPressed.toLowerCase();
+        }
+
+        let input = searchBox.val() + lastKeyPressed;
+        if (event.keyCode === 8) {
+            input = input.substring(0, input.length - 2);
+        }
+        $("#createTagButton").html("+ Create tag named '" + input + "'");
     });
 }
 

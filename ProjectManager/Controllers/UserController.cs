@@ -44,6 +44,20 @@ namespace ProjectManager.Controllers
             return Json(matchingUsers);
         }
 
+        public JsonResult GetWithEmail(string email)
+        {
+            var context = new DAL.MyContext();
+            if (context.Users.Where(u => u.Email == email).ToList().Count == 0)
+            {
+                return Json(null);
+            }
+            else
+            {
+                var user = context.Users.Where(u => u.Email == email).FirstOrDefault();
+                return Json(user);
+            }
+        }
+
         [HttpPost]
         public JsonResult New(string firstName, string lastName, string email, string password)
         {
@@ -72,6 +86,38 @@ namespace ProjectManager.Controllers
             {
                 return Json("failure");
             }
+        }
+
+        public void SetFirstName(int userId, string firstName)
+        {
+            var context = new DAL.MyContext();
+            var user = context.Users.Find(userId);
+            user.FirstName = firstName;
+            context.SaveChanges();
+        }
+
+        public void SetLastName(int userId, string lastName)
+        {
+            var context = new DAL.MyContext();
+            var user = context.Users.Find(userId);
+            user.LastName = lastName;
+            context.SaveChanges();
+        }
+
+        public void SetEmail(int userId, string email)
+        {
+            var context = new DAL.MyContext();
+            var user = context.Users.Find(userId);
+            user.Email = email;
+            context.SaveChanges();
+        }
+
+        public void SetPassword(int userId, string password)
+        {
+            var context = new DAL.MyContext();
+            var user = context.Users.Find(userId);
+            user.Password = HashPassword(password, user.Salt);
+            context.SaveChanges();
         }
 
         [HttpPost]
@@ -107,6 +153,21 @@ namespace ProjectManager.Controllers
 
             assignedUser.AssignedTasks.Remove(assignedTask);
             context.SaveChanges();
+        }
+
+        public JsonResult Authenticate(int userId, string password)
+        {
+            var context = new DAL.MyContext();
+            var user = context.Users.Find(userId);
+            var hashedPassword = HashPassword(password, user.Salt);
+            if (hashedPassword == user.Password)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json(false);
+            }
         }
 
         // generate a 128-bit salt using a secure PRNG

@@ -28,8 +28,6 @@ function openNewProjectView() {
         top: containerTopOffset,
         left: containerLeftOffset
     });
-
-
 }
 
 /** Close the new project view

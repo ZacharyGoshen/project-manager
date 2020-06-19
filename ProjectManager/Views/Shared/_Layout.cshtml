@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project Manager</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/account.css" />
     <link rel="stylesheet" href="~/css/board.css" />
     <link rel="stylesheet" href="~/css/colorOptions.css" />
     <link rel="stylesheet" href="~/css/list.css" />
@@ -54,13 +55,23 @@
                 <div>@Model.LoggedInUser.FirstName[0]@Model.LoggedInUser.LastName[0]</div>
             </div>
             <div id="userDropDownMenu" class="hidden">
+                <div onclick="openAccountView()">My Account</div>
                 <div id="userLogoutButton" onclick="logOutUser()">Log Out</div>
             </div>
         </div>
     </div>
     @RenderBody()
+    @Html.Partial("_Account")
+    @Html.Partial("_DueDateSelection")
+    @Html.Partial("_NewProject")
+    @Html.Partial("_PrioritySelection")
+    @Html.Partial("_ProjectDetails")
+    @Html.Partial("_TagSelection")
+    @Html.Partial("_TaskDetails")
+    @Html.Partial("_UserSelection")
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/account/index.js" asp-append-version="true"></script>
     <script src="~/js/ajax/category.js" asp-append-version="true"></script>
     <script src="~/js/ajax/comment.js" asp-append-version="true"></script>
     <script src="~/js/ajax/project.js" asp-append-version="true"></script>
@@ -82,6 +93,7 @@
     <script src="~/js/shared/dueDateSelection.js" asp-append-version="true"></script>
     <script src="~/js/shared/navbar.js" asp-append-version="true"></script>
     <script src="~/js/shared/site.js" asp-append-version="true"></script>
+    <script src="~/js/shared/tagSelection.js" asp-append-version="true"></script>
     <script src="~/js/shared/userSelection.js" asp-append-version="true"></script>
     <script src="~/js/shared/validation.js" asp-append-version="true"></script>
     <script src="~/js/taskDetails/index.js" asp-append-version="true"></script>

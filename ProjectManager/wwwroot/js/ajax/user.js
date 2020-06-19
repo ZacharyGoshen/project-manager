@@ -45,7 +45,6 @@ function logInUser(email, password) {
 /** Log out the user and redirect to the login view
  */
 function logOutUser() {
-    console.log("called");
     $.ajax({
         type: "POST",
         url: "/User/LogOut",
@@ -53,6 +52,48 @@ function logOutUser() {
             window.location.href = "/Home/Login";
         }
     });
+}
+
+/** Set the first name of a user in the database
+ * 
+ * @param {number} userId The ID of the user
+ * @param {any} firstName The new first name of the user
+ */
+function setUserFirstNameInDatabase(userId, firstName) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/User/SetFirstName",
+        data: { userId: userId, firstName: firstName }
+    });
+    return ajaxRequest;
+}
+
+/** Set the last name of a user in the database
+ * 
+ * @param {number} userId The ID of the user
+ * @param {any} lastName The new last name of the user
+ */
+function setUserLastNameInDatabase(userId, lastName) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/User/SetLastName",
+        data: { userId: userId, lastName: lastName }
+    });
+    return ajaxRequest;
+}
+
+/** Set the email of a user in the database
+ * 
+ * @param {number} userId The ID of the user
+ * @param {any} email The new email of the user
+ */
+function setUserEmailInDatabase(userId, email) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/User/SetEmail",
+        data: { userId: userId, email: email }
+    });
+    return ajaxRequest;
 }
 
 /** Remove an assigned task from a user in the database

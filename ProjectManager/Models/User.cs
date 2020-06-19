@@ -11,6 +11,7 @@ namespace ProjectManager.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public byte[] Salt { get; set; }
+        public int ColorIndex { get; set; }
 
         public IList<Task> AssignedTasks { get; set; }
         public IList<Task> SubmittedTasks { get; set; }
