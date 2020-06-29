@@ -27,30 +27,8 @@ function boardAssigneeSearchResultOnClick(searchResult) {
 
     assignUserToTaskInDatabase(taskId, userId);
 
-    let userName = searchResult.find(".user-search-result-name").html();
-    let firstName = userName.split(" ")[0];
-    let lastName = userName.split(" ")[1];
-    updateBoardTaskAssigneeHtml(taskId, firstName, lastName);
-};
-
-/** Update the html of the board task to show the user that was assigned
- * 
- * @param {number} taskId The ID of the task who's being assigned a user
- * @param {string} firstName The assigned user's first name
- * @param {string} lastName The assigned user's last name
- */
-function updateBoardTaskAssigneeHtml(taskId, firstName, lastName) {
     let task = findBoardTaskWithId(taskId);
-
-    if (firstName == null && lastName == null) {
-        task.find(".board-task-assignee").html(`
-            <input class="unassigned-user-icon" type="image" src="../images/user.png" />
-        `);
-    } else {
-        task.find(".board-task-assignee").html(`
-            <div class="default-profile-pic">
-                <div>` + firstName[0] + lastName[0] + `</div>
-            </div>
-        `);
-    }
-}
+    let profilePicture = searchResult.children()[0];
+    task.find(".board-task-assignee").html("");
+    task.find(".board-task-assignee").append(profilePicture);
+};

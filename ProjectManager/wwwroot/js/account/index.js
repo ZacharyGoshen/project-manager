@@ -140,3 +140,42 @@ function changePassword() {
         });
     }
 }
+
+function toggleAccountPictureColorSelectionContainer() {
+    let button = $("#accountPictureColorButton");
+    let containerTopOffset = button.offset().top + button.outerHeight();
+    let containerLeftOffset = button.offset().left;
+    toggleColorSelectionContainer(containerLeftOffset, containerTopOffset);
+
+    setUpAcountPictureColorOnClick();
+}
+
+/** Update the tag color in the database and project details view when a tag
+ * color option is clicked
+ */
+function setUpAcountPictureColorOnClick() {
+    let colorContainer = $("#colorSelectionContainer");
+    colorContainer.find(".color-option").each(function () {
+        $(this).off("click");
+        let colorIndex = $(this).data("colorIndex");
+        $(this).click(function () {
+            let userId = $("#loggedInUser").data("userId");
+            toggleColorSelectionContainer(0, 0);
+            setUserColorIndexInDatabase(userId, colorIndex);
+
+            updateAccountViewPictureColor(colorIndex);
+            updateNavBarPictureColor(colorIndex);
+        });
+    });
+}
+
+function updateAccountViewPictureColor(colorIndex) {
+    $("#accountDefaultPicture").removeClass();
+    $("#accountDefaultPicture").addClass("color-option-" + colorIndex);
+}
+
+function updateNavBarPictureColor(colorIndex) {
+    $("#loggedInUser").removeClass();
+    $("#loggedInUser").addClass("default-profile-pic");
+    $("#loggedInUser").addClass("color-option-" + colorIndex);
+}

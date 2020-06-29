@@ -86,7 +86,7 @@ function updateUserSearchResultsHtml(users) {
     for (user of users) {
         $("#userSearchResultsContainer").append(`
             <div class="user-search-result" data-user-id="` + user.userId + `">
-                <div class="default-profile-pic">
+                <div class="default-profile-pic color-option-` + user.colorIndex + `">
                     <div>` + user.firstName[0] + user.lastName[0] + `</div>
                 </div>
                 <div class="user-search-result-name">` + user.firstName + " " + user.lastName + `</div>

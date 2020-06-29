@@ -9,8 +9,7 @@ namespace ProjectManager.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime CreationTime { get; set; }
-        public DateTime DueDateRangeStart { get; set; }
-        public DateTime DueDateRangeEnd { get; set; }
+        public DateTime DueDate { get; set; }
         public int Order { get; set; }
         public int Priority { get; set; }
         public bool IsCompleted { get; set; }

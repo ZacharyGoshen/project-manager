@@ -27,11 +27,11 @@ namespace ProjectManager.Controllers
             return Json(tag.TagId);
         }
 
-        public void SetColorIndex(int tagId, int colorIndex)
+        public void SetBackgroundColor(int tagId, int backgroundColor)
         {
             var context = new MyContext();
             var tag = context.Tags.Find(tagId);
-            tag.ColorIndex = colorIndex;
+            tag.BackgroundColor = backgroundColor;
             context.SaveChanges();
         }
 

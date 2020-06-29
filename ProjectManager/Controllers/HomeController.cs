@@ -134,6 +134,11 @@ namespace ProjectManager.Controllers
             return View(model);
         }
 
+        public IActionResult BackBoneBoard()
+        {
+            return View();
+        }
+
         public JsonResult GetCategoriesInProject(int projectId)
         {
             using (var context = new DAL.MyContext())
@@ -335,13 +340,11 @@ namespace ProjectManager.Controllers
             var task = context.Tasks.Find(taskId);
             if ((day == -1) && (month == -1) && (year == -1))
             {
-                task.DueDateRangeStart = new DateTime();
-                task.DueDateRangeEnd = new DateTime();
+                task.DueDate = new DateTime();
             }
             else
             {
-                task.DueDateRangeStart = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
-                task.DueDateRangeEnd = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
+                task.DueDate = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
             }
             context.SaveChanges();
         }

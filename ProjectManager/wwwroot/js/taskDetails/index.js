@@ -269,7 +269,7 @@ function updateTaskDetailsHtml(task) {
 
     if (task.assignedUser) {
         $("#taskDetailsAssignee").data("userId", task.assignedUser.userId);
-        updateTaskDetailsAssigneeHtml(task.assignedUser.firstName, task.assignedUser.lastName);
+        updateTaskDetailsAssigneeHtml(task.assignedUser.firstName, task.assignedUser.lastName, task.assignedUser.colorIndex);
     } else {
         updateTaskDetailsAssigneeHtml(null, null);
     }
@@ -370,7 +370,7 @@ function updateTaskDetailsDescriptionHtml(description) {
  * @param {string} firstName The first name of the assignee
  * @param {string} lastName The last name of the assignee
  */
-function updateTaskDetailsAssigneeHtml(firstName, lastName) {
+function updateTaskDetailsAssigneeHtml(firstName, lastName, colorIndex) {
     if (firstName == null && lastName == null) {
         $("#taskDetailsAssignee").html(`
             <input class="unassigned-user-icon" type="image" src="../images/user.png" />
@@ -378,7 +378,7 @@ function updateTaskDetailsAssigneeHtml(firstName, lastName) {
         `);
     } else {
         $("#taskDetailsAssignee").html(`
-            <div class="default-profile-pic">
+            <div class="default-profile-pic color-option-` + colorIndex + `">
                 <div>` + firstName[0] + lastName[0] + `</div>
             </div>
             <div>` + firstName + ` ` + lastName + `</div>
@@ -491,11 +491,16 @@ function taskDetailsAssigneeSearchResultOnClick(searchResult) {
 
     assignUserToTaskInDatabase(taskId, userId);
 
+    let profilePictureHtml = searchResult.children()[0].outerHTML;
     let userName = searchResult.find(".user-search-result-name").html();
-    let firstName = userName.split(" ")[0];
-    let lastName = userName.split(" ")[1];
 
-    updateTaskDetailsAssigneeHtml(firstName, lastName);
+    $("#taskDetailsAssignee").html(`
+        ` + profilePictureHtml + `
+        <div>` + userName + `</div>
+        <div class="task-details-remove-button" onclick="removeTaskAssignee()">
+            <div>x</div>
+        </div>
+    `);
 
     if (currentView == "board") {
         updateBoardTaskAssigneeHtml(taskId, firstName, lastName)

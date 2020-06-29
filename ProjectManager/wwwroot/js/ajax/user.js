@@ -57,7 +57,7 @@ function logOutUser() {
 /** Set the first name of a user in the database
  * 
  * @param {number} userId The ID of the user
- * @param {any} firstName The new first name of the user
+ * @param {string} firstName The new first name of the user
  */
 function setUserFirstNameInDatabase(userId, firstName) {
     let ajaxRequest = $.ajax({
@@ -71,7 +71,7 @@ function setUserFirstNameInDatabase(userId, firstName) {
 /** Set the last name of a user in the database
  * 
  * @param {number} userId The ID of the user
- * @param {any} lastName The new last name of the user
+ * @param {string} lastName The new last name of the user
  */
 function setUserLastNameInDatabase(userId, lastName) {
     let ajaxRequest = $.ajax({
@@ -85,13 +85,27 @@ function setUserLastNameInDatabase(userId, lastName) {
 /** Set the email of a user in the database
  * 
  * @param {number} userId The ID of the user
- * @param {any} email The new email of the user
+ * @param {string} email The new email of the user
  */
 function setUserEmailInDatabase(userId, email) {
     let ajaxRequest = $.ajax({
         type: "POST",
         url: "/User/SetEmail",
         data: { userId: userId, email: email }
+    });
+    return ajaxRequest;
+}
+
+/** Set the color index of a user's default profile picture in the database
+ * 
+ * @param {number} userId The ID of the user
+ * @param {number} colorIndex The new color index of the user
+ */
+function setUserColorIndexInDatabase(userId, colorIndex) {
+    let ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/User/SetColorIndex",
+        data: { userId: userId, colorIndex: colorIndex }
     });
     return ajaxRequest;
 }

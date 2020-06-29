@@ -1,0 +1,124 @@
+﻿@{
+    Layout = "";
+}
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Project Manager</title>
+        <link rel="stylesheet" href="~/css/backboneBoard.css" />
+    </head>
+    <body>
+        <div id="main-container" class="flex-column"></div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.10.2/underscore-min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone-relational/0.10.0/backbone-relational.min.js"></script>
+        <script type="text/javascript" src="~/js/app.js"></script>
+        <script type="text/javascript" src="~/js/templates/templates.js"></script>
+        <script type="text/javascript" src="~/js/models/models.js"></script>
+        <script type="text/javascript" src="~/js/collections/collections.js"></script>
+        <script type="text/javascript" src="~/js/views/board.js"></script>
+        <script type="text/javascript" src="~/js/views/boardCategory.js"></script>
+        <script type="text/javascript" src="~/js/views/boardTask.js"></script>
+        <script type="text/javascript" src="~/js/views/dateSelection.js"></script>
+        <script type="text/javascript" src="~/js/views/dateSelectionDay.js"></script>
+        <script type="text/javascript" src="~/js/views/dateSelectionWeek.js"></script>
+        <script type="text/javascript" src="~/js/views/deleteCategoryConfirmation.js"></script>
+        <script type="text/javascript" src="~/js/views/dueDateAssigned.js"></script>
+        <script type="text/javascript" src="~/js/views/dueDateIcon.js"></script>
+        <script type="text/javascript" src="~/js/views/navigationBar.js"></script>
+        <script type="text/javascript" src="~/js/views/popup.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetails.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsDescription.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsName.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsOwner.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMember.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMembers.js"></script>
+        <script type="text/javascript" src="~/js/views/prioritySelection.js"></script>
+        <script type="text/javascript" src="~/js/views/prioritySelectionOption.js"></script>
+        <script type="text/javascript" src="~/js/views/tagSelection.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetails.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsComment.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsComments.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsCompleted.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsDescription.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsDueDate.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsName.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsPriority.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsTags.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsUser.js"></script>
+        <script type="text/javascript" src="~/js/views/userPicture.js"></script>
+        <script type="text/javascript" src="~/js/views/userPictureDefault.js"></script>
+        <script type="text/javascript" src="~/js/views/userPictureUnassigned.js"></script>
+        <script type="text/javascript" src="~/js/views/userSelection.js"></script>
+        <script type="text/javascript" src="~/js/views/userSelectionResult.js"></script>
+
+        <script>function getElementHovered(event, selector) {
+                let mouseX = event.clientX;
+                let mouseY = event.clientY;
+
+                let elementHovered = null;
+                selector.each(function () {
+                    let element = $(this);
+                    let elementTopOffset = element.offset().top;
+                    let elementBottomOffset = elementTopOffset + element.outerHeight();
+                    let elementLeftOffset = element.offset().left;
+                    let elementRightOffset = elementLeftOffset + element.outerWidth();
+
+                    if (
+                        (mouseX > elementLeftOffset) &&
+                        (mouseX < elementRightOffset) &&
+                        (mouseY > elementTopOffset) &&
+                        (mouseY < elementBottomOffset)
+                    ) {
+                        elementHovered = element;
+                        return;
+                    }
+                });
+
+                return elementHovered;
+            }
+
+            function priorityToString(priority) {
+                if (priority == 5) return "Very High";
+                else if (priority == 4) return "High";
+                else if (priority == 3) return "Medium";
+                else if (priority == 2) return "Low";
+                else if (priority == 1) return "Very Low";
+                else return "No Priority";
+            }
+
+            function getDaysInMonth(month, year) {
+                let nextMonth = month + 1;
+                let yearOfNextMonth = year;
+                if (month == 11) {
+                    nextMonth = 0;
+                    yearOfNextMonth = year + 1;
+                }
+                return new Date(yearOfNextMonth, nextMonth, 0).getDate();
+            }
+
+            function getWeeksInMonth(month, year) {
+                let sundayOfFirstWeek = new Date(year, month);
+                let numberOfDaysInWeekBeforeFirst = 0;
+                while (sundayOfFirstWeek.getDay() != 0) {
+                    sundayOfFirstWeek.setDate(sundayOfFirstWeek.getDate() - 1);
+                    numberOfDaysInWeekBeforeFirst += 1;
+                }
+                let daysInMonth = getDaysInMonth(month, year);
+                return Math.ceil((daysInMonth + numberOfDaysInWeekBeforeFirst) / 7.0);
+            }
+
+            function getSundayOfFirstWeek(month, year) {
+                let sundayOfFirstWeek = new Date(year, month);
+                while (sundayOfFirstWeek.getDay() != 0) {
+                    sundayOfFirstWeek.setDate(sundayOfFirstWeek.getDate() - 1);
+                }
+                return sundayOfFirstWeek;
+            }
+
+            ProjectManager.start();</script>
+    </body>
+</html>

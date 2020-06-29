@@ -8,6 +8,7 @@
     <title>Project Manager</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/account.css" />
+    <link rel="stylesheet" href="~/css/backboneBoard.css" />
     <link rel="stylesheet" href="~/css/board.css" />
     <link rel="stylesheet" href="~/css/colorOptions.css" />
     <link rel="stylesheet" href="~/css/list.css" />
@@ -41,6 +42,7 @@
                     <a class="nav-bar-link" asp-controller="" asp-action="">List</a>
                     <a class="nav-bar-link" asp-controller="Home" asp-action="Board">Board</a>
                     <a class="nav-bar-link" asp-controller="" asp-action="">Calendar</a>
+                    <a class="nav-bar-link" asp-controller="Home" asp-action="BackBoneBoard">Backbone.js Board</a>
                 </div>
             }
             else
@@ -51,7 +53,7 @@
             }
         </div>
         <div id="navBarRightSide">
-            <div id="loggedInUser" class="default-profile-pic" data-user-id="@Model.LoggedInUser.UserId" data-user-name="@Model.LoggedInUser.FirstName @Model.LoggedInUser.LastName" onclick="toggleUserDropDownMenu()">
+            <div id="loggedInUser" class="default-profile-pic color-option-@Model.LoggedInUser.BackgroundColor" data-user-id="@Model.LoggedInUser.UserId" data-user-name="@Model.LoggedInUser.FirstName @Model.LoggedInUser.LastName" onclick="toggleUserDropDownMenu()">
                 <div>@Model.LoggedInUser.FirstName[0]@Model.LoggedInUser.LastName[0]</div>
             </div>
             <div id="userDropDownMenu" class="hidden">
@@ -62,6 +64,7 @@
     </div>
     @RenderBody()
     @Html.Partial("_Account")
+    @Html.Partial("_ColorSelection")
     @Html.Partial("_DueDateSelection")
     @Html.Partial("_NewProject")
     @Html.Partial("_PrioritySelection")
@@ -90,6 +93,7 @@
     <script src="~/js/board/utility.js" asp-append-version="true"></script>
     <script src="~/js/newProject/index.js" asp-append-version="true"></script>
     <script src="~/js/projectDetails/index.js" asp-append-version="true"></script>
+    <script src="~/js/shared/colorSelection.js" asp-append-version="true"></script>
     <script src="~/js/shared/dueDateSelection.js" asp-append-version="true"></script>
     <script src="~/js/shared/navbar.js" asp-append-version="true"></script>
     <script src="~/js/shared/site.js" asp-append-version="true"></script>

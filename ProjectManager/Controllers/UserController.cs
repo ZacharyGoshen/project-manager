@@ -6,11 +6,39 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
+using ProjectManager.DAL;
 
 namespace ProjectManager.Controllers
 {
     public class UserController : BaseController
     {
+        [HttpGet]
+        public JsonResult GetIdOfLoggedIn()
+        {
+            return Json(this.UserId);
+        }
+
+        [HttpGet]
+        public JsonResult GetAllInProject(int projectId)
+        {
+            var context = new MyContext();
+            var users = context.UserProjects
+                .Where(up => up.Project.ProjectId == projectId)
+                .Include(up => up.User)
+                .ThenInclude(u => u.AssignedTasks)
+                .Select(up => new
+                {
+                    UserId = up.User.UserId,
+                    FirstName = up.User.FirstName,
+                    LastName = up.User.LastName,
+                    Email = up.User.Email,
+                    BackgroundColor = up.User.BackgroundColor,
+                    AssignedTaskIds = up.User.AssignedTasks.Select(t => t.TaskId)
+                })
+                .ToList();
+            return Json(users);
+        }
+
         public JsonResult FindFirstTenThatContainName(string name, int projectId)
         {
             var context = new DAL.MyContext();
@@ -117,6 +145,14 @@ namespace ProjectManager.Controllers
             var context = new DAL.MyContext();
             var user = context.Users.Find(userId);
             user.Password = HashPassword(password, user.Salt);
+            context.SaveChanges();
+        }
+
+        public void SetBackgroundColor(int userId, int backgroundColor)
+        {
+            var context = new DAL.MyContext();
+            var user = context.Users.Find(userId);
+            user.BackgroundColor = backgroundColor;
             context.SaveChanges();
         }
 

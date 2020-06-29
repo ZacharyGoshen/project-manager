@@ -94,7 +94,7 @@ function loadProjectDetailsViewEditable(project) {
             <div id="projectDetailsOwner" class="project-details-value"></div>
         </div>
     `);
-    updateProjectDetailsViewOwnerHtml(project.owner.userId, project.owner.firstName, project.owner.lastName)
+    updateProjectDetailsViewOwnerHtml(project.owner.userId, project.owner.firstName, project.owner.lastName, project.owner.colorIndex);
 
     $("#projectDetailsThirdSection").append(`
         <div>
@@ -110,7 +110,7 @@ function loadProjectDetailsViewEditable(project) {
         let teamMember = userProject.user;
         $("#projectDetailsAddTeamMemberButton").before(`
             <div class="project-details-team-member" data-user-id=` + teamMember.userId + `>
-                <div class="default-profile-pic">
+                <div class="default-profile-pic color-option-` + teamMember.colorIndex + `">
                     <div>` + teamMember.firstName[0] + teamMember.lastName[0] + `</div>
                 </div>
                 <div>` + teamMember.firstName + ` ` + teamMember.lastName + `</div>
@@ -136,7 +136,7 @@ function loadProjectDetailsViewEditable(project) {
             <div class="project-details-tag color-option-` + tag.colorIndex + `" data-tag-id="` + tag.tagId + `">
                 <div class="project-details-tag-name">` + tag.name + `</div>
                 <div class="project-details-tag-remove-button">
-                    <div>x</div>
+                    <div>X</div>
                 </div>
             </div>
         `);
@@ -170,10 +170,10 @@ function updateProjectDetailsViewDueDateHtml(dueDate) {
  * @param {any} firstName The first name of the owner
  * @param {any} lastName The last name of the owner
  */
-function updateProjectDetailsViewOwnerHtml(userId, firstName, lastName) {
+function updateProjectDetailsViewOwnerHtml(userId, firstName, lastName, colorIndex) {
     $("#projectDetailsOwner").data("userId", userId);
     $("#projectDetailsOwner").html(`
-        <div class="default-profile-pic">
+        <div class="default-profile-pic color-option-` + colorIndex + `">
             <div>` + firstName[0] + lastName[0] + `</div>
         </div>
         <div>` + firstName + " " + lastName + `</div>
@@ -211,7 +211,7 @@ function addTagHtmltoProjectDetailsView(tagId, tagName, colorIndex) {
         <div class="project-details-tag color-option-` + colorIndex + `" data-tag-id="` + tagId + `">
             <div class="project-details-tag-name">` + tagName + `</div>
             <div class="project-details-tag-remove-button">
-                <div>x</div>
+                <div>X</div>
             </div>
         </div>
     `);
@@ -333,7 +333,6 @@ function updateProjectDetailsDescriptionOnFocus() {
 function toggleProjectDetailsDueDateSelectionContainerOnClick() {
     let button = $("#projectDetailsDueDate");
     button.click(function () {
-        console.log("click");
         let xOffset = button.offset().left;
         let yOffset = button.offset().top + button.outerHeight();
         toggleDueDateSelectionContainer(xOffset, yOffset);
@@ -398,11 +397,14 @@ function projectDetailsOwnerSearchResultOnClick(searchResult) {
 
     setProjectOwnerInDatabase(projectId, userId);
 
+    let profilePictureHtml = searchResult.children()[0].outerHTML;
     let userName = searchResult.find(".user-search-result-name").html();
-    let firstName = userName.split(" ")[0];
-    let lastName = userName.split(" ")[1];
 
-    updateProjectDetailsViewOwnerHtml(userId, firstName, lastName);
+    $("#projectDetailsOwner").html(`
+        ` + profilePictureHtml + `
+        <div>` + userName + `</div>
+    `);
+
     location.reload();
 };
 
@@ -428,17 +430,25 @@ function toggleProjectDetailsTeamMemberSelectionContainerOnClick() {
 function projectDetailsTeamMemberSearchResultOnClick(searchResult) {
     let userId = searchResult.data("userId");
     let projectId = $("#currentProject").data("projectId");
-    console.log(projectId);
 
     if ($("#projectDetailsOwner").data("userId") != userId &&
         checkIfProjectDetailsHasTeamMember(userId) == false) {
 
         addProjectTeamMemberInDatabase(projectId, userId);
 
+        let profilePicture = searchResult.children()[0];
         let userName = searchResult.find(".user-search-result-name").html();
-        let firstName = userName.split(" ")[0];
-        let lastName = userName.split(" ")[1];
-        addTeamMemberHtmlToProjectDetailsView(userId, firstName, lastName);
+        $("#projectDetailsAddTeamMemberButton").before(`
+            <div class="project-details-team-member" data-user-id=` + userId + `>
+                ` + profilePicture.outerHTML + `
+                <div>` + userName + `</div>
+                <div class="project-details-remove-button">
+                    <div>x</div>
+                </div>
+            </div>
+        `);
+
+        removeProjectDetailsViewTeamMemberOnClick();
     }
 };
 
@@ -538,8 +548,8 @@ function projectDetailsCreateTagButtonOnClick() {
             let tag = findProjectDetailsTagWithId(tagId);
             let containerTopOffset = tag.offset().top + tag.outerHeight();
             let containerLeftOffset = tag.offset().left;
-            toggleTagColorSelectionContainer(containerLeftOffset, containerTopOffset);
-            $("#tagColorSelectionContainer").data("tagId", tagId);
+            toggleColorSelectionContainer(containerLeftOffset, containerTopOffset);
+            $("#colorSelectionContainer").data("tagId", tagId);
         });
     });
 }
@@ -564,13 +574,13 @@ function removeProjectDetailsViewTagOnClick() {
  * color option is clicked
  */
 function projectDetailsTagColorOnClick() {
-    let colorContainer = $("#tagColorSelectionContainer");
+    let colorContainer = $("#colorSelectionContainer");
     colorContainer.find(".color-option").each(function () {
         $(this).off("click");
         let colorIndex = $(this).data("colorIndex");
         $(this).click(function () {
             let tagId = colorContainer.data("tagId");
-            toggleTagColorSelectionContainer(0, 0);
+            toggleColorSelectionContainer(0, 0);
             setTagColorIndexInDatabase(tagId, colorIndex);
 
             updateProjectDetailsViewTagColor(tagId, colorIndex);
@@ -628,7 +638,7 @@ function loadProjectDetailsViewReadOnly(project) {
         </div>
     `);
     $("#projectDetailsOwner").html(`
-        <div class="default-profile-pic">
+        <div class="default-profile-pic color-option-` + project.owner.colorIndex + `">
             <div>` + project.owner.firstName[0] + project.owner.lastName[0] + `</div>
         </div>
         <div>` + project.owner.firstName + " " + project.owner.lastName + `</div>
@@ -644,7 +654,7 @@ function loadProjectDetailsViewReadOnly(project) {
         let teamMember = userProject.user;
         $("#projectDetailsTeamMembers").append(`
             <div class="project-details-team-member-read-only">
-                <div class="default-profile-pic">
+                <div class="default-profile-pic color-option-` + teamMember.colorIndex + `">
                     <div>` + teamMember.firstName[0] + teamMember.lastName[0] + `</div>
                 </div>
                 <div>` + teamMember.firstName + ` ` + teamMember.lastName + `</div>

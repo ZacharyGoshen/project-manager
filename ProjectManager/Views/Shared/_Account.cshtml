@@ -11,11 +11,11 @@
     </div>
     <div id="accountPicture">
         <div class="account-section-label">Profile Picture</div>
-        <div id="accountDefaultPicture">
+        <div id="accountDefaultPicture" class="color-option-@Model.LoggedInUser.BackgroundColor">
             <div>@Model.LoggedInUser.FirstName[0]@Model.LoggedInUser.LastName[0]</div>
         </div>
         <div class="account-button-container">
-            <div class="account-button">Edit Default Picture Color</div>
+            <div id="accountPictureColorButton" class="account-button" onclick="toggleAccountPictureColorSelectionContainer()">Edit Default Picture Color</div>
             <div class="account-button">Upload Picture</div>
         </div>
     </div>

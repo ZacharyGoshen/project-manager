@@ -11,17 +11,28 @@ namespace ProjectManager.Controllers
 {
     public class ProjectController : BaseController
     {
-        public JsonResult Get(int projectId)
+        [HttpGet]
+        public JsonResult GetAllWithUser(int userId)
         {
             var context = new MyContext();
-            var project = context.Projects
-                .Include(p => p.Owner)
-                .Include(p => p.TeamMembers)
-                .ThenInclude(up => up.User)
-                .Include(p => p.Tags)
-                .Where(p => p.ProjectId == projectId)
-                .First();
-            return Json(project);
+            var projects = context.UserProjects
+                .Where(up => up.User.UserId == userId)
+                .Include(up => up.Project.Categories)
+                .Include(up => up.Project.Tasks)
+                .Include(up => up.Project.Owner)
+                .Include(up => up.Project.TeamMembers)
+                .Select(up => new
+                {
+                    ProjectId = up.Project.ProjectId,
+                    Name = up.Project.Name,
+                    Description = up.Project.Description,
+                    CategoryIds = up.Project.Categories.Select(c => c.CategoryId),
+                    TaskIds = up.Project.Tasks.Select(t => t.TaskId),
+                    OwnerId = up.Project.Owner.UserId,
+                    TeamMemberIds = up.Project.TeamMembers.Select(up => up.User.UserId)
+                })
+                .ToList();
+            return Json(projects);
         }
 
         public JsonResult New(string name, string description, int day, int month, int year, int ownerId, int[] teamMemberIds)
@@ -67,17 +78,17 @@ namespace ProjectManager.Controllers
             this.CurrentProjectId = projectId;
         }
 
-        public void SetName(int projectId, string name)
+        public void UpdateName(int projectId, string name)
         {
-            var context = new MyContext();
+            var context = new DAL.MyContext();
             var project = context.Projects.Find(projectId);
             project.Name = name;
             context.SaveChanges();
         }
 
-        public void SetDescription(int projectId, string description)
+        public void UpdateDescription(int projectId, string description)
         {
-            var context = new MyContext();
+            var context = new DAL.MyContext();
             var project = context.Projects.Find(projectId);
             project.Description = description;
             context.SaveChanges();
@@ -98,7 +109,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
-        public void SetOwner(int projectId, int userId)
+        public void UpdateOwner(int projectId, int userId)
         {
             var context = new MyContext();
             var project = context.Projects.Find(projectId);

@@ -1,0 +1,544 @@
+﻿body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0px;
+    overflow: hidden;
+}
+input {
+    font-family: Arial, Helvetica, sans-serif;
+}
+input:focus {
+    outline: none;
+}
+textarea {
+    font-family: Arial, Helvetica, sans-serif;
+    resize: none;
+}
+textarea:focus {
+    outline: none;
+}
+.background-color-light-gray {
+    background-color: #f0f0f0;
+}
+.background-color-option-0 {
+    background-color: #9e9e9e;
+}
+.background-color-option-1 {
+    background-color: #d32f2f;
+}
+.background-color-option-2 {
+    background-color: #c2185b;
+}
+.background-color-option-3 {
+    background-color: #7b1fa2;
+}
+.background-color-option-4 {
+    background-color: #512da8;
+}
+.background-color-option-5 {
+    background-color: #303f9f;
+}
+.background-color-option-6 {
+    background-color: #1976d2;
+}
+.background-color-option-7 {
+    background-color: #0288d1;
+}
+.background-color-option-8 {
+    background-color: #0097a7;
+}
+.background-color-option-9 {
+    background-color: #00796b;
+}
+.background-color-option-10 {
+    background-color: #388e3c;
+}
+.background-color-option-11 {
+    background-color: #689f38;
+}
+.background-color-option-12 {
+    background-color: #afb42b;
+}
+.background-color-option-13 {
+    background-color: #fbc02d;
+}
+.background-color-option-14 {
+    background-color: #ffa000;
+}
+.background-color-option-15 {
+    background-color: #f57c00;
+}
+.background-color-priority-0 {
+    background-color: #9e9e9e;
+}
+.background-color-priority-1 {
+    background-color: #fcdc3b;
+}
+.background-color-priority-2 {
+    background-color: #ffc100;
+}
+.background-color-priority-3 {
+    background-color: #ff9800;
+}
+.background-color-priority-4 {
+    background-color: #ff5607;
+}
+.background-color-priority-5 {
+    background-color: #f6412d;
+}
+.background-color-white {
+    background-color: white;
+}
+.border-bottom-light-gray {
+    border-bottom-color: #f0f0f0;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+}
+.border-dark-gray {
+    border-color: #9e9e9e;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 2px;
+}
+.border-light-gray {
+    border-color: #f0f0f0;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 2px;
+}
+.border-white {
+    border-color: white;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 2px;
+}
+.border-shadow {
+    box-shadow: 3px 3px 2px #888888;
+}
+.child-center {
+    align-items: center;
+    display: flex;
+    justify-content: space-around;
+}
+.circle {
+    border-radius: 50%;
+}
+.date-selection-day {
+    height: 30px;
+    width: 30px;
+}
+.date-selection-day-label {
+    width: 30px;
+}
+.due-date-unassigned-small {
+    border: 2px dotted #9e9e9e;
+    border-radius: 50%;
+    max-height: 21px;
+    min-height: 21px;
+    max-width: 21px;
+    min-width: 21px;
+}
+.flex-align-baseline {
+    align-items: baseline;
+}
+.flex-align-center {
+    align-items: center;
+}
+.flex-align-start {
+    align-items: start;
+}
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+.flex-fit-content {
+    flex: 0 1 auto;
+}
+.flex-grow {
+    flex: 1 1 auto;
+}
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+.flex-row-reverse {
+    display: flex;
+    flex-direction: row-reverse;
+}
+.flex-space-between {
+    justify-content: space-between;
+}
+.focus-border-dark-gray:focus {
+    border-color: #9e9e9e !important;
+}
+.font-large {
+    font-size: 20px;
+}
+.font-medium {
+    font-size: 15px;
+}
+.font-small {
+    font-size: 12px;
+}
+.font-very-small {
+    font-size: 10px;
+}
+.font-light-gray {
+    color: #9e9e9e;
+}
+.font-white {
+    color: white;
+}
+.hidden {
+    display: none;
+}
+.hover-background-color-dark-gray:hover {
+    background-color: #9e9e9e;
+}
+.hover-background-color-light-gray:hover {
+    background-color: #f0f0f0;
+}
+.hover-border-dark-gray:hover {
+    border-color: #9e9e9e;
+}
+.hover-border-light-gray:hover {
+    border-color: #f0f0f0;
+}
+.hover-border-very-dark-gray:hover {
+    border-color: #3f3f3f;
+}
+.hover-child-visible:hover .invisible {
+    visibility: visible;
+}
+.hover-cursor-pointer:hover {
+    cursor: pointer;
+}
+.hover-font-dark-gray:hover {
+    color: #3f3f3f;
+}
+.hover-font-white:hover {
+    color: white;
+}
+.hover-icon:hover div {
+    border-color: #3f3f3f !important;
+}
+.hover-translucent:hover {
+    opacity: 0.5;
+}
+.icon-clock-small {
+    border: 2px solid #9e9e9e;
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+}
+.icon-clock-small > div {
+    border-bottom: 2px solid #9e9e9e;
+    border-right: 2px solid #9e9e9e;
+    height: 4px;
+    margin-left: 2px;
+    margin-top: 2px;
+    width: 4px;
+}
+.icon-user-small {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+.icon-user-small > div:first-child {
+    border: 2px solid #9e9e9e;
+    border-radius: 50%;
+    height: 5px;
+    width: 5px;
+}
+.icon-user-small > div:nth-child(2) {
+    border: 2px solid #9e9e9e;
+    border-radius: 5px 5px 0px 0px;
+    height: 5px;
+    width: 10px;
+}
+.invisible {
+    visibility: hidden;
+}
+.overflow-y-hidden {
+    overflow-y: hidden;
+}
+.overflow-y-scroll {
+    overflow-y: scroll;
+}
+.priority-selection-option {
+    margin-bottom: 5px;
+    width: 100px;
+}
+.profile-picture-small {
+    border-radius: 50%;
+    font-size: 15px;
+    max-height: 25px;
+    min-height: 25px;
+    max-width: 25px;
+    min-width: 25px;
+}
+.remove-button-small {
+    height: 15px;
+    width: 15px;
+}
+.sides-round {
+    border-radius: 10000px
+}
+.text-center-horizontal {
+    text-align: center;
+}
+.translucent {
+    opacity: 0.5;
+}
+.underline {
+    text-decoration: underline;
+}
+.user-picture-unassigned-small {
+    border: 2px dotted #9e9e9e;
+    border-radius: 50%;
+    max-height: 21px;
+    min-height: 21px;
+    max-width: 21px;
+    min-width: 21px;
+}
+.user-selection-result {
+    padding: 5px;
+}
+.user-selection-result-picture {
+    margin-right: 10px;
+}
+#background-blur {
+    background-color: rgba(100, 100, 100, 0.5);
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+#confirmation-cancel {
+    padding: 5px;
+}
+#confirmation-confirm {
+    padding: 5px;
+    margin-right: 10px;
+}
+#confirmation-message {
+    margin-bottom: 10px;
+}
+#date-selection {
+    padding: 10px;
+    position: absolute;
+}
+#date-selection-header {
+    margin-bottom: 10px;
+}
+#delete-category-confirmation {
+    padding: 10px;
+}
+#main-container {
+    height: 100%;
+    width: 100%;
+}
+#navigation-bar {
+    padding: 20px;
+}
+#priority-selection {
+    padding: 5px 5px 0px 5px;
+    position: absolute;
+}
+#tag-selection {
+    padding: 10px;
+    position: absolute;
+}
+#tag-selection-input {
+    padding: 5px;
+    width: 200px;
+}
+#tag-selection-results {
+    min-height: 39px;
+    position: absolute;
+    width: 196px;
+}
+#user-selection {
+    padding: 10px;
+    position: absolute;
+}
+#user-selection-input {
+    padding: 5px;
+    width: 200px;
+}
+#user-selection-results {
+    min-height: 39px;
+    position: absolute;
+    width: 196px;
+}
+
+.board-category {
+    height: 100%;
+    min-width: 300px;
+    width: 300px;
+}
+.board-category-header {
+    padding: 10px 12px;
+}
+.board-category-tasks {
+    padding: 0px 15px;
+}
+.board-category-top {
+    padding: 0px 15px;
+}
+.board-new-task-button {
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+}
+.board-new-task-input {
+    margin-bottom: 10px;
+    padding: 10px;
+    width: 100%;
+}
+.board-task {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.board-task-check {
+    padding-right: 5px;
+}
+.board-task-name-row {
+    margin-bottom: 10px;
+}
+.board-task-priority {
+    margin-bottom: 10px;
+    max-width: 70px;
+    min-width: 70px;
+}
+.board-task-user-picture {
+    margin-right: 10px;
+}
+#board-new-category-button {
+    min-width: 300px;
+    padding: 10px 0px;
+}
+#board-new-category-input {
+    margin-top: 3px;
+    min-width: 300px;
+    padding: 5px;
+    width: 300px;
+}
+
+.project-details-label {
+    margin-left: 15px;
+    width: 100px;
+}
+.project-details-team-member {
+    padding: 5px;
+}
+.project-details-team-member-name {
+    margin-right: 10px;
+}
+.project-details-team-member-picture {
+    margin-right: 10px;
+}
+#project-details {
+    height: 500px;
+    width: 500px;
+}
+#project-details-description {
+    margin: 0px 15px 10px 15px;
+    padding: 10px;
+    width: 470px;
+}
+#project-details-header {
+    padding: 10px;
+}
+#project-details-invite-team-member-button {
+    margin-left: 7px;
+    margin-top: 7px;
+}
+#project-details-name {
+    margin: 10px 15px;
+    padding: 10px;
+    width: 470px;
+}
+#project-details-owner {
+    padding: 5px;
+}
+#project-details-owner-picture {
+    margin-right: 10px;
+}
+
+
+.task-details-label {
+    margin-left: 15px;
+    width: 100px;
+}
+.task-details-comment {
+    margin-bottom: 5px;
+}
+.task-details-comment-user {
+    margin-right: 10px;
+}
+.task-details-comment-text {
+    margin-right: 10px;
+}
+#task-details {
+    height: 500px;
+    width: 500px;
+}
+#task-details-add-tag-button {
+    margin-left: 10px;
+    padding: 5px 0px;
+}
+#task-details-comments {
+    padding: 5px 15px;
+}
+#task-details-completed-text {
+    margin-left: 5px;
+}
+#task-details-description {
+    margin: 0px 15px 10px 15px;
+    padding: 10px;
+    width: 470px;
+}
+#task-details-due-date {
+    padding: 5px;
+}
+#task-details-due-date-icon {
+    margin-right: 10px;
+}
+#task-details-due-date-text {
+    margin-right: 10px;
+}
+#task-details-header {
+    padding: 10px;
+}
+#task-details-name {
+    margin: 10px 15px;
+    padding: 10px;
+    width: 470px;
+}
+#task-details-new-comment {
+    padding: 10px;
+}
+#task-details-new-comment-input {
+    padding: 5px;
+    width: 470px;
+}
+#task-details-priority {
+    padding: 5px;
+}
+#task-details-priority-text {
+    margin-right: 10px;
+    width: 100px;
+}
+#task-details-properties {
+    padding-bottom: 10px;
+}
+#task-details-user {
+    padding: 5px;
+}
+#task-details-user-name {
+    margin-right: 10px;
+}
+#task-details-user-picture {
+    margin-right: 10px;
+}

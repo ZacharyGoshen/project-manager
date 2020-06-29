@@ -17,7 +17,7 @@
                             <button class="add-task-to-board-button" onclick="toggleNewTaskForm(@categoryIndex)">+</button>
                         </div>
                         <div class="new-board-task-container hidden">
-                            <textarea class="new-board-task-text-box"></textarea>
+                            <textarea class="new-board-task-text-box font-small"></textarea>
                         </div>
 
                         <div class="board-task-container">
@@ -49,7 +49,7 @@
                                             <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(@task.TaskId)">
                                                 @if (task.AssignedUser != null)
                                                 {
-                                                    <div class="default-profile-pic">
+                                                    <div class="default-profile-pic color-option-@task.AssignedUser.BackgroundColor">
                                                         <div>@task.AssignedUser.FirstName[0]@task.AssignedUser.LastName[0]</div>
                                                     </div>
                                                 }
@@ -59,13 +59,13 @@
                                                 }
                                             </div>
                                             <div class="board-task-due-date" onclick="toggleBoardDueDateSelectionContainer(@task.TaskId)">
-                                                @if (@task.DueDateRangeStart.Date == new DateTime().Date)
+                                                @if (@task.DueDate.Date == new DateTime().Date)
                                                 {
                                                     <input class="unassigned-due-date-icon" type="image" src="~/images/clock.png" />
                                                 }
                                                 else
                                                 {
-                                                    <div>@task.DueDateRangeStart.ToString("MMM d")</div>
+                                                    <div>@task.DueDate.ToString("MMM d")</div>
                                                 }
                                             </div>
                                         </div>
@@ -74,7 +74,7 @@
                                             {
                                                 var tag = tagTask.Tag;
 
-                                                <div class="board-task-tag color-option-@tag.ColorIndex" data-tag-id="@tag.TagId">@tag.Name</div>
+                                                <div class="board-task-tag color-option-@tag.BackgroundColor" data-tag-id="@tag.TagId">@tag.Name</div>
                                             }
                                         </div>
                                     </div>

@@ -1,0 +1,16 @@
+﻿<div id="colorSelectionContainer" class="hidden">
+    <div>
+        @for (int i = 0; i < 8; i++)
+        {
+            var cssClassNames = "color-option color-option-" + i;
+            <div class="@cssClassNames" data-color-index="@i"></div>
+        }
+    </div>
+    <div>
+        @for (int i = 8; i < 16; i++)
+        {
+            var cssClassNames = "color-option color-option-" + i;
+            <div class="@cssClassNames" data-color-index="@i"></div>
+        }
+    </div>
+</div>

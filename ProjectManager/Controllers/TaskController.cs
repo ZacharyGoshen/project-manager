@@ -11,6 +11,152 @@ namespace ProjectManager.Controllers
 {
     public class TaskController : Controller
     {
+        [HttpGet]
+        public JsonResult Get(int taskId)
+        {
+            var context = new MyContext();
+            var task = context.Tasks
+                .Where(t => t.TaskId == taskId)
+                .Include(t => t.Category)
+                .Include(t => t.AssignedUser)
+                .Select(t => new
+                {
+                    TaskId = t.TaskId,
+                    Name = t.Name,
+                    Description = t.Description,
+                    CreationTime = t.CreationTime,
+                    DueDate = t.DueDate,
+                    Order = t.Order,
+                    Priority = t.Priority,
+                    IsCompleted = t.IsCompleted,
+                    CategoryId = t.Category.CategoryId,
+                    AssignedUserId = t.AssignedUser.UserId
+                })
+                .First();
+            return Json(task);
+        }
+
+        [HttpGet]
+        public JsonResult GetAllInProject(int projectId)
+        {
+            var context = new MyContext();
+            var tasks = context.Tasks
+                .Where(t => t.Project.ProjectId == projectId)
+                .Include(t => t.Category)
+                .Include(t => t.AssignedUser)
+                .Select(t => new
+                {
+                    TaskId = t.TaskId,
+                    Name = t.Name,
+                    Description = t.Description,
+                    CreationTime = t.CreationTime,
+                    DueDate = t.DueDate,
+                    Order = t.Order,
+                    Priority = t.Priority,
+                    IsCompleted = t.IsCompleted,
+                    CategoryId = t.Category.CategoryId,
+                    AssignedUserId = t.AssignedUser.UserId
+                })
+                .ToList();
+            return Json(tasks);
+        }
+
+        [HttpPost]
+        public JsonResult Create(int userId, int projectId, int categoryId, string taskName)
+        {
+            using (var context = new DAL.MyContext())
+            {
+                var newTask = new ProjectManager.Models.Task()
+                {
+                    Name = taskName,
+                    CreationTime = TimeZoneInfo.ConvertTimeToUtc(DateTime.Now),
+                    Order = 0,
+                    SubmittingUser = context.Users.Find(userId),
+                    Project = context.Projects.Find(projectId),
+                    Category = context.Categories.Find(categoryId)
+                };
+
+                var tasks = context.Tasks.Where(t => t.Category == newTask.Category).ToList();
+                foreach (ProjectManager.Models.Task task in tasks)
+                {
+                    var entity = context.Tasks.Find(task.TaskId);
+                    entity.Order += 1;
+                    context.Tasks.Update(entity);
+                }
+                context.Tasks.Add(newTask);
+                context.SaveChanges();
+
+                return Json(newTask.TaskId);
+            }
+        }
+
+        public void UpdateIsCompleted(int taskId, bool isCompleted)
+        {
+            var context = new DAL.MyContext();
+            var task = context.Tasks.Find(taskId);
+            task.IsCompleted = isCompleted;
+            context.SaveChanges();
+        }
+
+        public void UpdateName(int taskId, string name)
+        {
+            var context = new DAL.MyContext();
+            var task = context.Tasks.Find(taskId);
+            task.Name = name;
+            context.SaveChanges();
+        }
+
+        public void UpdateDescription(int taskId, string description)
+        {
+            var context = new DAL.MyContext();
+            var task = context.Tasks.Find(taskId);
+            task.Description = description;
+            context.SaveChanges();
+        }
+
+        public void UpdateAssignedUser(int taskId, int userId)
+        {
+            var context = new MyContext();
+            var task = context.Tasks
+                .Where(t => t.TaskId == taskId)
+                .Include(t => t.AssignedUser)
+                .First();
+            if (userId == 0)
+            {
+                task.AssignedUser.AssignedTasks.Remove(task);
+            }
+            else
+            {
+                var user = context.Users.Find(userId);
+                task.AssignedUser = user;
+            }
+
+            context.SaveChanges();
+        }
+
+        public void UpdateDueDate(int taskId, int year, int month, int day)
+        {
+            var context = new DAL.MyContext();
+            var task = context.Tasks.Find(taskId);
+            if ((day == 1) && (month == 0) && (year == 0))
+            {
+                task.DueDate = new DateTime();
+            }
+            else
+            {
+                task.DueDate = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
+            }
+            context.SaveChanges();
+        }
+
+        public void UpdatePriority(int taskId, int priority)
+        {
+            var context = new DAL.MyContext();
+            var task = context.Tasks.Find(taskId);
+            task.Priority = priority;
+            context.SaveChanges();
+        }
+
         public void SetIsCompleted(int taskId, bool isCompleted)
         {
             var context = new MyContext();

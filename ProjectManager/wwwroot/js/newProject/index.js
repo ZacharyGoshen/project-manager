@@ -95,20 +95,6 @@ function updateNewProjectViewDueDateHtml(dueDate) {
     }
 }
 
-/** Update the new project view's owner html
- * 
- * @param {string} firstName The first name of the owner
- * @param {string} lastName The last name of the owner
- */
-function updateNewProjectViewOwnerHtml(firstName, lastName) {
-    $("#newProjectOwner").html(`
-        <div class="default-profile-pic">
-            <div>` + firstName[0] + lastName[0] + `</div>
-        </div>
-        <div>` + firstName + ` ` + lastName + `</div>
-    `);
-}
-
 /** Update the new project view's team members html
  * 
  * @param {string} firstName The first name of the owner
@@ -177,37 +163,6 @@ function newProjectCalendarDateOnClick(calendarDate) {
     updateNewProjectViewDueDateHtml(dueDate);
 };
 
-/** Toggle the owner selection container of the new project view between open and
- * closed
- */
-function toggleNewProjectOwnerSelectionContainer() {
-    let button = $("#newProjectOwner");
-    let xOffset = button.offset().left;
-    let yOffset = button.offset().top + button.outerHeight();
-    toggleUserSelectionContainer(xOffset, yOffset);
-
-    reloadUserSearchResultsOnInput(newProjectOwnerSearchResultOnClick, false);
-}
-
-/** Updates the new project view's owner html when a user search result is
- * clicked
- * 
- * @param {object} searchResult The user search result
- */
-function newProjectOwnerSearchResultOnClick(searchResult) {
-    let userId = searchResult.data("userId");
-    $("#newProjectOwner").data("userId", userId);
-
-    if (checkIfNewProjectHasTeamMember(userId)) {
-        removeNewProjectViewTeamMember(userId);
-    }
-
-    let userName = searchResult.find(".user-search-result-name").html();
-    let firstName = userName.split(" ")[0];
-    let lastName = userName.split(" ")[1];
-    updateNewProjectViewOwnerHtml(firstName, lastName);
-};
-
 /** Toggle the team member selection container of a new project view between
  * open and closed
  */
@@ -230,10 +185,19 @@ function newProjectTeamMemberSearchResultOnClick(searchResult) {
 
     if ($("#newProjectOwner").data("userId") != userId &&
         checkIfNewProjectHasTeamMember(userId) == false) {
+
+        let profilePicture = searchResult.children()[0];
         let userName = searchResult.find(".user-search-result-name").html();
-        let firstName = userName.split(" ")[0];
-        let lastName = userName.split(" ")[1];
-        updateNewProjectViewTeamMembersHtml(userId, firstName, lastName);
+
+        $("#newProjectAddTeamMemberButton").before(`
+            <div class="new-project-team-member" data-user-id=` + userId + `>
+                ` + profilePicture.outerHTML + `
+                <div>` + userName + `</div>
+                <div class="new-project-remove-button" onclick="removeNewProjectViewTeamMember(` + userId + `)">
+                    <div>x</div>
+                </div>
+            </div>
+        `);
     }
 };
 

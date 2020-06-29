@@ -14,15 +14,6 @@
             </div>
         </div>
         <div>
-            <div class="new-project-label">Owned By:</div>
-            <div id="newProjectOwner" class="new-project-value" onclick="toggleNewProjectOwnerSelectionContainer()" data-user-id="@Model.LoggedInUser.UserId">
-                <div class="default-profile-pic">
-                    <div>@Model.LoggedInUser.FirstName[0]@Model.LoggedInUser.LastName[0]</div>
-                </div>
-                <div>@Model.LoggedInUser.FirstName @Model.LoggedInUser.LastName</div>
-            </div>
-        </div>
-        <div>
             <div class="new-project-label">Team Members:</div>
             <div id="newProjectTeamMembers">
                 <div id="newProjectAddTeamMemberButton" onclick="toggleNewProjectTeamMemberSelectionContainer()">

@@ -19,17 +19,13 @@
                     <a class="unstyledLink hoverPointer" asp-controller="Home" asp-action="Details" asp-route-id="@task.TaskId">@task.Name</a>
                 </td>
                 <td>
-                    @if (task.DueDateRangeStart.Date == new DateTime().Date)
+                    @if (task.DueDate.Date == new DateTime().Date)
                     {
 
                     }
-                    else if (@task.DueDateRangeStart.Date == @task.DueDateRangeEnd.Date)
+                    else 
                     {
-                        @task.DueDateRangeEnd.ToString("MMMM dd")
-                    }
-                    else
-                    {
-                        @task.DueDateRangeStart.ToString("MMMM dd") <text> - </text> @task.DueDateRangeEnd.ToString("MMMM dd")
+                        @task.DueDate.ToString("MMMM dd")
                     }
                 </td>
                 <td>

@@ -90,7 +90,8 @@ namespace ProjectManager.DAL
                     LastName = "Goshen",
                     Email = "zachgoshen@gmail.com",
                     Password = "g8DKmISNL498xl1NL1cRSVNERPM3jR0eeFyfPIVbFno=",
-                    Salt = StringToByteArray("642D5272CF0349B9BC950ACC2619AB25")
+                    Salt = StringToByteArray("642D5272CF0349B9BC950ACC2619AB25"),
+                    BackgroundColor = 5
                 },
                 new
                 {
@@ -99,7 +100,8 @@ namespace ProjectManager.DAL
                     LastName = "Goshen",
                     Email = "erickgoshen@gmail.com",
                     Password = "6ku4MbX8vTRnrAekAxT6OKaTjCcIUrx9tMpqCz4dqe4=",
-                    Salt = StringToByteArray("33F706A69D130284DDDB42270C3C7C0A")
+                    Salt = StringToByteArray("33F706A69D130284DDDB42270C3C7C0A"),
+                    BackgroundColor = 10
                 }
                 );
 
@@ -111,7 +113,7 @@ namespace ProjectManager.DAL
                     Name = "Task Manager",
                     Description = "This is a project called task manager",
                     DueDate = new DateTime(),
-                    OwnerUserId = 2
+                    OwnerUserId = 1
                 }
                 );
 
@@ -129,8 +131,7 @@ namespace ProjectManager.DAL
                     Priority = 1,
                     IsCompleted = false,
                     CreationTime = DateTime.Now,
-                    DueDateRangeStart = new DateTime(),
-                    DueDateRangeEnd = new DateTime(),
+                    DueDate = new DateTime(),
                     Order = 4
                 },
                 new
@@ -145,8 +146,7 @@ namespace ProjectManager.DAL
                     Priority = 2,
                     IsCompleted = false,
                     CreationTime = DateTime.Now,
-                    DueDateRangeStart = new DateTime(),
-                    DueDateRangeEnd = new DateTime(),
+                    DueDate = new DateTime(),
                     Order = 3
                 },
                 new
@@ -161,8 +161,7 @@ namespace ProjectManager.DAL
                     Priority = 3,
                     IsCompleted = false,
                     CreationTime = DateTime.Now,
-                    DueDateRangeStart = new DateTime(),
-                    DueDateRangeEnd = new DateTime(),
+                    DueDate = new DateTime(),
                     Order = 2
                 },
                 new
@@ -177,8 +176,7 @@ namespace ProjectManager.DAL
                     Priority = 4,
                     IsCompleted = false,
                     CreationTime = DateTime.Now,
-                    DueDateRangeStart = new DateTime(),
-                    DueDateRangeEnd = new DateTime(),
+                    DueDate = new DateTime(),
                     Order = 1
                 },
                 new
@@ -193,8 +191,7 @@ namespace ProjectManager.DAL
                     Priority = 5,
                     IsCompleted = false,
                     CreationTime = DateTime.Now,
-                    DueDateRangeStart = new DateTime(),
-                    DueDateRangeEnd = new DateTime(),
+                    DueDate = new DateTime(),
                     Order = 0
                 },
                 new
@@ -209,8 +206,7 @@ namespace ProjectManager.DAL
                     Priority = 3,
                     IsCompleted = false,
                     CreationTime = DateTime.Now,
-                    DueDateRangeStart = new DateTime(),
-                    DueDateRangeEnd = new DateTime(),
+                    DueDate = new DateTime(),
                     Order = 0
                 },
                 new
@@ -225,8 +221,7 @@ namespace ProjectManager.DAL
                     Priority = 2,
                     IsCompleted = true,
                     CreationTime = DateTime.Now,
-                    DueDateRangeStart = new DateTime(),
-                    DueDateRangeEnd = new DateTime(),
+                    DueDate = new DateTime(),
                     Order = 0
                 }
                 );

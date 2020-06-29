@@ -18,6 +18,10 @@
     <Folder Include="wwwroot\js\shared\" />
     <Folder Include="wwwroot\js\projectDetails\" />
     <Folder Include="wwwroot\js\account\" />
+    <Folder Include="wwwroot\js\models\" />
+    <Folder Include="wwwroot\js\templates\" />
+    <Folder Include="wwwroot\js\collections\" />
+    <Folder Include="wwwroot\js\views\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
