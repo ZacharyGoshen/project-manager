@@ -105,6 +105,11 @@ textarea:focus {
     border-style: solid;
     border-width: 2px;
 }
+.border-top-light-gray {
+    border-top-color: #f0f0f0;
+    border-top-style: solid;
+    border-top-width: 2px;
+}
 .border-white {
     border-color: white;
     border-radius: 5px;
@@ -121,6 +126,14 @@ textarea:focus {
 }
 .circle {
     border-radius: 50%;
+}
+.color-selection-option {
+    height: 20px;
+    margin: 5px;
+    width: 20px;
+}
+.corners-round {
+    border-radius: 5px;
 }
 .date-selection-day {
     height: 30px;
@@ -166,6 +179,9 @@ textarea:focus {
 }
 .flex-space-between {
     justify-content: space-between;
+}
+.flex-wrap {
+    flex-wrap: wrap;
 }
 .focus-border-dark-gray:focus {
     border-color: #9e9e9e !important;
@@ -280,8 +296,21 @@ textarea:focus {
     height: 15px;
     width: 15px;
 }
+.scrollbar-always-visible::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+.scrollbar-always-visible::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .5);
+    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
 .sides-round {
     border-radius: 10000px
+}
+.tag-selection-result {
+    margin: 5px;
+    width: 100px;
 }
 .text-center-horizontal {
     text-align: center;
@@ -313,6 +342,10 @@ textarea:focus {
     position: absolute;
     top: 0;
     width: 100%;
+}
+#color-selection {
+    padding: 10px;
+    position: absolute;
 }
 #confirmation-cancel {
     padding: 5px;
@@ -351,12 +384,17 @@ textarea:focus {
 }
 #tag-selection-input {
     padding: 5px;
-    width: 200px;
+    width: 114px;
 }
 #tag-selection-results {
-    min-height: 39px;
+    max-height: 200px;
+    min-height: 24px;
+    min-width: 110px;
     position: absolute;
-    width: 196px;
+}
+#user-dropdown-menu {
+    padding: 10px;
+    position: absolute;
 }
 #user-selection {
     padding: 10px;
@@ -367,9 +405,48 @@ textarea:focus {
     width: 200px;
 }
 #user-selection-results {
+    max-height: 200px;
     min-height: 39px;
     position: absolute;
     width: 196px;
+}
+
+.entry-header {
+    margin-bottom: 10px;
+}
+.entry-input {
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 200px;
+}
+#entry {
+    padding: 20px;
+    width: 430px;
+}
+#login-button {
+    margin-top: 14px;
+    padding: 5px;
+    width: 186px;
+}
+#login-error-message {
+    padding: 5px;
+    margin-bottom: 10px;
+}
+#login-form {
+    margin-right: 20px;
+    width: 200px;
+}
+#signup-button {
+    margin-top: 14px;
+    padding: 5px;
+    width: 186px;
+}
+#signup-error-message {
+    padding: 5px;
+    margin-bottom: 10px;
+}
+#signup-form {
+    width: 200px;
 }
 
 .board-category {
@@ -397,11 +474,14 @@ textarea:focus {
     width: 100%;
 }
 .board-task {
-    padding: 10px;
+    padding: 10px 10px 5px 10px;
     margin-bottom: 10px;
 }
 .board-task-check {
     padding-right: 5px;
+}
+.board-task-icons {
+    padding-bottom: 5px;
 }
 .board-task-name-row {
     margin-bottom: 10px;
@@ -410,6 +490,14 @@ textarea:focus {
     margin-bottom: 10px;
     max-width: 70px;
     min-width: 70px;
+}
+.board-task-tags {
+    margin-top: 5px;
+}
+.board-task-tag {
+    margin-bottom: 5px;
+    margin-right: 5px;
+    padding: 0px 10px;
 }
 .board-task-user-picture {
     margin-right: 10px;
@@ -429,8 +517,17 @@ textarea:focus {
     margin-left: 15px;
     width: 100px;
 }
+.project-details-tag {
+    margin-bottom: 5px;
+    margin-left: 7px;
+}
+.project-details-tag-name {
+    margin-right: 10px;
+    width: 100px;
+}
 .project-details-team-member {
-    padding: 5px;
+    margin-bottom: 5px;
+    margin-left: 7px;
 }
 .project-details-team-member-name {
     margin-right: 10px;
@@ -451,21 +548,31 @@ textarea:focus {
     padding: 10px;
 }
 #project-details-invite-team-member-button {
+    margin-bottom: 14px;
     margin-left: 7px;
-    margin-top: 7px;
+    padding-top: 2px;
 }
 #project-details-name {
     margin: 10px 15px;
     padding: 10px;
     width: 470px;
 }
+#project-details-new-tag-button {
+    margin-bottom: 14px;
+    margin-left: 7px;
+    padding-top: 2px;
+}
+#project-details-new-tag-input {
+    margin-left:5px;
+    padding: 5px;
+}
 #project-details-owner {
+    margin-bottom: 7px;
     padding: 5px;
 }
 #project-details-owner-picture {
     margin-right: 10px;
 }
-
 
 .task-details-label {
     margin-left: 15px;
@@ -479,6 +586,14 @@ textarea:focus {
 }
 .task-details-comment-text {
     margin-right: 10px;
+}
+.task-details-tag {
+    margin-bottom: 5px;
+    margin-left: 7px;
+}
+.task-details-tag-name {
+    margin-right: 10px;
+    width: 100px;
 }
 #task-details {
     height: 500px;
@@ -524,6 +639,7 @@ textarea:focus {
     width: 470px;
 }
 #task-details-priority {
+    margin-bottom: 7px;
     padding: 5px;
 }
 #task-details-priority-text {

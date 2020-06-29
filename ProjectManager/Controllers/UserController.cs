@@ -15,6 +15,7 @@ namespace ProjectManager.Controllers
         [HttpGet]
         public JsonResult GetIdOfLoggedIn()
         {
+            Console.WriteLine(this.UserId);
             return Json(this.UserId);
         }
 
@@ -87,7 +88,7 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPost]
-        public JsonResult New(string firstName, string lastName, string email, string password)
+        public JsonResult Create(string firstName, string lastName, string email, string password)
         {
             var context = new DAL.MyContext();
             context.Database.EnsureCreated();
@@ -108,11 +109,11 @@ namespace ProjectManager.Controllers
                 context.SaveChanges();
 
                 this.UserId = user.UserId;
-                return Json("success");
+                return Json(true);
             }
             else
             {
-                return Json("failure");
+                return Json(false);
             }
         }
 
@@ -168,10 +169,10 @@ namespace ProjectManager.Controllers
                 if (encrypted == user.Password)
                 {
                     this.UserId = user.UserId;
-                    return Json("success");
+                    return Json(true);
                 }
             }
-            return Json("failure");
+            return Json(false);
         }
 
         [HttpPost]

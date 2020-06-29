@@ -134,8 +134,19 @@ namespace ProjectManager.Controllers
             return View(model);
         }
 
-        public IActionResult BackBoneBoard()
+        public IActionResult BackboneLogin()
         {
+            this.UserId = 0;
+            return View();
+        }
+
+        public IActionResult BackboneBoard()
+        {
+            if (this.UserId == 0)
+            {
+                return RedirectToAction("BackboneLogin", "Home");
+            }
+
             return View();
         }
 

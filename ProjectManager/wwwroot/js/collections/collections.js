@@ -10,6 +10,10 @@ ProjectManager.Collections.Projects = Backbone.Collection.extend({
     model: ProjectManager.Models.Project
 });
 
+ProjectManager.Collections.Tags = Backbone.Collection.extend({
+    model: ProjectManager.Models.Tag
+});
+
 ProjectManager.Collections.Tasks = Backbone.Collection.extend({
     model: ProjectManager.Models.Task
 });

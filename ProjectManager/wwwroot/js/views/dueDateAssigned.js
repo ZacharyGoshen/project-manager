@@ -1,11 +1,12 @@
 ﻿ProjectManager.Views.DueDateAssigned = Backbone.View.extend({
     tagName: 'div',
     className: 'font-light-gray font-small hover-font-dark-gray',
-    template: _.template(TemplateManager.templates.dueDateAssigned),
 
     render: function () {
-        let html = this.template(this.model.toJSON());
-        this.$el.html(html);
+        let dueDate = new Date(this.model.get('dueDate'));
+        let dueDateStringShort = dueDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+        this.$el.html(dueDateStringShort);
+
         return this;
     }
 });

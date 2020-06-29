@@ -5,18 +5,30 @@
     template: _.template(TemplateManager.templates.tagSelection),
 
     events: {
+        'keyup #tag-selection-input': 'search',
         'focusin #tag-selection-input': 'showResults',
         'focusout #tag-selection-input': 'hideResults'
     },
 
-    initialize: function () {
+    initialize: function (options) {
         let self = this;
+
+        this.onResultClick = options.onResultClick;
 
         $('body').on('mousedown', function (event) {
             if (getElementHovered(event, self.$el)) return;
-            if (self.$('#task-details-add-tag-button:hover').length) return;
+            if (self.$('.tag-selection-result:hover').length) return;
             else self.remove();
         });
+    },
+
+    renderOne: function (tag) {
+        let self = this;
+        let tagSelectionResultView = new ProjectManager.Views.TagSelectionResult({
+            model: tag,
+            onResultClick: self.onResultClick
+        });
+        this.$('#tag-selection-results').append(tagSelectionResultView.render().$el);
     },
 
     render: function () {
@@ -24,6 +36,11 @@
 
         let html = this.template();
         this.$el.html(html);
+
+        this.collection.tags.forEach(function (tag) {
+            self.renderOne(tag);
+        });
+
         return this;
     },
 
@@ -39,6 +56,19 @@
         this.$el.remove();
     },
 
+    search: function () {
+        this.clearResults();
+
+        let input = this.$("#tag-selection-input").val().toLowerCase();
+        if (input == "") return;
+
+        this.$(".tag-selection-result").each(function () {
+            if ($(this).html().toLowerCase().includes(input)) {
+                $(this).removeClass("hidden");
+            }
+        });
+    },
+
     showResults: function () {
         this.$("#tag-selection-results").removeClass("hidden");
     },
@@ -47,5 +77,11 @@
         let self = this;
         if (self.$('.tag-selection-result:hover').length) return;
         else this.$("#tag-selection-results").addClass("hidden");
+    },
+
+    clearResults: function () {
+        this.$(".tag-selection-result").each(function () {
+            $(this).addClass("hidden");
+        });
     }
 });

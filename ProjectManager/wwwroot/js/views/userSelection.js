@@ -5,7 +5,7 @@
     template: _.template(TemplateManager.templates.userSelection),
 
     events: {
-        'keyup': 'search',
+        'keyup #user-selection-input': 'search',
         'focusin #user-selection-input': 'showResults',
         'focusout #user-selection-input': 'hideResults'
     },
@@ -36,10 +36,9 @@
         let html = this.template();
         this.$el.html(html);
 
-        this.collection.users
-            .forEach(function (user) {
-                self.renderOne(user);
-            });
+        this.collection.users.forEach(function (user) {
+            self.renderOne(user);
+        });
 
         return this;
     },

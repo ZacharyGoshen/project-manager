@@ -1,6 +1,6 @@
 ﻿ProjectManager.Views.ProjectDetailsTeamMember = Backbone.View.extend({
     tagName: 'div',
-    className: 'project-details-team-member border-white flex-align-center flex-row hover-child-visible',
+    className: 'project-details-team-member flex-align-center flex-row hover-child-visible',
     template: _.template(TemplateManager.templates.projectDetailsTeamMember),
 
     events: {
@@ -31,7 +31,6 @@
     },
 
     remove: function () {
-        console.log('removing team member');
         let self = this;
 
         new Promise(function (resolve) {

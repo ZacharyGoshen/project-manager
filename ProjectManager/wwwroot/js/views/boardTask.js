@@ -16,10 +16,11 @@
 
     render: function () {
         let self = this;
-        this.model.set('priorityString', priorityToString(this.model.get('priority')));
 
         let taskHtml = this.template(this.model.toJSON());
         this.$el.html(taskHtml);
+
+        this.$('.board-task-priority').html(priorityToString(self.model.get('priority')));
 
         if (this.model.get('isCompleted') == true) {
             this.$el.addClass("translucent");
@@ -35,7 +36,6 @@
         });
         this.$(".board-task-user-picture").html(userPictureView.render().$el);
 
-        let dueDate = new Date(this.model.get('dueDate'));
         let dueDateUtc = new Date(this.model.get('dueDate') + 'Z')
         if (dueDateUtc.getTime() == new Date('0001-01-01T00:00:00Z').getTime()) {
             let dueDateIconView = new ProjectManager.Views.DueDateIcon({
@@ -43,13 +43,23 @@
             });
             this.$('.board-task-due-date').html(dueDateIconView.render().$el);
         } else {
-            let dueDateStringShort = dueDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-            this.model.set('dueDateStringShort', dueDateStringShort);
             let dueDateAssignedView = new ProjectManager.Views.DueDateAssigned({
                 model: self.model
             });
             this.$(".board-task-due-date").html(dueDateAssignedView.render().$el);
         }
+
+        if (this.model.get('tagIds').length == 0) {
+            self.$('.board-task-tags').addClass('hidden');
+        }
+
+        this.model.get('tagIds').forEach(function (tagId) {
+            let tag = self.collection.tags.findWhere({ tagId: tagId });
+            let boardTaskTagView = new ProjectManager.Views.BoardTaskTag({
+                model: tag
+            });
+            self.$('.board-task-tags').append(boardTaskTagView.render().$el);
+        });
 
         return this;
     },

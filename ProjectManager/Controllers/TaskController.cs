@@ -19,6 +19,7 @@ namespace ProjectManager.Controllers
                 .Where(t => t.TaskId == taskId)
                 .Include(t => t.Category)
                 .Include(t => t.AssignedUser)
+                .Include(t => t.TagTasks)
                 .Select(t => new
                 {
                     TaskId = t.TaskId,
@@ -30,7 +31,8 @@ namespace ProjectManager.Controllers
                     Priority = t.Priority,
                     IsCompleted = t.IsCompleted,
                     CategoryId = t.Category.CategoryId,
-                    AssignedUserId = t.AssignedUser.UserId
+                    AssignedUserId = t.AssignedUser.UserId,
+                    TagIds = t.TagTasks.Select(tt => tt.Tag.TagId)
                 })
                 .First();
             return Json(task);
@@ -44,6 +46,7 @@ namespace ProjectManager.Controllers
                 .Where(t => t.Project.ProjectId == projectId)
                 .Include(t => t.Category)
                 .Include(t => t.AssignedUser)
+                                .Include(t => t.TagTasks)
                 .Select(t => new
                 {
                     TaskId = t.TaskId,
@@ -55,7 +58,8 @@ namespace ProjectManager.Controllers
                     Priority = t.Priority,
                     IsCompleted = t.IsCompleted,
                     CategoryId = t.Category.CategoryId,
-                    AssignedUserId = t.AssignedUser.UserId
+                    AssignedUserId = t.AssignedUser.UserId,
+                    TagIds = t.TagTasks.Select(tt => tt.Tag.TagId)
                 })
                 .ToList();
             return Json(tasks);

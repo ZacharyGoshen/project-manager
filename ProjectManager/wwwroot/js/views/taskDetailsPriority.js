@@ -14,8 +14,13 @@
     },
 
     render: function () {
+        let self = this;
+
         let html = this.template(this.model.toJSON());
         this.$el.html(html);
+
+        this.$('#task-details-priority-text').html(priorityToString(self.model.get('priority')));
+
         return this;
     },
 

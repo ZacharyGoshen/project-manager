@@ -1,7 +1,7 @@
 ﻿ProjectManager.Views.ProjectDetails = Backbone.View.extend({
     tagName: 'div',
     id: 'project-details',
-    className: 'background-color-white border-light-gray',
+    className: 'background-color-white border-light-gray flex-column',
     template: _.template(TemplateManager.templates.projectDetails),
 
     events: {
@@ -35,6 +35,12 @@
             collection: self.collection
         });
         this.$('#project-details-team-members').replaceWith(projectDetailsTeamMembersView.render().$el);
+
+        let projectDetailsTagsView = new ProjectManager.Views.ProjectDetailsTags({
+            model: self.model,
+            collection: self.collection
+        });
+        this.$('#project-details-tags').replaceWith(projectDetailsTagsView.render().$el);
 
         return this;
     },
