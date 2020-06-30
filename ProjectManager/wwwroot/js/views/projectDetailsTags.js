@@ -5,7 +5,7 @@
     template: _.template(TemplateManager.templates.projectDetailsTags),
 
     events: {
-        'click #project-details-new-tag-button': 'showNewTagInput',
+        'click #project-details-new-tag-button': 'showInput',
         'keypress #project-details-new-tag-input': 'createTagOnEnter'
     },
 
@@ -14,9 +14,9 @@
 
         this.listenTo(this.collection.tags, "update", this.render);
 
-        $('body').on('mousedown', function (event) {
+        $('body').on('mousedown', function () {
             if (self.$('#project-details-new-tag-input:hover').length) return;
-            else self.hideNewTagInput();
+            else self.hideInput();
         });
     },
 
@@ -42,13 +42,13 @@
         return this;
     },
 
-    showNewTagInput: function () {
+    showInput: function () {
         this.$('#project-details-new-tag-button').addClass('hidden');
         this.$('#project-details-new-tag-input').removeClass('hidden');
         this.$('#project-details-new-tag-input').focus();
     },
 
-    hideNewTagInput: function () {
+    hideInput: function () {
         this.$('#project-details-new-tag-button').removeClass('hidden');
         this.$('#project-details-new-tag-input').addClass('hidden');
         this.$('#project-details-new-tag-input').val('');
@@ -68,7 +68,7 @@
                 type: "POST",
                 url: "/Tag/Create",
                 data: {
-                    projectId: 1,
+                    projectId: ProjectManager.CurrentProjectId,
                     tagName: input
                 },
                 success: function (newTagId) {

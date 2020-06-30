@@ -40,6 +40,15 @@ namespace ProjectManager.Controllers
             return Json(users);
         }
 
+        [HttpGet]
+        public JsonResult GetCurrentProjectId(int userId)
+        {
+            var context = new DAL.MyContext();
+            var user = context.Users.Find(userId);
+            var currentProjectId = user.CurrentProjectId;
+            return Json(currentProjectId);
+        }
+
         public JsonResult FindFirstTenThatContainName(string name, int projectId)
         {
             var context = new DAL.MyContext();
@@ -154,6 +163,15 @@ namespace ProjectManager.Controllers
             var context = new DAL.MyContext();
             var user = context.Users.Find(userId);
             user.BackgroundColor = backgroundColor;
+            context.SaveChanges();
+        }
+
+        [HttpPost]
+        public void updateCurrentProjectId(int userId, int projectId)
+        {
+            var context = new DAL.MyContext();
+            var user = context.Users.Find(userId);
+            user.CurrentProjectId = projectId;
             context.SaveChanges();
         }
 

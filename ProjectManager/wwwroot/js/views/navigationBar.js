@@ -6,6 +6,7 @@
 
     events: {
         'click #navigation-bar-project': 'openProjectDetails',
+        'click #navigation-bar-project-dropdown-button': 'toggleProjectDropdownMenu',
         'click #navigation-bar-user': 'toggleUserDropdownMenu'
     },
 
@@ -35,14 +36,29 @@
     openProjectDetails: function () {
         let self = this;
 
-        let popupView = new ProjectManager.Views.Popup();
-        $("#main-container").append(popupView.render().$el);
-
         let projectDetailsView = new ProjectManager.Views.ProjectDetails({
-            model: self.collection.projects.findWhere({ projectId: 1 }),
+            model: self.collection.projects.findWhere({ projectId: ProjectManager.CurrentProjectId }),
             collection: self.collection
         });
-        $("#popup").replaceWith(projectDetailsView.render().$el);
+
+        let popupView = new ProjectManager.Views.Popup();
+        $("#main-container").append(popupView.render().$el);
+        $(".popup").last().append(projectDetailsView.render().$el);
+    },
+
+    toggleProjectDropdownMenu: function () {
+        let self = this;
+        if ($("#project-drop-down-menu").length) {
+            $('body').off('mousedown');
+            $("#project-drop-down-menu").remove();
+        } else {
+            let projectDropdownMenuView = new ProjectManager.Views.ProjectDropdownMenu({
+                collection: self.collection
+            });
+
+            $("#main-container").append(projectDropdownMenuView.render().$el);
+            projectDropdownMenuView.position(self.$("#navigation-bar-project"));
+        }
     },
 
     toggleUserDropdownMenu: function () {

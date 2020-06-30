@@ -33,6 +33,8 @@
         let html = this.template();
         this.$el.html(html);
 
+        if (this.collection.categories.length == 0) this.$('#board-extra-space').removeClass('hidden');
+
         this.collection.categories.each(this.renderOne, this);
         return this;
     },
@@ -63,7 +65,7 @@
                 type: "POST",
                 url: "/Category/Create",
                 data: {
-                    projectId: 1,
+                    projectId: ProjectManager.CurrentProjectId,
                     categoryName: input
                 },
                 success: function (newCategoryId) {

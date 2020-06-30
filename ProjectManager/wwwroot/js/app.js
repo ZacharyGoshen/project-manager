@@ -39,12 +39,27 @@
             });
         }).then(function () {
             return new Promise(function (resolve) {
+                Backbone.ajax({
+                    type: "GET",
+                    url: "/User/GetCurrentProjectId",
+                    data: {
+                        userId: ProjectManager.LoggedInUserId
+                    },
+                    success: function (currentProjectId) {
+                        ProjectManager.CurrentProjectId = currentProjectId;
+                        resolve();
+                    }
+                });
+            })
+        }).then(function () {
+            return new Promise(function (resolve) {
                 collection.projects.fetch({
                     data: {
                         userId: ProjectManager.LoggedInUserId
                     },
                     success: function () {
-                        if (collection.projects.length) {
+                        if (ProjectManager.CurrentProjectId == 0 &&
+                            collection.projects.length) {
                             ProjectManager.CurrentProjectId = collection.projects.at(0).get('projectId');
                         }
                         resolve();
@@ -96,17 +111,15 @@
                 });
             });
         }).then(function () {
-            return new Promise(function () {
-                let navigationBarView = new ProjectManager.Views.NavigationBar({
-                    collection: collection
-                });
-                $("#main-container").append(navigationBarView.render().$el);
-
-                let boardView = new ProjectManager.Views.Board({
-                    collection: collection
-                });
-                $("#main-container").append(boardView.render().$el);
+            let navigationBarView = new ProjectManager.Views.NavigationBar({
+                collection: collection
             });
+            $("#main-container").html(navigationBarView.render().$el);
+
+            let boardView = new ProjectManager.Views.Board({
+                collection: collection
+            });
+            $("#main-container").append(boardView.render().$el);
         });
 
         Backbone.history.start();

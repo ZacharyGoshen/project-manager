@@ -5,11 +5,18 @@
     template: _.template(TemplateManager.templates.projectDetailsTeamMembers),
 
     events: {
-        'click #project-details-invite-team-member-button': 'toggleSelectUser'
+        'click #project-details-invite-team-member-button': 'showInput'
     },
 
     initialize: function () {
+        let self = this;
+
         this.listenTo(this.collection.users, "update", this.render);
+
+        $('body').on('mousedown', function () {
+            if (self.$('#project-details-invite-team-member-input:hover').length) return;
+            else self.hideInput();
+        });
     },
 
     renderOne: function (user) {
@@ -34,21 +41,15 @@
         return this;
     },
 
-    toggleSelectUser: function () {
-        let self = this;
-
-        if ($("#user-selection").length) {
-            $('body').off('mousedown');
-            $("#user-selection").remove();
-        } else {
-            let userSelectionView = new ProjectManager.Views.UserSelection({
-                collection: self.collection
-                //,
-                //onResultClick: self.update.bind(self)
-            });
-
-            $("#main-container").append(userSelectionView.render().$el);
-            userSelectionView.position(self.$('#project-details-invite-team-member-button'));
-        }
+    showInput: function () {
+        this.$('#project-details-invite-team-member-button').addClass('hidden');
+        this.$('#project-details-invite-team-member-input').removeClass('hidden');
+        this.$('#project-details-invite-team-member-input').focus();
     },
+
+    hideInput: function () {
+        this.$('#project-details-invite-team-member-button').removeClass('hidden');
+        this.$('#project-details-invite-team-member-input').addClass('hidden');
+        this.$('#project-details-invite-team-member-input').val('');
+    }
 });

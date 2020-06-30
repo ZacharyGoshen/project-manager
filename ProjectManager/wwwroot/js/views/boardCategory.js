@@ -5,7 +5,7 @@
 
     events: {
         'click .board-new-task-button': 'toggleInput',
-        'click .board-category-delete-button': 'delete',
+        'click .board-category-delete-button': 'onClickDelete',
         'keypress .board-new-task-input': 'createTaskOnEnter'
     },
 
@@ -75,8 +75,8 @@
                 type: "POST",
                 url: "/Task/Create",
                 data: {
-                    userId: 1,
-                    projectId: 1,
+                    userId: ProjectManager.LoggedInUserId,
+                    projectId: ProjectManager.CurrentProjectId,
                     categoryId: self.model.get('categoryId'),
                     taskName: input
                 },
@@ -106,33 +106,42 @@
         });
     },
 
-    delete: function () {
+    onClickDelete: function () {
         let self = this;
 
         if (this.model.get('taskIds').length) {
-            let popupView = new ProjectManager.Views.Popup();
-            $('#main-container').append(popupView.render().$el);
-
-            let deleteCategoryConfirmationView = new ProjectManager.Views.DeleteCategoryConfirmation({
+            let confirmationView = new ProjectManager.Views.Confirmation({
+                message: 'Deleting this category will also delete all of its tasks. Are you sure?',
+                submitText: 'Delete Category',
+                onSubmit: self.delete.bind(self),
                 model: self.model,
                 collection: self.collection
             });
-            $('#popup').replaceWith(deleteCategoryConfirmationView.render().$el);
+
+            let popupView = new ProjectManager.Views.Popup();
+            $("#main-container").append(popupView.render().$el);
+            $('.popup').last().append(confirmationView.render().$el);
         } else {
-            new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: "POST",
-                    url: "/Category/Delete",
-                    data: {
-                        categoryId: self.model.get('categoryId')
-                    },
-                    success: function () {
-                        resolve();
-                    }
-                });
-            }).then(function () {
-                self.collection.categories.remove(self.model);
-            });
+            self.delete();
         }
+    },
+
+    delete: function () {
+        let self = this;
+
+        new Promise(function (resolve) {
+            Backbone.ajax({
+                type: "POST",
+                url: "/Category/Delete",
+                data: {
+                    categoryId: self.model.get('categoryId')
+                },
+                success: function () {
+                    resolve();
+                }
+            });
+        }).then(function () {
+            self.collection.categories.remove(self.model);
+        });
     }
 });

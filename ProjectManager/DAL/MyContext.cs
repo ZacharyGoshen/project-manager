@@ -91,7 +91,8 @@ namespace ProjectManager.DAL
                     Email = "zachgoshen@gmail.com",
                     Password = "g8DKmISNL498xl1NL1cRSVNERPM3jR0eeFyfPIVbFno=",
                     Salt = StringToByteArray("642D5272CF0349B9BC950ACC2619AB25"),
-                    BackgroundColor = 5
+                    BackgroundColor = 5,
+                    CurrentProjectId = 1
                 },
                 new
                 {
@@ -101,7 +102,8 @@ namespace ProjectManager.DAL
                     Email = "erickgoshen@gmail.com",
                     Password = "6ku4MbX8vTRnrAekAxT6OKaTjCcIUrx9tMpqCz4dqe4=",
                     Salt = StringToByteArray("33F706A69D130284DDDB42270C3C7C0A"),
-                    BackgroundColor = 10
+                    BackgroundColor = 10,
+                    CurrentProjectId = 1
                 }
                 );
 

@@ -12,6 +12,30 @@ namespace ProjectManager.Controllers
     public class ProjectController : BaseController
     {
         [HttpGet]
+        public JsonResult Get(int projectId)
+        {
+            var context = new MyContext();
+            var project = context.UserProjects
+                .Where(up => up.Project.ProjectId == projectId)
+                .Include(up => up.Project.Categories)
+                .Include(up => up.Project.Tasks)
+                .Include(up => up.Project.Owner)
+                .Include(up => up.Project.TeamMembers)
+                .Select(up => new
+                {
+                    ProjectId = up.Project.ProjectId,
+                    Name = up.Project.Name,
+                    Description = up.Project.Description,
+                    CategoryIds = up.Project.Categories.Select(c => c.CategoryId),
+                    TaskIds = up.Project.Tasks.Select(t => t.TaskId),
+                    OwnerId = up.Project.Owner.UserId,
+                    TeamMemberIds = up.Project.TeamMembers.Select(up => up.User.UserId)
+                })
+                .First();
+            return Json(project);
+        }
+
+        [HttpGet]
         public JsonResult GetAllWithUser(int userId)
         {
             var context = new MyContext();
@@ -35,7 +59,7 @@ namespace ProjectManager.Controllers
             return Json(projects);
         }
 
-        public JsonResult New(string name, string description, int day, int month, int year, int ownerId, int[] teamMemberIds)
+        public JsonResult Create(int userId, string name, string description)
         {
             var context = new MyContext();
 
@@ -43,31 +67,17 @@ namespace ProjectManager.Controllers
             {
                 Name = name,
                 Description = description,
-                Owner = context.Users.Find(ownerId)
+                Owner = context.Users.Find(userId)
             };
-
-            if ((day == -1) && (month == -1) && (year == -1))
-            {
-                project.DueDate = new DateTime();
-            } else
-            {
-                project.DueDate = new DateTime(year, month, day);
-            }
-
-            var teamMemberUserProjects = new List<UserProject>();
-            foreach (var teamMemberId in teamMemberIds)
-            {
-                var teamMember = context.Users.Find(teamMemberId);
-                var teamMemberUserProject = new UserProject()
-                {
-                    User = teamMember,
-                    Project = project
-                };
-                teamMemberUserProjects.Add(teamMemberUserProject);
-            }
-            project.TeamMembers = teamMemberUserProjects;
-
             context.Projects.Add(project);
+
+            var userProject = new UserProject()
+            {
+                User = context.Users.Find(userId),
+                Project = project
+            };
+            context.UserProjects.Add(userProject);
+
             context.SaveChanges();
 
             return Json(project.ProjectId);
@@ -146,6 +156,56 @@ namespace ProjectManager.Controllers
                 .First();
             context.UserProjects.Attach(userProject);
             context.UserProjects.Remove(userProject);
+            context.SaveChanges();
+        }
+
+        [HttpPost]
+        public void Delete(int projectId)
+        {
+            var context = new DAL.MyContext();
+            var categoryController = new CategoryController();
+            var categories = context.Categories
+                .Where(c => c.Project.ProjectId == projectId)
+                .ToList();
+            foreach (var category in categories)
+            {
+                categoryController.Delete(category.CategoryId);
+            }
+
+            context = new DAL.MyContext();
+            var tagController = new TagController();
+            var tags = context.Tags
+                .Where(t => t.Project.ProjectId == projectId)
+                .ToList();
+            foreach (var tag in tags)
+            {
+                tagController.Delete(tag.TagId);
+            }
+
+            context = new DAL.MyContext();
+            var teamMembers = context.Projects
+                .Where(p => p.ProjectId == projectId)
+                .Include(p => p.TeamMembers)
+                .ThenInclude(up => up.User)
+                .First()
+                .TeamMembers
+                .Select(up => up.User)
+                .ToList();
+            foreach (var teamMember in teamMembers)
+            {
+                RemoveTeamMember(projectId, teamMember.UserId);
+            }
+
+            context = new DAL.MyContext();
+            var project = context.Projects
+                .Where(p => p.ProjectId == projectId)
+                .Include(p => p.TeamMembers)
+                .ThenInclude(up => up.User)
+                .First();
+
+            context.Projects.Attach(project);
+            context.Projects.Remove(project);
+
             context.SaveChanges();
         }
     }

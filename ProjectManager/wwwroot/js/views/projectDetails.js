@@ -6,6 +6,7 @@
 
     events: {
         'click #project-details-close-button': 'close',
+        'click #project-details-delete-button': 'onClickDelete'
     },
 
     render: function () {
@@ -46,6 +47,54 @@
     },
 
     close: function () {
-        $('#background-blur').remove();
+        $('.popup').last().remove();
     },
+
+    onClickDelete: function () {
+        let self = this;
+
+        let confirmationView = new ProjectManager.Views.Confirmation({
+            message: 'Deleting this project will also delete all of its categories, tasks, and tags. Are you sure?',
+            submitText: 'Delete Project',
+            onSubmit: self.delete.bind(self)
+        });
+        $('#background-blur').append(confirmationView.render().$el);
+
+        let popupView = new ProjectManager.Views.Popup();
+        $("#main-container").append(popupView.render().$el);
+        $('.popup').last().append(confirmationView.render().$el);
+    },
+
+    delete: function () {
+        let self = this;
+
+        new Promise(function (resolve) {
+            Backbone.ajax({
+                type: 'POST',
+                url: '/Project/Delete',
+                data: {
+                    projectId: self.model.get('projectId')
+                },
+                success: function () {
+                    resolve();
+                }
+            });
+        }).then(function () {
+            return new Promise(function (resolve) {
+                Backbone.ajax({
+                    type: 'POST',
+                    url: '/User/UpdateCurrentProjectId',
+                    data: {
+                        userId: ProjectManager.LoggedInUserId,
+                        projectId: 0
+                    },
+                    success: function () {
+                        resolve();
+                    }
+                });
+            });
+        }).then(function() {
+            location.reload();
+        });
+    }
 });

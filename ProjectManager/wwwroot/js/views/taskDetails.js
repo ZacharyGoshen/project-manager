@@ -74,7 +74,7 @@
     },
 
     close: function () {
-        $('#background-blur').remove();
+        $('.popup').last().remove();
     },
 
     createCommentOnEnter: function (event) {
@@ -93,7 +93,7 @@
                 url: '/Comment/Create',
                 data: {
                     taskId: self.model.get('taskId'),
-                    userId: 1,
+                    userId: ProjectManager.LoggedInUserId,
                     text: input
                 },
                 success: function (newCommentId) {

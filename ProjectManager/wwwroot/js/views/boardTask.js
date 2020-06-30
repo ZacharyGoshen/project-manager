@@ -11,7 +11,7 @@
     },
 
     initialize: function () {
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, 'change', this.render);
     },
 
     render: function () {
@@ -23,10 +23,10 @@
         this.$('.board-task-priority').html(priorityToString(self.model.get('priority')));
 
         if (this.model.get('isCompleted') == true) {
-            this.$el.addClass("translucent");
+            this.$el.addClass('translucent');
         } else {
-            this.$el.removeClass("translucent");
-            this.$(".board-task-check").remove();
+            this.$el.removeClass('translucent');
+            this.$('.board-task-check').remove();
         }
 
         let userPictureView = new ProjectManager.Views.UserPicture({
@@ -34,7 +34,7 @@
             userId: self.model.get('assignedUserId'),
             hover: true
         });
-        this.$(".board-task-user-picture").html(userPictureView.render().$el);
+        this.$('.board-task-user-picture').html(userPictureView.render().$el);
 
         let dueDateUtc = new Date(this.model.get('dueDate') + 'Z')
         if (dueDateUtc.getTime() == new Date('0001-01-01T00:00:00Z').getTime()) {
@@ -46,7 +46,7 @@
             let dueDateAssignedView = new ProjectManager.Views.DueDateAssigned({
                 model: self.model
             });
-            this.$(".board-task-due-date").html(dueDateAssignedView.render().$el);
+            this.$('.board-task-due-date').html(dueDateAssignedView.render().$el);
         }
 
         if (this.model.get('tagIds').length == 0) {
@@ -73,8 +73,8 @@
 
         new Promise(function (resolve) {
             Backbone.ajax({
-                type: "GET",
-                url: "/Comment/GetAllInTask",
+                type: 'GET',
+                url: '/Comment/GetAllInTask',
                 data: {
                     taskId: self.model.get('taskId'),
                 },
@@ -87,30 +87,30 @@
                 }
             });
         }).then(function () {
-            let popupView = new ProjectManager.Views.Popup();
-            $("#main-container").append(popupView.render().$el);
-
             let taskDetailsView = new ProjectManager.Views.TaskDetails({
                 model: self.model,
                 collection: self.collection
             });
-            $("#popup").replaceWith(taskDetailsView.render().$el);
+
+            let popupView = new ProjectManager.Views.Popup();
+            $('#main-container').append(popupView.render().$el);
+            $('.popup').last().append(taskDetailsView.render().$el);
         });
     },
 
     toggleSelectUser: function () {
         let self = this;
-        if ($("#user-selection").length) {
+        if ($('#user-selection').length) {
             $('body').off('mousedown');
-            $("#user-selection").remove();
+            $('#user-selection').remove();
         } else {
             let userSelectionView = new ProjectManager.Views.UserSelection({
                 collection: self.collection,
                 onResultClick: self.updateUser.bind(self)
             });
 
-            $("#main-container").append(userSelectionView.render().$el);
-            userSelectionView.position(self.$(".board-task-user-picture"));
+            $('#main-container').append(userSelectionView.render().$el);
+            userSelectionView.position(self.$('.board-task-user-picture'));
         }
     },
 
@@ -119,8 +119,8 @@
 
         new Promise(function (resolve) {
             Backbone.ajax({
-                type: "POST",
-                url: "/Task/UpdateAssignedUser",
+                type: 'POST',
+                url: '/Task/UpdateAssignedUser',
                 data: {
                     taskId: self.model.get('taskId'),
                     userId: user.get('userId')
@@ -137,9 +137,9 @@
 
     toggleSelectDate: function () {
         let self = this;
-        if ($("#date-selection").length) {
+        if ($('#date-selection').length) {
             $('body').off('mousedown');
-            $("#date-selection").remove();
+            $('#date-selection').remove();
         } else {
             let dateSelectionView = new ProjectManager.Views.DateSelection({
                 collection: self.collection,
@@ -147,8 +147,8 @@
                 onDateClick: self.updateDueDate.bind(self)
             });
 
-            $("#main-container").append(dateSelectionView.render().$el);
-            dateSelectionView.position(self.$(".board-task-due-date"));
+            $('#main-container').append(dateSelectionView.render().$el);
+            dateSelectionView.position(self.$('.board-task-due-date'));
         }
     },
 
@@ -157,8 +157,8 @@
 
         new Promise(function (resolve) {
             Backbone.ajax({
-                type: "POST",
-                url: "/Task/UpdateDueDate",
+                type: 'POST',
+                url: '/Task/UpdateDueDate',
                 data: {
                     taskId: self.model.get('taskId'),
                     year: date.getFullYear(),
@@ -180,8 +180,8 @@
 
         new Promise(function (resolve) {
             Backbone.ajax({
-                type: "POST",
-                url: "/Task/Delete",
+                type: 'POST',
+                url: '/Task/Delete',
                 data: {
                     taskId: self.model.get('taskId')
                 },

@@ -3,8 +3,24 @@
 };
 
 TemplateManager.templates.navigationBar = `
-    <div id='navigation-bar-project' class='hover-cursor-pointer rfont-large'>Navigation Bar</div>
+    <div class='flex-align-center flex-row'>
+        <div id='navigation-bar-project' class='hover-cursor-pointer font-large'></div>
+        <div id='navigation-bar-project-dropdown-button' class='font-light-gray font-small hover-cursor-pointer hover-font-dark-gray'>&#9660</div>
+    </div>
     <div id='navigation-bar-user' class='hover-cursor-pointer'></div>
+`;
+
+TemplateManager.templates.projectDropdownMenu = `
+    <div id='new-project-button' class='font-light-gray font-medium hover-cursor-pointer hover-font-dark-gray'>+ Create new project</div>
+`;
+
+TemplateManager.templates.newProject = `
+    <div id='new-project-header' class='border-bottom-light-gray flex-fit-content flex-row-reverse flex-space-between'>
+        <div id='new-project-close-button' class='font-light-gray font-medium hover-cursor-pointer hover-font-dark-gray'>X</div>
+    </div>
+    <input id='new-project-name' class='border-light-gray font-large focus-border-dark-gray' placeholder='Add a name...'/>
+    <textarea id='new-project-description' class='border-light-gray font-small focus-border-dark-gray' placeholder='Add a description...'></textarea>
+    <div id='new-project-create-button' class='border-light-gray hover-background-color-dark-gray hover-border-dark-gray hover-cursor-pointer hover-font-white font-light-gray font-small text-center-horizontal'>Create Project</div>
 `;
 
 TemplateManager.templates.userDropdownMenu = `
@@ -86,6 +102,7 @@ TemplateManager.templates.colorSelection = `
 `;
 
 TemplateManager.templates.board = `
+    <div id='board-extra-space' class='hidden'></div>
     <div id='board-new-category-button' class='font-light-gray font-medium hover-cursor-pointer hover-font-dark-gray'>+ Add category</div>
     <input id='board-new-category-input' class='border-dark-gray font-medium hidden'/>
 `;
@@ -102,10 +119,10 @@ TemplateManager.templates.boardCategory = `
     <div class='board-category-tasks flex-grow overflow-y-scroll'></div>
 `;
 
-TemplateManager.templates.deleteCategoryConfirmation = `
-    <div id='confirmation-message' class='font-small'>Deleting this category will also delete all of its tasks. Are you sure?</div>
+TemplateManager.templates.confirmation = `
+    <div id='confirmation-message' class='font-small'></div>
     <div class='flex-row'>
-        <div id='confirmation-confirm' class='border-light-gray font-light-gray font-small hover-border-dark-gray hover-cursor-pointer hover-font-dark-gray'>Delete Category</div>
+        <div id='confirmation-submit' class='border-light-gray font-light-gray font-small hover-border-dark-gray hover-cursor-pointer hover-font-dark-gray'>Delete Category</div>
         <div id='confirmation-cancel' class='border-light-gray font-light-gray font-small hover-border-dark-gray hover-cursor-pointer hover-font-dark-gray'>Cancel</div>
     </div>
 `;
@@ -145,10 +162,6 @@ TemplateManager.templates.dueDateIcon = `
     </div>
 `;
 
-TemplateManager.templates.popup = `
-    <div id='popup' class='background-color-white border-light-gray'></div>
-`;
-
 TemplateManager.templates.projectDetails = `
     <div id='project-details-header' class='border-bottom-light-gray flex-fit-content flex-row-reverse flex-space-between'>
         <div id='project-details-close-button' class='font-light-gray font-medium hover-cursor-pointer hover-font-dark-gray'>X</div>
@@ -162,14 +175,15 @@ TemplateManager.templates.projectDetails = `
         </div>
         <div class='flex-align-baseline flex-row font-light-gray font-small'>
             <div class='project-details-label'>Team Members:</div>
-            <div id='project-details-team-members'>
-
-            </div>
+            <div id='project-details-team-members'></div>
         </div>
         <div class='flex-align-baseline flex-row font-light-gray font-small'>
             <div class='project-details-label'>Tags:</div>
             <div id='project-details-tags'></div>
         </div>
+    </div>
+    <div id='project-details-footer' class='border-top-light-gray flex-fit-content'>
+        <div id='project-details-delete-button' class='border-light-gray hover-background-color-dark-gray hover-border-dark-gray hover-cursor-pointer hover-font-white font-light-gray font-small text-center-horizontal'>Delete Project</div>
     </div>
 `;
 
@@ -180,6 +194,7 @@ TemplateManager.templates.projectDetailsOwner = `
 
 TemplateManager.templates.projectDetailsTeamMembers = `
     <div id='project-details-invite-team-member-button' class='font-light-gray font-small hover-cursor-pointer hover-font-dark-gray'>+ Invite a team member</div>
+    <input id='project-details-invite-team-member-input' class='border-dark-gray font-small hidden' placeholder='Email'/>
 `;
 
 TemplateManager.templates.projectDetailsTeamMember = `

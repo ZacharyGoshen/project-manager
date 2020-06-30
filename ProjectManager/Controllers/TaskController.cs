@@ -229,20 +229,42 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
+        [HttpPost]
         public void Delete(int taskId)
         {
             var context = new DAL.MyContext();
+            var commentController = new CommentController();
+            var comments = context.Comments
+                .Where(c => c.Task.TaskId == taskId)
+                .ToList();
+            foreach (var comment in comments)
+            {
+                commentController.Delete(comment.CommentId);
+            }
+
+            context = new DAL.MyContext();
+            var tags = context.TagTasks
+                .Where(tt => tt.Task.TaskId == taskId)
+                .Select(tt => tt.Tag)
+                .ToList();
+            foreach (var tag in tags)
+            {
+                RemoveTag(taskId, tag.TagId);
+            }
+
+            context = new DAL.MyContext();
 
             var taskToDelete = context.Tasks
-                .Include(t => t.Category)
                 .Where(t => t.TaskId == taskId)
+                .Include(t => t.Category)
                 .First();
+            context.Tasks.Attach(taskToDelete);
+            context.Tasks.Remove(taskToDelete);
 
             var tasksWithHigherOrder = context.Tasks
                 .Where(t => t.Category == taskToDelete.Category)
                 .Where(t => t.Order > taskToDelete.Order)
                 .ToList();
-
             foreach (Models.Task task in tasksWithHigherOrder)
             {
                 var entity = context.Tasks.Find(task.TaskId);
@@ -250,10 +272,6 @@ namespace ProjectManager.Controllers
                 context.Tasks.Update(entity);
             }
 
-            RemoveAllTags(taskId);
-
-            context.Tasks.Attach(taskToDelete);
-            context.Tasks.Remove(taskToDelete);
             context.SaveChanges();
         }
     }
