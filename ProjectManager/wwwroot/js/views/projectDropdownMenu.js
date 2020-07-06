@@ -63,5 +63,5 @@
         $(".popup").last().append(newProjectView.render().$el);
 
         self.remove();
-    },
+    }
 });

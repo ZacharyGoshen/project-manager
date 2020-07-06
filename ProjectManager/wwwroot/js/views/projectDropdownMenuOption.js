@@ -6,13 +6,10 @@
         'click': 'updateCurrentProject'
     },
 
-    initialize: function () {
+    render: function () {
         let self = this;
 
         this.$el.html(self.model.get('name'));
-    },
-
-    render: function () {
         return this;
     },
 

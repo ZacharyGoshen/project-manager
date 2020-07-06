@@ -14,6 +14,9 @@ ProjectManager.Models.Comment = Backbone.Model.extend({
     }
 });
 
+ProjectManager.Models.Invite = Backbone.Model.extend({
+});
+
 ProjectManager.Models.Project = Backbone.Model.extend({
     defaults: function () {
         return {

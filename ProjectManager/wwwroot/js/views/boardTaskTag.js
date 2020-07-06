@@ -2,6 +2,10 @@
     tagName: 'div',
     className: 'board-task-tag font-very-small font-white sides-round',
 
+    initialize: function () {
+        this.listenTo(this.model, "change", this.render);
+    },
+
     render: function () {
         let self = this;
 

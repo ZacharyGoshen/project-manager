@@ -25,7 +25,9 @@ namespace ProjectManager.Controllers
                     Text = c.Text,
                     CreationTime = c.CreationTime,
                     TaskId = c.Task.TaskId,
-                    UserId = c.User.UserId
+                    UserId = c.User.UserId,
+                    UserFirstName = c.User.FirstName,
+                    UserLastName = c.User.LastName
                 })
                 .ToList();
             return Json(comment);

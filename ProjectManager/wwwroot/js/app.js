@@ -16,22 +16,24 @@
         let collection = {
             categories: new ProjectManager.Collections.Categories(),
             comments: new ProjectManager.Collections.Comments(),
+            invites: new ProjectManager.Collections.Invites(),
             projects: new ProjectManager.Collections.Projects(),
             tags: new ProjectManager.Collections.Tasks(),
             tasks: new ProjectManager.Collections.Tasks(),
             users: new ProjectManager.Collections.Users()
         };
 
-        collection.projects.url = '../project/getAllWithUser';
-        collection.users.url = '../user/getAllInProject';
         collection.categories.url = '../category/getAllInProject';
+        collection.invites.url = '../invite/getAllToUser';
+        collection.projects.url = '../project/getAllWithUser';
         collection.tasks.url = '../task/getAllInProject';
         collection.tags.url = '../tag/getAllInProject';
+        collection.users.url = '../user/getAllInProject';
 
         new Promise(function (resolve) {
             Backbone.ajax({
                 type: "GET",
-                url: "/User/GetIdOfLoggedIn",
+                url: "/User/GetLoggedInId",
                 success: function (userId) {
                     ProjectManager.LoggedInUserId = userId;
                     resolve();
@@ -68,17 +70,6 @@
             })
         }).then(function () {
             return new Promise(function (resolve) {
-                collection.users.fetch({
-                    data: {
-                        projectId: ProjectManager.CurrentProjectId
-                    },
-                    success: function () {
-                        resolve();
-                    }
-                });
-            })
-        }).then(function () {
-            return new Promise(function (resolve) {
                 collection.categories.fetch({
                     data: {
                         projectId: ProjectManager.CurrentProjectId
@@ -88,6 +79,17 @@
                     }
                 });
             });
+        }).then(function () {
+            return new Promise(function (resolve) {
+                collection.invites.fetch({
+                    data: {
+                        userId: ProjectManager.LoggedInUserId
+                    },
+                    success: function () {
+                        resolve();
+                    }
+                });
+            })
         }).then(function () {
             return new Promise(function (resolve) {
                 collection.tags.fetch({
@@ -111,10 +113,44 @@
                 });
             });
         }).then(function () {
+            return new Promise(function (resolve) {
+                collection.users.fetch({
+                    data: {
+                        projectId: ProjectManager.CurrentProjectId
+                    },
+                    success: function () {
+                        resolve();
+                    }
+                });
+            });
+        }).then(function () {
+            return new Promise(function (resolve) {
+                if (collection.users.length) {
+                    resolve();
+                } else {
+                    Backbone.ajax({
+                        type: "GET",
+                        url: "/User/Get",
+                        data: {
+                            userId: ProjectManager.LoggedInUserId
+                        },
+                        success: function (user) {
+                            collection.users.add(user);
+                            resolve();
+                        }
+                    });
+                }
+            });
+        }).then(function () {
             let navigationBarView = new ProjectManager.Views.NavigationBar({
                 collection: collection
             });
             $("#main-container").html(navigationBarView.render().$el);
+
+            let optionsBarView = new ProjectManager.Views.OptionsBar({
+                collection: collection
+            });
+            $("#main-container").append(optionsBarView.render().$el);
 
             let boardView = new ProjectManager.Views.Board({
                 collection: collection

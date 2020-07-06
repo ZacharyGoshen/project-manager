@@ -23,6 +23,7 @@ namespace ProjectManager.Controllers
                 {
                     CategoryId = c.CategoryId,
                     Name = c.Name,
+                    Order = c.Order,
                     ProjectId = c.Project.ProjectId,
                     TaskIds = c.Tasks.Select(t => t.TaskId)
                 })
@@ -42,6 +43,7 @@ namespace ProjectManager.Controllers
                 {
                     CategoryId = c.CategoryId,
                     Name = c.Name,
+                    Order = c.Order,
                     ProjectId = c.Project.ProjectId,
                     TaskIds = c.Tasks.Select(t => t.TaskId)
                 })
@@ -57,13 +59,23 @@ namespace ProjectManager.Controllers
                 var newCategory = new ProjectManager.Models.Category()
                 {
                     Name = categoryName,
-                    Project = context.Projects.Find(projectId)
+                    Project = context.Projects.Find(projectId),
+                    Order = context.Categories.Where(c => c.Project.ProjectId == projectId).ToList().Count
                 };
                 context.Categories.Add(newCategory);
                 context.SaveChanges();
 
                 return Json(newCategory.CategoryId);
             }
+        }
+
+        [HttpPost]
+        public void UpdateName(int categoryId, string name)
+        {
+            var context = new DAL.MyContext();
+            var category = context.Categories.Find(categoryId);
+            category.Name = name;
+            context.SaveChanges();
         }
 
         [HttpPost]
@@ -92,6 +104,37 @@ namespace ProjectManager.Controllers
             var category = context.Categories.Find(categoryId);
             context.Categories.Attach(category);
             context.Categories.Remove(category);
+            context.SaveChanges();
+        }
+
+        [HttpPost]
+        public void Move(int categoryId, int order)
+        {
+            var context = new MyContext();
+            var category = context.Categories
+                .Where(c => c.CategoryId == categoryId)
+                .Include(c => c.Project)
+                .First();
+
+            var project = context.Projects
+                .Where(p => p.ProjectId == category.Project.ProjectId)
+                .Include(p => p.Categories)
+                .First();
+
+            foreach (var categoryInProject in project.Categories)
+            {
+                if (categoryInProject.Order > category.Order)
+                {
+                    categoryInProject.Order -= 1;
+                }
+                if (categoryInProject.Order >= order)
+                {
+                    categoryInProject.Order += 1;
+                }
+            }
+
+            category.Order = order;
+
             context.SaveChanges();
         }
     }

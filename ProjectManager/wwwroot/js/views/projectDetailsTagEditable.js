@@ -1,7 +1,7 @@
-﻿ProjectManager.Views.ProjectDetailsTag = Backbone.View.extend({
+﻿ProjectManager.Views.ProjectDetailsTagEditable = Backbone.View.extend({
     tagName: 'div',
     className: 'project-details-tag flex-align-center flex-row hover-child-visible',
-    template: _.template(TemplateManager.templates.projectDetailsTag),
+    template: _.template(TemplateManager.templates.projectDetailsTagEditable),
 
     events: {
         'click .project-details-tag-name': 'toggleSelectColor',
@@ -13,8 +13,6 @@
     },
 
     render: function () {
-        let self = this;
-
         let html = this.template(this.model.toJSON());
         this.$el.html(html);
         return this;

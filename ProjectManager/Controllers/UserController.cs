@@ -13,10 +13,29 @@ namespace ProjectManager.Controllers
     public class UserController : BaseController
     {
         [HttpGet]
-        public JsonResult GetIdOfLoggedIn()
+        public JsonResult GetLoggedInId()
         {
-            Console.WriteLine(this.UserId);
             return Json(this.UserId);
+        }
+
+        [HttpGet]
+        public JsonResult Get(int userId)
+        {
+            var context = new MyContext();
+            var user = context.Users
+                .Where(u => u.UserId == userId)
+                .Include(u => u.AssignedTasks)
+                .Select(u => new
+                {
+                    UserId = u.UserId,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    BackgroundColor = u.BackgroundColor,
+                    AssignedTaskIds = u.AssignedTasks.Select(t => t.TaskId)
+                })
+                .ToList();
+            return Json(user);
         }
 
         [HttpGet]
@@ -126,7 +145,7 @@ namespace ProjectManager.Controllers
             }
         }
 
-        public void SetFirstName(int userId, string firstName)
+        public void UpdateFirstName(int userId, string firstName)
         {
             var context = new DAL.MyContext();
             var user = context.Users.Find(userId);
@@ -134,7 +153,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
-        public void SetLastName(int userId, string lastName)
+        public void UpdateLastName(int userId, string lastName)
         {
             var context = new DAL.MyContext();
             var user = context.Users.Find(userId);
@@ -142,7 +161,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
-        public void SetEmail(int userId, string email)
+        public void UpdateEmail(int userId, string email)
         {
             var context = new DAL.MyContext();
             var user = context.Users.Find(userId);
@@ -150,7 +169,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
-        public void SetPassword(int userId, string password)
+        public void UpdatePassword(int userId, string password)
         {
             var context = new DAL.MyContext();
             var user = context.Users.Find(userId);
@@ -158,7 +177,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
-        public void SetBackgroundColor(int userId, int backgroundColor)
+        public void UpdateBackgroundColor(int userId, int backgroundColor)
         {
             var context = new DAL.MyContext();
             var user = context.Users.Find(userId);
@@ -167,7 +186,7 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPost]
-        public void updateCurrentProjectId(int userId, int projectId)
+        public void UpdateCurrentProjectId(int userId, int projectId)
         {
             var context = new DAL.MyContext();
             var user = context.Users.Find(userId);

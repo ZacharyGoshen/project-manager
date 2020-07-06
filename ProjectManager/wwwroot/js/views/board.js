@@ -13,6 +13,7 @@
         let self = this;
 
         this.listenTo(this.collection.categories, "update", this.render);
+        this.listenTo(this.collection.users, "update", this.render);
 
         $('body').on('mousedown', function (event) {
             if (self.$('#board-new-category-input:hover').length) return;
@@ -26,15 +27,17 @@
             model: category,
             collection: self.collection
         });
-        this.$("#board-new-category-button").before(categoryView.render().$el);
+        this.$('#board-new-category').before(categoryView.render().$el);
     },
 
     render: function () {
         let html = this.template();
         this.$el.html(html);
 
-        if (this.collection.categories.length == 0) this.$('#board-extra-space').removeClass('hidden');
+        if (ProjectManager.CurrentProjectId == 0) this.$('#board-new-category-button').remove();
 
+        this.collection.categories.comparator = 'order';
+        this.collection.categories.sort();
         this.collection.categories.each(this.renderOne, this);
         return this;
     },

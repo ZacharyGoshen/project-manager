@@ -1,46 +1,25 @@
 ﻿ProjectManager.Views.ProjectDetailsName = Backbone.View.extend({
-    tagName: 'input',
-    id: 'project-details-name',
-    className: 'border-white focus-border-dark-gray font-large hover-border-light-gray',
-
-    events: {
-        'focusout': 'update',
-        'keypress': 'focusOutOnEnter'
-    },
-
-    initialize: function () {
-        this.listenTo(this.model, "change", this.render);
-    },
+    tagName: 'div',
 
     render: function () {
         let self = this;
 
-        this.$el.val(self.model.get('name'));
-        return this;
-    },
-
-    focusOutOnEnter: function () {
-        if (event.keyCode != 13) return;
-        else this.$el.blur();
-    },
-
-    update: function () {
-        let self = this;
-
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Project/UpdateName",
-                data: {
-                    projectId: self.model.get('projectId'),
-                    name: self.$el.val()
-                },
-                success: function () {
-                    resolve();
-                }
+        if (this.model.get('ownerId') == ProjectManager.LoggedInUserId) {
+            let projectDetailsNameEditableView = new ProjectManager.Views.ProjectDetailsNameEditable({
+                model: self.model
             });
-        }).then(function () {
-            self.model.set('name', self.$el.val());
-        });
-    },
+            let html = projectDetailsNameEditableView.render();
+            this.$el.replaceWith(html.$el);
+            this.setElement(html.$el);
+        } else {
+            let projectDetailsNameNotEditableView = new ProjectManager.Views.ProjectDetailsNameNotEditable({
+                model: self.model
+            });
+            let html = projectDetailsNameNotEditableView.render();
+            this.$el.replaceWith(html.$el);
+            this.setElement(html.$el);
+        }
+
+        return this;
+    }
 });

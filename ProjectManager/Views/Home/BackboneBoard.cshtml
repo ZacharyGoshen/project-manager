@@ -18,9 +18,18 @@
         <script type="text/javascript" src="~/js/templates/templates.js"></script>
         <script type="text/javascript" src="~/js/models/models.js"></script>
         <script type="text/javascript" src="~/js/collections/collections.js"></script>
+        <script type="text/javascript" src="~/js/views/accountInfo.js"></script>
+        <script type="text/javascript" src="~/js/views/accountPassword.js"></script>
+        <script type="text/javascript" src="~/js/views/accountSettings.js"></script>
         <script type="text/javascript" src="~/js/views/board.js"></script>
         <script type="text/javascript" src="~/js/views/boardCategory.js"></script>
+        <script type="text/javascript" src="~/js/views/boardCategoryDropArea.js"></script>
+        <script type="text/javascript" src="~/js/views/boardCategoryDropAreaIndicator.js"></script>
+        <script type="text/javascript" src="~/js/views/boardDraggedCategoryCopy.js"></script>
+        <script type="text/javascript" src="~/js/views/boardDraggedTaskCopy.js"></script>
         <script type="text/javascript" src="~/js/views/boardTask.js"></script>
+        <script type="text/javascript" src="~/js/views/boardTaskDropArea.js"></script>
+        <script type="text/javascript" src="~/js/views/boardTaskDropAreaIndicator.js"></script>
         <script type="text/javascript" src="~/js/views/boardTaskTag.js"></script>
         <script type="text/javascript" src="~/js/views/colorSelection.js"></script>
         <script type="text/javascript" src="~/js/views/colorSelectionOption.js"></script>
@@ -30,22 +39,40 @@
         <script type="text/javascript" src="~/js/views/dateSelectionWeek.js"></script>
         <script type="text/javascript" src="~/js/views/dueDateAssigned.js"></script>
         <script type="text/javascript" src="~/js/views/dueDateIcon.js"></script>
+        <script type="text/javascript" src="~/js/views/invite.js"></script>
+        <script type="text/javascript" src="~/js/views/inviteDropdownMenu.js"></script>
+        <script type="text/javascript" src="~/js/views/inviteIcon.js"></script>
         <script type="text/javascript" src="~/js/views/login.js"></script>
         <script type="text/javascript" src="~/js/views/navigationBar.js"></script>
         <script type="text/javascript" src="~/js/views/newProject.js"></script>
+        <script type="text/javascript" src="~/js/views/optionsBar.js"></script>
         <script type="text/javascript" src="~/js/views/popup.js"></script>
         <script type="text/javascript" src="~/js/views/projectDetails.js"></script>
         <script type="text/javascript" src="~/js/views/projectDetailsDescription.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsDescriptionEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsDescriptionNotEditable.js"></script>
         <script type="text/javascript" src="~/js/views/projectDetailsName.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsNameEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsNameNotEditable.js"></script>
         <script type="text/javascript" src="~/js/views/projectDetailsOwner.js"></script>
-        <script type="text/javascript" src="~/js/views/projectDetailsTag.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsOwnerEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsOwnerNotEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTagEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTagNotEditable.js"></script>
         <script type="text/javascript" src="~/js/views/projectDetailsTags.js"></script>
-        <script type="text/javascript" src="~/js/views/projectDetailsTeamMember.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTagsEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTagsNotEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMemberEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMemberNotEditable.js"></script>
         <script type="text/javascript" src="~/js/views/projectDetailsTeamMembers.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMembersEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMembersNotEditable.js"></script>
         <script type="text/javascript" src="~/js/views/projectDropdownMenu.js"></script>
         <script type="text/javascript" src="~/js/views/projectDropdownMenuOption.js"></script>
         <script type="text/javascript" src="~/js/views/prioritySelection.js"></script>
         <script type="text/javascript" src="~/js/views/prioritySelectionOption.js"></script>
+        <script type="text/javascript" src="~/js/views/sortDropdownMenu.js"></script>
+        <script type="text/javascript" src="~/js/views/sortIcon.js"></script>
         <script type="text/javascript" src="~/js/views/tagSelection.js"></script>
         <script type="text/javascript" src="~/js/views/tagSelectionResult.js"></script>
         <script type="text/javascript" src="~/js/views/taskDetails.js"></script>
@@ -62,6 +89,7 @@
         <script type="text/javascript" src="~/js/views/userDropdownMenu.js"></script>
         <script type="text/javascript" src="~/js/views/userPicture.js"></script>
         <script type="text/javascript" src="~/js/views/userPictureDefault.js"></script>
+        <script type="text/javascript" src="~/js/views/userPictureDefaultLarge.js"></script>
         <script type="text/javascript" src="~/js/views/userPictureUnassigned.js"></script>
         <script type="text/javascript" src="~/js/views/userSelection.js"></script>
         <script type="text/javascript" src="~/js/views/userSelectionResult.js"></script>
@@ -79,10 +107,10 @@
                     let elementRightOffset = elementLeftOffset + element.outerWidth();
 
                     if (
-                        (mouseX > elementLeftOffset) &&
-                        (mouseX < elementRightOffset) &&
-                        (mouseY > elementTopOffset) &&
-                        (mouseY < elementBottomOffset)
+                        (mouseX >= elementLeftOffset) &&
+                        (mouseX <= elementRightOffset) &&
+                        (mouseY >= elementTopOffset) &&
+                        (mouseY <= elementBottomOffset)
                     ) {
                         elementHovered = element;
                         return;

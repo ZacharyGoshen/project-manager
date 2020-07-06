@@ -5,6 +5,7 @@
     template: _.template(TemplateManager.templates.userDropdownMenu),
 
     events: {
+        'click #account-settings-button': 'openAccountSettings',
         'click #logout-button': 'logOut'
     },
 
@@ -35,6 +36,19 @@
     remove: function () {
         $('body').off('mousedown');
         this.$el.remove();
+    },
+
+    openAccountSettings: function () {
+        let self = this;
+
+        let accountSettingsView = new ProjectManager.Views.AccountSettings({
+            model: self.collection.users.findWhere({ userId: ProjectManager.LoggedInUserId }),
+            collection: self.collection
+        });
+
+        let popupView = new ProjectManager.Views.Popup();
+        $('#main-container').append(popupView.render().$el);
+        $('.popup').last().append(accountSettingsView.render().$el);
     },
 
     logOut: function () {

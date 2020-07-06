@@ -24,6 +24,8 @@
         let creationTimeString = creationTime.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour12: true, hour: '2-digit', minute: '2-digit'});
         this.$('.task-details-comment-creation-time').html(creationTimeString);
 
+        if (this.model.get('userId') != ProjectManager.LoggedInUserId) self.$('.task-details-comment-delete-button').remove();
+
         return this;
     },
 

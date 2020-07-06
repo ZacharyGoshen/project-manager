@@ -18,5 +18,6 @@ namespace ProjectManager.Models
         public IList<Task> SubmittedTasks { get; set; }
         public IList<Comment> Comments { get; set; }
         public IList<UserProject> UserProjects { get; set; }
+        public IList<Invite> Invites { get; set; }
     }
 }

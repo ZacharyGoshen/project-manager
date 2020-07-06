@@ -1,10 +1,12 @@
 ﻿ProjectManager.Views.UserPictureDefault = Backbone.View.extend({
     tagName: 'div',
-    className: 'profile-picture-small child child-center',
+    className: 'profile-picture-small child-center',
     template: _.template(TemplateManager.templates.userPictureDefault),
 
     initialize: function (options) {
         this.hover = options.hover;
+        this.large = options.large;
+        this.listenTo(this.model, "change", this.render);
     },
 
     render: function () {

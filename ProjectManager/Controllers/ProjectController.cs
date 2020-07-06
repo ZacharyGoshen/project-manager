@@ -59,6 +59,7 @@ namespace ProjectManager.Controllers
             return Json(projects);
         }
 
+        [HttpPost]
         public JsonResult Create(int userId, string name, string description)
         {
             var context = new MyContext();
@@ -83,11 +84,7 @@ namespace ProjectManager.Controllers
             return Json(project.ProjectId);
         }
 
-        public void SetCurrentProject(int projectId)
-        {
-            this.CurrentProjectId = projectId;
-        }
-
+        [HttpPost]
         public void UpdateName(int projectId, string name)
         {
             var context = new DAL.MyContext();
@@ -96,6 +93,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
+        [HttpPost]
         public void UpdateDescription(int projectId, string description)
         {
             var context = new DAL.MyContext();
@@ -119,6 +117,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
+        [HttpPost]
         public void UpdateOwner(int projectId, int userId)
         {
             var context = new MyContext();
@@ -128,6 +127,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
+        [HttpPost]
         public void AddTeamMember(int projectId, int userId)
         {
             var context = new MyContext();
@@ -145,15 +145,50 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
+        [HttpPost]
         public void RemoveTeamMember(int projectId, int userId)
         {
             var context = new MyContext();
-            var project = context.Projects.Find(projectId);
+            var project = context.Projects
+                .Where(p => p.ProjectId == projectId)
+                .Include(p => p.Owner)
+                .Include(p => p.TeamMembers)
+                .First();
             var teamMember = context.Users.Find(userId);
             var userProject = context.UserProjects
                 .Where(up => up.User == teamMember)
                 .Where(up => up.Project == project)
                 .First();
+
+            if (project.Owner.UserId == userId && project.TeamMembers.Count != 1)
+            {
+                project.Owner = context.UserProjects
+                    .Where(up => up.Project.ProjectId == projectId && up.User.UserId != userId)
+                    .Include(up => up.User)
+                    .Select(up => up.User)
+                    .First();
+                context.SaveChanges();
+            }
+
+            var tasks = context.Tasks.Where(t => t.AssignedUser.UserId == userId).ToList();
+            var taskController = new TaskController();
+            foreach (var task in tasks)
+            {
+                taskController.UpdateAssignedUser(task.TaskId, 0);
+            }
+
+            var comments = context.Comments.Where(c => c.User.UserId == userId && c.Task.Project.ProjectId == projectId).ToList();
+            var commentController = new CommentController();
+            foreach (var comment in comments)
+            {
+                commentController.Delete(comment.CommentId);
+            }
+
+            if (teamMember.CurrentProjectId == projectId)
+            {
+                teamMember.CurrentProjectId = 0;
+            }
+
             context.UserProjects.Attach(userProject);
             context.UserProjects.Remove(userProject);
             context.SaveChanges();
@@ -180,6 +215,16 @@ namespace ProjectManager.Controllers
             foreach (var tag in tags)
             {
                 tagController.Delete(tag.TagId);
+            }
+
+            context = new DAL.MyContext();
+            var inviteController = new InviteController();
+            var invites = context.Invites
+                .Where(i => i.Project.ProjectId == projectId)
+                .ToList();
+            foreach (var invite in invites)
+            {
+                inviteController.Delete(invite.InviteId);
             }
 
             context = new DAL.MyContext();

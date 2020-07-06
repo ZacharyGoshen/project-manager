@@ -6,6 +6,10 @@ ProjectManager.Collections.Comments = Backbone.Collection.extend({
     model: ProjectManager.Models.Comment
 });
 
+ProjectManager.Collections.Invites = Backbone.Collection.extend({
+    model: ProjectManager.Models.Tag
+});
+
 ProjectManager.Collections.Projects = Backbone.Collection.extend({
     model: ProjectManager.Models.Project
 });

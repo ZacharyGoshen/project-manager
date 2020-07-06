@@ -94,30 +94,7 @@ namespace ProjectManager.Controllers
             }
         }
 
-        public void UpdateIsCompleted(int taskId, bool isCompleted)
-        {
-            var context = new DAL.MyContext();
-            var task = context.Tasks.Find(taskId);
-            task.IsCompleted = isCompleted;
-            context.SaveChanges();
-        }
-
-        public void UpdateName(int taskId, string name)
-        {
-            var context = new DAL.MyContext();
-            var task = context.Tasks.Find(taskId);
-            task.Name = name;
-            context.SaveChanges();
-        }
-
-        public void UpdateDescription(int taskId, string description)
-        {
-            var context = new DAL.MyContext();
-            var task = context.Tasks.Find(taskId);
-            task.Description = description;
-            context.SaveChanges();
-        }
-
+        [HttpPost]
         public void UpdateAssignedUser(int taskId, int userId)
         {
             var context = new MyContext();
@@ -138,6 +115,16 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
+        [HttpPost]
+        public void UpdateDescription(int taskId, string description)
+        {
+            var context = new DAL.MyContext();
+            var task = context.Tasks.Find(taskId);
+            task.Description = description;
+            context.SaveChanges();
+        }
+
+        [HttpPost]
         public void UpdateDueDate(int taskId, int year, int month, int day)
         {
             var context = new DAL.MyContext();
@@ -153,6 +140,25 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
+        [HttpPost]
+        public void UpdateIsCompleted(int taskId, bool isCompleted)
+        {
+            var context = new DAL.MyContext();
+            var task = context.Tasks.Find(taskId);
+            task.IsCompleted = isCompleted;
+            context.SaveChanges();
+        }
+
+        [HttpPost]
+        public void UpdateName(int taskId, string name)
+        {
+            var context = new DAL.MyContext();
+            var task = context.Tasks.Find(taskId);
+            task.Name = name;
+            context.SaveChanges();
+        }
+
+        [HttpPost]
         public void UpdatePriority(int taskId, int priority)
         {
             var context = new DAL.MyContext();
@@ -161,22 +167,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
-        public void SetIsCompleted(int taskId, bool isCompleted)
-        {
-            var context = new MyContext();
-            var task = context.Tasks.Find(taskId);
-            task.IsCompleted = isCompleted;
-            context.SaveChanges();
-        }
-
-        public void SetPriority(int taskId, int priority)
-        {
-            var context = new MyContext();
-            var task = context.Tasks.Find(taskId);
-            task.Priority = priority;
-            context.SaveChanges();
-        }
-
+        [HttpPost]
         public void AddTag(int taskId, int tagId)
         {
             var context = new MyContext();
@@ -193,6 +184,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
+        [HttpPost]
         public void RemoveTag(int taskId, int tagId)
         {
             var context = new MyContext();
@@ -209,6 +201,7 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
+        [HttpPost]
         public void RemoveAllTags(int taskId)
         {
             var context = new DAL.MyContext();
@@ -271,6 +264,119 @@ namespace ProjectManager.Controllers
                 entity.Order -= 1;
                 context.Tasks.Update(entity);
             }
+
+            context.SaveChanges();
+        }
+
+        public void Sort(int projectId, string property, bool descending)
+        {
+            var context = new DAL.MyContext();
+
+            var categories = context.Categories
+                .Where(c => c.Project.ProjectId == projectId)
+                .ToList();
+            foreach (Category category in categories)
+            {
+                var tasks = new List<Models.Task>();
+                if (property == "name") {
+                    if (descending)
+                    {
+                        tasks = context.Tasks
+                            .Where(t => t.Category.CategoryId == category.CategoryId)
+                            .OrderByDescending(t => t.Name)
+                            .ToList();
+                    }
+                    else
+                    {
+                        tasks = context.Tasks
+                            .Where(t => t.Category.CategoryId == category.CategoryId)
+                            .OrderBy(t => t.Name)
+                            .ToList();
+                    }
+                }
+                else if (property == "dueDate")
+                {
+                    if (descending)
+                    {
+                        tasks = context.Tasks
+                            .Where(t => t.Category.CategoryId == category.CategoryId)
+                            .OrderByDescending(t => t.DueDate)
+                            .ToList();
+                    }
+                    else
+                    {
+                        tasks = context.Tasks
+                            .Where(t => t.Category.CategoryId == category.CategoryId)
+                            .OrderBy(t => t.DueDate)
+                            .ToList();
+                    }
+                }
+                else if (property == "priority")
+                {
+                    if (descending)
+                    {
+                        tasks = context.Tasks
+                            .Where(t => t.Category.CategoryId == category.CategoryId)
+                            .OrderByDescending(t => t.Priority)
+                            .ToList();
+                    }
+                    else
+                    {
+                        tasks = context.Tasks
+                            .Where(t => t.Category.CategoryId == category.CategoryId)
+                            .OrderBy(t => t.Priority)
+                            .ToList();
+                    }
+                }
+
+                var order = 0;
+                foreach (Models.Task task in tasks)
+                {
+                    task.Order = order;
+                    order += 1;
+                }
+            }
+
+            context.SaveChanges();
+        }
+
+        [HttpPost]
+        public void Move(int taskId, int categoryId, int order)
+        {
+            var context = new MyContext();
+            var task = context.Tasks
+                .Where(t => t.TaskId == taskId)
+                .Include(t => t.Category)
+                .First();
+
+            var originCategory = context.Categories
+                .Where(c => c.CategoryId == task.Category.CategoryId)
+                .Include(c => c.Tasks)
+                .First();
+
+            foreach (var taskInOriginCategory in originCategory.Tasks)
+            {
+                if (taskInOriginCategory.Order > task.Order)
+                {
+                    taskInOriginCategory.Order -= 1;
+                }
+            }
+
+            var destinationCategory = context.Categories
+                .Where(c => c.CategoryId == categoryId)
+                .Include(c => c.Tasks)
+                .First();
+
+            foreach (var taskInDestinationCategory in destinationCategory.Tasks)
+            {
+                if (taskInDestinationCategory.Order >= order)
+                {
+                    taskInDestinationCategory.Order += 1;
+                }
+            }
+
+            task.Category = destinationCategory;
+            task.Order = order;
 
             context.SaveChanges();
         }

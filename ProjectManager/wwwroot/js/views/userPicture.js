@@ -4,6 +4,7 @@
     initialize: function (options) {
         this.userId = options.userId;
         this.hover = options.hover;
+        this.listenTo(this.model, "change", this.render);
     },
 
     render: function () {

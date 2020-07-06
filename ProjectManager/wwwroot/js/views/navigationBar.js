@@ -7,11 +7,14 @@
     events: {
         'click #navigation-bar-project': 'openProjectDetails',
         'click #navigation-bar-project-dropdown-button': 'toggleProjectDropdownMenu',
+        'click #navigation-bar-new-project-button': 'openNewProject',
+        'click #navigation-bar-invites': 'toggleInviteDropdownMenu',
         'click #navigation-bar-user': 'toggleUserDropdownMenu'
     },
 
     initialize: function () {
-        this.listenTo(this.collection.projects.findWhere({ projectId: 1 }), "change", this.render);
+        this.listenTo(this.collection.projects, 'update', this.render);
+        this.listenTo(this.collection.users, 'change', this.render);
     },
 
     render: function () {
@@ -20,8 +23,20 @@
         let html = this.template();
         this.$el.html(html);
 
-        let project = this.collection.projects.findWhere({ projectId: ProjectManager.CurrentProjectId });
-        this.$('#navigation-bar-project').html(project.get('name'));
+        if (ProjectManager.CurrentProjectId) {
+            let project = this.collection.projects.findWhere({ projectId: ProjectManager.CurrentProjectId });
+            this.$('#navigation-bar-project').html(project.get('name'));
+        } else {
+            this.$('#navigation-bar-project').addClass('hidden');
+            this.$('#navigation-bar-project-dropdown-button').addClass('hidden');
+            this.$('#navigation-bar-new-project-button').removeClass('hidden');
+            this.$('#navigation-bar-new-project-button').html('+ Create new project');
+        }
+
+        let inviteIconView = new ProjectManager.Views.InviteIcon({
+            collection: self.collection
+        })
+        this.$('#navigation-bar-invite-icon').replaceWith(inviteIconView.render().$el);
 
         let userPictureView = new ProjectManager.Views.UserPicture({
             collection: self.collection,
@@ -67,10 +82,24 @@
             $('body').off('mousedown');
             $("#user-drop-down-menu").remove();
         } else {
-            let userDropdownMenuView = new ProjectManager.Views.UserDropdownMenu();
+            let userDropdownMenuView = new ProjectManager.Views.UserDropdownMenu({
+                collection: self.collection
+            });
 
             $("#main-container").append(userDropdownMenuView.render().$el);
             userDropdownMenuView.position(self.$("#navigation-bar-user"));
         }
     },
-})
+
+    openNewProject: function () {
+        let self = this;
+
+        let newProjectView = new ProjectManager.Views.NewProject({
+            collection: self.collection
+        });
+
+        let popupView = new ProjectManager.Views.Popup();
+        $("#main-container").append(popupView.render().$el);
+        $(".popup").last().append(newProjectView.render().$el);
+    }
+});
