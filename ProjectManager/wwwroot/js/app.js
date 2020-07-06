@@ -1,6 +1,7 @@
 ﻿window.ProjectManager = {
     LoggedInUserId: 0,
     CurrentProjectId: 0,
+    Demo: false,
     Models: {},
     Collections: {},
     Views: {},
@@ -13,6 +14,43 @@
             return;
         }
 
+        if (ProjectManager.Demo) {
+            this.loadViewWithDemoData();
+        } else {
+            this.loadViewWithDatabaseData();
+        }
+
+        Backbone.history.start();
+    },
+
+    loadViewWithDemoData: function () {
+        let collection = {
+            categories: new ProjectManager.Collections.CategoriesLocal({}),
+            comments: new ProjectManager.Collections.CommentsLocal({}),
+            invites: new ProjectManager.Collections.InvitesLocal({}),
+            projects: new ProjectManager.Collections.ProjectsLocal({}),
+            tags: new ProjectManager.Collections.TasksLocal({}),
+            tasks: new ProjectManager.Collections.TasksLocal({}),
+            users: new ProjectManager.Collections.UsersLocal({})
+        };
+
+        let navigationBarView = new ProjectManager.Views.NavigationBar({
+            collection: collection
+        });
+        $("#main-container").html(navigationBarView.render().$el);
+
+        let optionsBarView = new ProjectManager.Views.OptionsBar({
+            collection: collection
+        });
+        $("#main-container").append(optionsBarView.render().$el);
+
+        let boardView = new ProjectManager.Views.Board({
+            collection: collection
+        });
+        $("#main-container").append(boardView.render().$el);
+    },
+
+    loadViewWithDatabaseData: function () {
         let collection = {
             categories: new ProjectManager.Collections.Categories(),
             comments: new ProjectManager.Collections.Comments(),
@@ -157,7 +195,5 @@
             });
             $("#main-container").append(boardView.render().$el);
         });
-
-        Backbone.history.start();
     }
 }
