@@ -37,7 +37,7 @@
         let html = this.template();
         this.$el.html(html);
 
-        this.collection.tags.forEach(function (tag) {
+        this.collection.tags.where({ projectId: ProjectManager.CurrentProjectId }).forEach(function (tag) {
             self.renderOne(tag);
         });
 

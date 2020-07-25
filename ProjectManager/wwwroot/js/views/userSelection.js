@@ -37,6 +37,8 @@
         this.$el.html(html);
 
         this.collection.users.forEach(function (user) {
+            if (!user.get('projectIds').includes(ProjectManager.CurrentProjectId)) return;
+
             self.renderOne(user);
         });
 

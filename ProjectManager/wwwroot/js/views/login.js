@@ -6,6 +6,7 @@
 
     events: {
         'click #login-button': 'logIn',
+        'click #demo-login-button': 'logInAsDemoUser',
         'click #signup-button': 'signUp'
     },
 
@@ -50,7 +51,7 @@
             });
         }).then(function (result) {
             if (result) {
-                location.href = '../Home/BackboneBoard'
+                location.href = '../Home/Board'
             } else {
                 self.logInError('Email or password is incorrect.');
             }
@@ -60,6 +61,20 @@
     logInError: function (message) {
         this.$('#login-error-message').removeClass('hidden');
         this.$('#login-error-message').html(message);
+    },
+
+    logInAsDemoUser: function () {
+        new Promise(function (resolve) {
+            Backbone.ajax({
+                type: 'POST',
+                url: '/Home/SetDemo',
+                success: function () {
+                    resolve();
+                }
+            });
+        }).then(function () {
+            location.href = '../Home/Board';
+        });
     },
 
     signUp: function () {
@@ -103,7 +118,7 @@
         new Promise(function (resolve) {
             Backbone.ajax({
                 type: 'POST',
-                url: '/User/Create',
+                url: '/User/SignUp',
                 data: {
                     firstName: firstName,
                     lastName: lastName,
@@ -116,7 +131,7 @@
             });
         }).then(function (result) {
             if (result) {
-                location.href = '../Home/BackboneBoard'
+                location.href = '../Home/Board'
             } else {
                 self.signUpError('A user already exists with that email.');
             }

@@ -23,8 +23,6 @@
     },
 
     render: function () {
-        let self = this;
-
         let html = this.template();
         this.$el.html(html);
         return this;
@@ -42,35 +40,48 @@
         this.$el.remove();
     },
 
-    sort: function (property, descending) {
+    sort: function (comparator, reverse) {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/Sort",
-                data: {
-                    projectId: ProjectManager.CurrentProjectId,
-                    property: property,
-                    descending: descending
-                },
-                success: function () {
-                    resolve();
-                }
+        this.collection.tasks.comparator = comparator;
+        this.collection.tasks.sort();
+
+        this.collection.categories.where({ projectId: ProjectManager.CurrentProjectId }).forEach(function (category) {
+            let tasks = self.collection.tasks.where({ categoryId: category.get('id') });
+
+            let promises = [];
+
+            if (reverse) {
+                let order = 0;
+                tasks.forEach(function (task) {
+                    promises.push(
+                        new Promise(function (resolve) {
+                            task.save(
+                                { order: order },
+                                { success: function () { resolve(); }}
+                            );
+                        })
+                    );
+                    order += 1;
+                })
+            } else {
+                let order = tasks.length - 1;
+                tasks.forEach(function (task) {
+                    promises.push(
+                        new Promise(function (resolve) {
+                            task.save(
+                                { order: order },
+                                { success: function () { resolve(); } }
+                            );
+                        })
+                    );
+                    order -= 1;
+                })
+            }
+
+            Promise.all(promises).then(function () {
+                category.trigger('sort');
             });
-        }).then(function () {
-            return new Promise(function (resolve) {
-                self.collection.tasks.fetch({
-                    data: {
-                        projectId: ProjectManager.CurrentProjectId
-                    },
-                    success: function () {
-                        resolve();
-                    }
-                });
-            });
-        }).then(function () {
-            self.remove();
         });
     },
 

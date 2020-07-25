@@ -12,11 +12,6 @@
         'click #navigation-bar-user': 'toggleUserDropdownMenu'
     },
 
-    initialize: function () {
-        this.listenTo(this.collection.projects, 'update', this.render);
-        this.listenTo(this.collection.users, 'change', this.render);
-    },
-
     render: function () {
         let self = this;
 
@@ -24,7 +19,7 @@
         this.$el.html(html);
 
         if (ProjectManager.CurrentProjectId) {
-            let project = this.collection.projects.findWhere({ projectId: ProjectManager.CurrentProjectId });
+            let project = this.collection.projects.findWhere({ id: ProjectManager.CurrentProjectId });
             this.$('#navigation-bar-project').html(project.get('name'));
         } else {
             this.$('#navigation-bar-project').addClass('hidden');
@@ -52,7 +47,7 @@
         let self = this;
 
         let projectDetailsView = new ProjectManager.Views.ProjectDetails({
-            model: self.collection.projects.findWhere({ projectId: ProjectManager.CurrentProjectId }),
+            model: self.collection.projects.findWhere({ id: ProjectManager.CurrentProjectId }),
             collection: self.collection
         });
 
@@ -63,6 +58,7 @@
 
     toggleProjectDropdownMenu: function () {
         let self = this;
+
         if ($("#project-drop-down-menu").length) {
             $('body').off('mousedown');
             $("#project-drop-down-menu").remove();

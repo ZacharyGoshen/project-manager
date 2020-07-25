@@ -11,12 +11,12 @@
     },
 
     render: function () {
-        let self = this;
-
         let html = this.template(this.model.toJSON());
         this.$el.html(html);
 
         this.openInfo();
+
+        if (ProjectManager.Demo) this.$('#account-settings-password-link').remove();
 
         return this;
     },

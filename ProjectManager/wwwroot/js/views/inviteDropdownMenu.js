@@ -31,9 +31,11 @@
         let html = this.template();
         this.$el.html(html);
 
-        if (this.collection.invites.length == 0) self.$('#invite-empty').removeClass('hidden');
+        if (this.collection.invites.where({ inviteeId: ProjectManager.LoggedInUserId }).length == 0) {
+            self.$('#invite-empty').removeClass('hidden');
+        }
 
-        this.collection.invites.forEach(function (invite) {
+        this.collection.invites.where({ inviteeId: ProjectManager.LoggedInUserId }).forEach(function (invite) {
             self.renderOne(invite);
         });
 

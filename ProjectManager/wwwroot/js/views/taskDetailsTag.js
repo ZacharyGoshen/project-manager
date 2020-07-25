@@ -22,28 +22,13 @@
     remove: function () {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/RemoveTag",
-                data: {
-                    taskId: self.taskId,
-                    tagId: self.model.get('tagId')
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            let task = self.collection.tasks.findWhere({ taskId: self.taskId });
+        let task = this.collection.tasks.findWhere({ id: self.taskId });
+        let tagIdsClone = task.get('tagIds').slice();
+        tagIdsClone.splice(tagIdsClone.indexOf(self.model.get('id')), 1);
+        task.save({ tagIds: tagIdsClone });
 
-            let tagIds = task.get('tagIds');
-            tagIds.splice(tagIds.indexOf(self.model.get('tagId')), 1);
-            task.trigger('change');
-
-            let taskIds = self.model.get('taskIds');
-            taskIds.splice(taskIds.indexOf(self.taskId), 1);
-            self.model.trigger('change');
-        });
+        let taskIdsClone = self.model.get('taskIds').slice();
+        taskIdsClone.splice(taskIdsClone.indexOf(self.taskId), 1);
+        self.model.save({ taskIds: taskIdsClone });
     }
 });

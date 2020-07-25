@@ -10,7 +10,7 @@
     initialize: function () {
         let self = this;
 
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, "change:tagIds", this.render);
     },
 
     renderOne: function (tag) {
@@ -19,7 +19,7 @@
         let taskDetailsTagView = new ProjectManager.Views.TaskDetailsTag({
             model: tag,
             collection: self.collection,
-            taskId: self.model.get('taskId')
+            taskId: self.model.get('id')
         });
         return this.$('#task-details-add-tag-button').before(taskDetailsTagView.render().$el);
     },
@@ -31,7 +31,7 @@
         this.$el.html(html);
 
         this.model.get('tagIds').forEach(function (tagId) {
-            let tag = self.collection.tags.findWhere({ tagId: tagId });
+            let tag = self.collection.tags.findWhere({ id: tagId });
             self.renderOne(tag);
         });
 
@@ -58,28 +58,14 @@
     add: function (tag) {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/AddTag",
-                data: {
-                    taskId: self.model.get('taskId'),
-                    tagId: tag.get('tagId')
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            let tagIds = self.model.get('tagIds');
-            tagIds.push(tag.get('tagId'));
-            self.model.trigger('change');
+        let tagIdsClone = this.model.get('tagIds').slice();
+        tagIdsClone.push(tag.get('id'));
+        this.model.save({ tagIds: tagIdsClone });
 
-            let taskIds = tag.get('taskIds');
-            taskIds.push(self.model.get('taskId'));
-            tag.trigger('change');
+        let taskIdsClone = tag.get('taskIds').slice();
+        taskIdsClone.push(self.model.get('id'));
+        tag.save({ taskIds: taskIdsClone });
 
-            self.toggleSelectTag();
-        });
+        this.toggleSelectTag();
     }
 });

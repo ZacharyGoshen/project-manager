@@ -54,7 +54,7 @@
                 type: 'POST',
                 url: '/User/Authenticate',
                 data: {
-                    userId: self.model.get('userId'),
+                    userId: self.model.get('id'),
                     password: currentPassword
                 },
                 success: function (result) {
@@ -72,7 +72,7 @@
                     type: 'POST',
                     url: '/User/UpdatePassword',
                     data: {
-                        userId: self.model.get('userId'),
+                        userId: self.model.get('id'),
                         password: newPassword
                     },
                     success: function () {

@@ -10,7 +10,7 @@
     },
 
     initialize: function () {
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, "change:priority", this.render);
     },
 
     render: function () {
@@ -20,6 +20,8 @@
         this.$el.html(html);
 
         this.$('#task-details-priority-text').html(priorityToString(self.model.get('priority')));
+
+        if (!this.model.get('priority')) this.$('.remove-button-small').remove();
 
         return this;
     },
@@ -46,41 +48,11 @@
     update: function (priority) {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/UpdatePriority",
-                data: {
-                    taskId: self.model.get('taskId'),
-                    priority: priority
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('priority', priority);
-            self.toggleSelectPriority();
-        });
+        this.model.save({ priority: priority });
+        this.toggleSelectPriority();
     },
 
     remove: function () {
-        let self = this;
-
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/UpdatePriority",
-                data: {
-                    taskId: self.model.get('taskId'),
-                    priority: 0
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('priority', 0);
-        });
+        this.model.save({ priority: 0 });
     }
 });

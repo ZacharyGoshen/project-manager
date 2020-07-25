@@ -4,14 +4,16 @@
     initialize: function (options) {
         this.userId = options.userId;
         this.hover = options.hover;
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, "change:backgroundColor", this.render);
+        this.listenTo(this.model, "change:firstName", this.render);
+        this.listenTo(this.model, "change:lastName", this.render);
     },
 
     render: function () {
         let self = this;
 
-        if (this.userId != 0) {
-            let user = self.collection.users.findWhere({ userId: self.userId });
+        let user = this.collection.users.findWhere({ id: self.userId });
+        if (user) {
             let userPictureDefaultView = new ProjectManager.Views.UserPictureDefault({
                 model: user,
                 hover: self.hover

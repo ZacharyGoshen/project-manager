@@ -120,7 +120,7 @@ namespace ProjectManager.DAL
                     ProjectId = 1,
                     Name = "Task Manager",
                     Description = "This is a project called task manager",
-                    DueDate = new DateTime(),
+                    DueDate = "",
                     OwnerUserId = 1
                 }
                 );
@@ -138,8 +138,8 @@ namespace ProjectManager.DAL
                     AssignedUserUserId = 1,
                     Priority = 1,
                     IsCompleted = false,
-                    CreationTime = DateTime.Now,
-                    DueDate = new DateTime(),
+                    CreationTime = "",
+                    DueDate = "",
                     Order = 4
                 },
                 new
@@ -153,8 +153,8 @@ namespace ProjectManager.DAL
                     AssignedUserUserId = 2,
                     Priority = 2,
                     IsCompleted = false,
-                    CreationTime = DateTime.Now,
-                    DueDate = new DateTime(),
+                    CreationTime = "",
+                    DueDate = "",
                     Order = 3
                 },
                 new
@@ -168,8 +168,8 @@ namespace ProjectManager.DAL
                     AssignedUserUserId = 1,
                     Priority = 3,
                     IsCompleted = false,
-                    CreationTime = DateTime.Now,
-                    DueDate = new DateTime(),
+                    CreationTime = "",
+                    DueDate = "",
                     Order = 2
                 },
                 new
@@ -183,8 +183,8 @@ namespace ProjectManager.DAL
                     AssignedUserUserId = 2,
                     Priority = 4,
                     IsCompleted = false,
-                    CreationTime = DateTime.Now,
-                    DueDate = new DateTime(),
+                    CreationTime = "",
+                    DueDate = "",
                     Order = 1
                 },
                 new
@@ -198,8 +198,8 @@ namespace ProjectManager.DAL
                     AssignedUserUserId = 1,
                     Priority = 5,
                     IsCompleted = false,
-                    CreationTime = DateTime.Now,
-                    DueDate = new DateTime(),
+                    CreationTime = "",
+                    DueDate = "",
                     Order = 0
                 },
                 new
@@ -213,8 +213,8 @@ namespace ProjectManager.DAL
                     AssignedUserUserId = 2,
                     Priority = 3,
                     IsCompleted = false,
-                    CreationTime = DateTime.Now,
-                    DueDate = new DateTime(),
+                    CreationTime = "",
+                    DueDate = "",
                     Order = 0
                 },
                 new
@@ -228,8 +228,8 @@ namespace ProjectManager.DAL
                     AssignedUserUserId = 1,
                     Priority = 2,
                     IsCompleted = true,
-                    CreationTime = DateTime.Now,
-                    DueDate = new DateTime(),
+                    CreationTime = "",
+                    DueDate = "",
                     Order = 0
                 }
                 );

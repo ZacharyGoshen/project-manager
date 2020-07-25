@@ -3,10 +3,6 @@
     id: 'project-details-description-not-editable',
     className: 'border-light-gray font-small',
 
-    initialize: function () {
-        this.listenTo(this.model, "change", this.render);
-    },
-
     render: function () {
         let self = this;
 

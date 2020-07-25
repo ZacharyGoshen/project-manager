@@ -6,7 +6,9 @@
     initialize: function (options) {
         this.hover = options.hover;
         this.large = options.large;
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, "change:backgroundColor", this.render);
+        this.listenTo(this.model, "change:firstName", this.render);
+        this.listenTo(this.model, "change:lastName", this.render);
     },
 
     render: function () {

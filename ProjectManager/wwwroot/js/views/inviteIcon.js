@@ -17,7 +17,7 @@
         let html = this.template();
         this.$el.html(html);
 
-        this.$('.icon-invite-number').html(self.collection.invites.length);
+        this.$('.icon-invite-number').html(self.collection.invites.where({ inviteeId: ProjectManager.LoggedInUserId }).length);
 
         return this;
     },

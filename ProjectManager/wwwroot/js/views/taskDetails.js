@@ -12,8 +12,7 @@
     initialize: function () {
         let self = this;
 
-        this.listenTo(this.model, 'change', this.render);
-        this.listenTo(this.collection.comments, 'add', function () {
+        this.listenTo(this.model, 'change:commentIds', function () {
             self.render();
             let scrollContainer = self.$('#task-details-scroll-container');
             scrollContainer.scrollTop(scrollContainer.get(0).scrollHeight);
@@ -78,7 +77,6 @@
     },
 
     createCommentOnEnter: function (event) {
-
         let self = this;
         if (event.keyCode != 13) return;
 
@@ -87,34 +85,30 @@
         let input = this.$('#task-details-new-comment-input').val();
         if (!input) return;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: 'POST',
-                url: '/Comment/Create',
-                data: {
-                    taskId: self.model.get('taskId'),
-                    userId: ProjectManager.LoggedInUserId,
-                    text: input
-                },
-                success: function (newCommentId) {
-                    resolve(newCommentId);
-                }
-            });
-        }).then(function (newCommentId) {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: 'GET',
-                    url: '/Comment/Get',
-                    data: {
-                        commentId: newCommentId
-                    },
-                    success: function (newComment) {
-                        resolve(newComment);
+        this.collection.comments.create(
+            {
+                creationTime: new Date().toISOString(),
+                taskId: self.model.get('id'),
+                text: input,
+                userId: ProjectManager.LoggedInUserId
+            },
+            {
+                success: function (newComment, newCommentId) {
+                    if (newComment.get('id')) {
+                        newCommentId = newComment.get('id');
                     }
-                });
-            });
-        }).then(function (newComment) {
-            self.collection.comments.add(newComment);
-        });
+                    newComment.set('id', newCommentId);
+
+                    let taskCommentsIdsClone = self.model.get('commentIds').slice();
+                    taskCommentsIdsClone.push(newCommentId);
+                    self.model.save({ commentIds: taskCommentsIdsClone });
+
+                    let user = self.collection.users.findWhere({ id: ProjectManager.LoggedInUserId });
+                    let userCommentsIdsClone = user.get('commentIds').slice();
+                    userCommentsIdsClone.push(newCommentId);
+                    user.save({ commentIds: userCommentsIdsClone });
+                }
+            }
+        );
     }
 });

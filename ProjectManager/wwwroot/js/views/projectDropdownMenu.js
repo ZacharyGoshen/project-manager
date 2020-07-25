@@ -18,8 +18,11 @@
     },
 
     renderOne: function (project) {
+        let self = this;
+
         let projectDropdownMenuOptionView = new ProjectManager.Views.ProjectDropdownMenuOption({
-            model: project
+            model: project,
+            collection: self.collection
         });
         this.$('#new-project-button').before(projectDropdownMenuOptionView.render().$el);
     },
@@ -31,7 +34,7 @@
         this.$el.html(html);
 
         this.collection.projects.forEach(function (project) {
-            if (project.get('projectId') != ProjectManager.CurrentProjectId) self.renderOne(project);
+            if (project.get('id') != ProjectManager.CurrentProjectId) self.renderOne(project);
         });
 
         return this;

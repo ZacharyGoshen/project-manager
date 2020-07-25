@@ -8,10 +8,6 @@
         'keypress': 'focusOutOnEnter'
     },
 
-    initialize: function () {
-        this.listenTo(this.model, "change", this.render);
-    },
-
     render: function () {
         let self = this;
 

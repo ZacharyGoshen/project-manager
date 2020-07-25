@@ -4,10 +4,6 @@
     className: '',
     template: _.template(TemplateManager.templates.projectDetailsTeamMembersNotEditable),
 
-    initialize: function () {
-        this.listenTo(this.collection.users, "update", this.render);
-    },
-
     renderOne: function (user) {
         let self = this;
 
@@ -25,7 +21,10 @@
         this.$el.html(html);
 
         this.collection.users.forEach(function (user) {
-            if (user.get('userId') != ProjectManager.LoggedInUserId) self.renderOne(user);
+            if (!self.model.get('teamMemberIds').includes(user.get('id'))) return;
+            if (user.get('id') == ProjectManager.LoggedInUserId) return;
+
+            self.renderOne(user);
         });
         return this;
     }

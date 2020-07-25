@@ -1,4 +1,5 @@
 ﻿ProjectManager.Collections.Categories = Backbone.Collection.extend({
+    url: '/category',
     model: ProjectManager.Models.Category
 });
 
@@ -8,6 +9,7 @@ ProjectManager.Collections.CategoriesLocal = Backbone.Collection.extend({
 });
 
 ProjectManager.Collections.Comments = Backbone.Collection.extend({
+    url: '/comment',
     model: ProjectManager.Models.Comment
 });
 
@@ -17,14 +19,16 @@ ProjectManager.Collections.CommentsLocal = Backbone.Collection.extend({
 });
 
 ProjectManager.Collections.Invites = Backbone.Collection.extend({
-    model: ProjectManager.Models.Tag
+    url: '/invite',
+    model: ProjectManager.Models.Invite
 });
 ProjectManager.Collections.InvitesLocal = Backbone.Collection.extend({
-    model: ProjectManager.Models.Tag,
-    localStorage: new Backbone.LocalStorage('tags')
+    model: ProjectManager.Models.Invite,
+    localStorage: new Backbone.LocalStorage('invites')
 });
 
 ProjectManager.Collections.Projects = Backbone.Collection.extend({
+    url: '/project',
     model: ProjectManager.Models.Project
 });
 
@@ -34,6 +38,7 @@ ProjectManager.Collections.ProjectsLocal = Backbone.Collection.extend({
 });
 
 ProjectManager.Collections.Tags = Backbone.Collection.extend({
+    url: '/tag',
     model: ProjectManager.Models.Tag
 });
 
@@ -43,6 +48,7 @@ ProjectManager.Collections.TagsLocal = Backbone.Collection.extend({
 });
 
 ProjectManager.Collections.Tasks = Backbone.Collection.extend({
+    url: '/task',
     model: ProjectManager.Models.Task
 });
 
@@ -52,6 +58,7 @@ ProjectManager.Collections.TasksLocal = Backbone.Collection.extend({
 });
 
 ProjectManager.Collections.Users = Backbone.Collection.extend({
+    url: '/user',
     model: ProjectManager.Models.User
 });
 

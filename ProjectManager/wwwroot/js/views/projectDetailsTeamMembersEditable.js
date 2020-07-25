@@ -12,7 +12,7 @@
     initialize: function () {
         let self = this;
 
-        this.listenTo(this.collection.users, "update", this.render);
+        this.listenTo(this.model, "change:teamMemberIds", this.render);
 
         $('body').on('mousedown', function () {
             if (self.$('#project-details-invite-team-member-input:hover').length) return;
@@ -37,7 +37,10 @@
         this.$el.html(html);
 
         this.collection.users.forEach(function (user) {
-            if (user.get('userId') != ProjectManager.LoggedInUserId) self.renderOne(user);
+            if (!self.model.get('teamMemberIds').includes(user.get('id'))) return;
+            if (user.get('id') == ProjectManager.LoggedInUserId) return;
+
+            self.renderOne(user);
         });
         return this;
     },
@@ -65,33 +68,64 @@
         let input = this.$('#project-details-invite-team-member-input').val();
         if (!input) return;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Invite/Create",
-                data: {
-                    inviterId: ProjectManager.LoggedInUserId,
-                    projectId: ProjectManager.CurrentProjectId,
-                    email: input
-                },
-                success: function (inviteId) {
-                    resolve(inviteId);
-                }
-            });
-        }).then(function (inviteId) {
-            if (inviteId == -1) {
-                self.$('#project-details-invite-team-member-message').html('You cannot invite yourself.');
-            } else if (inviteId == -2) {
-                self.$('#project-details-invite-team-member-message').html('User does not exist with that email.');
-            } else if (inviteId == -3) {
-                self.$('#project-details-invite-team-member-message').html('User has already been invited.');
-            } else if (inviteId == -4) {
-                self.$('#project-details-invite-team-member-message').html('User is already a team member.');
-            } else {
-                self.$('#project-details-invite-team-member-message').html('Invite sent!');
-            }
+        let inviter = this.collection.users.findWhere({ id: ProjectManager.LoggedInUserId });
+        if (input == inviter.get('email')) {
+            self.$('#project-details-invite-team-member-message').html('You cannot invite yourself.');
             self.$('#project-details-invite-team-member-message').removeClass('hidden');
-            self.hideInput();
+            return;
+        }
+
+        let invitee = null;
+        new Promise(function (resolve) {
+            if (ProjectManager.Demo) {
+                invitee = this.collection.users.findWhere({ email: input });
+                resolve();
+            } else {
+                Backbone.ajax({
+                    type: "GET",
+                    url: "/User/GetWithEmail",
+                    data: { email: input },
+                    success: function (user) {
+                        invitee = new ProjectManager.Models.User(user);
+                        resolve();
+                    }
+                });
+            }
+        }).then(function () {
+            if (!invitee) {
+                self.$('#project-details-invite-team-member-message').html('User does not exist with that email.');
+                self.$('#project-details-invite-team-member-message').removeClass('hidden');
+                return;
+            }
+
+            if (invitee.get('projectIds').includes(ProjectManager.CurrentProjectId)) {
+                self.$('#project-details-invite-team-member-message').html('User is already a team member.');
+                self.$('#project-details-invite-team-member-message').removeClass('hidden');
+                return;
+            }
+
+            if (self.collection.invites.findWhere({
+                inviteeId: invitee.get('id'),
+                inviterId: inviter.get('id')
+            })) {
+                self.$('#project-details-invite-team-member-message').html('User has already been invited.');
+                self.$('#project-details-invite-team-member-message').removeClass('hidden');
+                return;
+            }
+
+            self.collection.invites.create(
+                {
+                    inviteeId: invitee.get('id'),
+                    inviterId: ProjectManager.LoggedInUserId,
+                    projectId: ProjectManager.CurrentProjectId
+                },
+                {
+                    success: function () {
+                        self.$('#project-details-invite-team-member-message').html('Invite sent.');
+                        self.$('#project-details-invite-team-member-message').removeClass('hidden');
+                    }
+                }
+            );
         });
     }
 });

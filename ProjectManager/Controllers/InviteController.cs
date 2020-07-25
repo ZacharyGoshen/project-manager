@@ -9,77 +9,68 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
-    public class InviteController : Controller
+    public class InviteController : BaseController
     {
         [HttpGet]
-        public JsonResult GetAllToUser(int userId)
+        public JsonResult GetAllWithUser(int userId)
         {
             var context = new MyContext();
             var invites = context.Invites
-                .Where(i => i.Invitee.UserId == userId)
+                .Where(i => i.Invitee.UserId == userId || i.Inviter.UserId == userId)
                 .Include(i => i.Inviter)
                 .Include(i => i.Project)
                 .Select(i => new
                 {
-                    InviteId = i.InviteId,
-                    InviteeId = i.Invitee.UserId,
-                    InviterId = i.Inviter.UserId,
-                    InviterFirstName = i.Inviter.FirstName,
-                    InviterLastName = i.Inviter.LastName,
-                    ProjectId = i.Project.ProjectId,
-                    ProjectName = i.Project.Name
+                    id = i.InviteId,
+                    inviteeId = i.Invitee.UserId,
+                    inviterId = i.Inviter.UserId,
+                    inviterFirstName = i.Inviter.FirstName,
+                    inviterLastName = i.Inviter.LastName,
+                    projectId = i.Project.ProjectId,
+                    projectName = i.Project.Name
                 })
                 .ToList();
             return Json(invites);
         }
 
-        [HttpPost]
-        public JsonResult Create(int inviterId, int projectId, string email)
+        public struct ProjectJson
         {
-            var context = new MyContext();
-
-            var inviter = context.Users.Find(inviterId);
-            if (inviter.Email == email)
-            {
-                return Json(-1);
-            }
-
-            if (context.Users.Where(u => u.Email == email).ToList().Count == 0)
-            {
-                return Json(-2);
-            }
-
-            if (context.Invites.Where(i => i.Inviter.UserId == inviterId && i.Invitee.Email == email).ToList().Count != 0)
-            {
-                return Json(-3);
-            }
-            if (context.UserProjects.Where(up => up.Project.ProjectId == projectId && up.User.Email == email).ToList().Count != 0)
-            {
-                return Json(-4);
-            }
-            else
-            {
-                var invite = new Invite()
-                {
-                    Invitee = context.Users.Where(u => u.Email == email).First(),
-                    Inviter = context.Users.Find(inviterId),
-                    Project = context.Projects.Find(projectId),
-                };
-                context.Invites.Add(invite);
-                context.SaveChanges();
-
-                return Json(invite.InviteId);
-            }
+            public int InviteeId { get; set; }
+            public string InviterFirstName { get; set; }
+            public int InviterId { get; set; }
+            public string InviterLastName { get; set; }
+            public int ProjectId { get; set; }
+            public string ProjectName { get; set; }
         }
 
         [HttpPost]
-        public void Delete(int inviteId)
+        [Route("invite")]
+        public JsonResult Create([FromBody] [Bind("InviteeId", "InviterFirstName", "InviterId", "InviterLastName", "ProjectId", "ProjectName")] ProjectJson inviteJson)
         {
             var context = new MyContext();
-            var invite = context.Invites.Find(inviteId);
+            var invite = new Invite()
+            {
+                Invitee = context.Users.Find(inviteJson.InviteeId),
+                Inviter = context.Users.Find(inviteJson.InviterId),
+                Project = context.Projects.Find(inviteJson.ProjectId)
+            };
+            context.Invites.Add(invite);
+            context.SaveChanges();
+
+            return Json(invite.InviteId);
+        }
+
+        [HttpDelete]
+        [Route("invite/{id}")]
+        public JsonResult Delete(int id)
+        {
+            var context = new MyContext();
+            var invite = context.Invites.Find(id);
             context.Invites.Attach(invite);
             context.Invites.Remove(invite);
             context.SaveChanges();
+
+            return Json(true);
         }
     }
 }

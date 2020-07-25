@@ -12,8 +12,8 @@
     initialize: function () {
         let self = this;
 
-        this.listenTo(this.collection.categories, "update", this.render);
-        this.listenTo(this.collection.users, "update", this.render);
+        this.listenTo(this.model, 'change:categoryIds', this.render);
+        this.listenTo(this.collection.categories, 'categoryMove', this.render)
 
         $('body').on('mousedown', function (event) {
             if (self.$('#board-new-category-input:hover').length) return;
@@ -31,6 +31,8 @@
     },
 
     render: function () {
+        let self = this;
+
         let html = this.template();
         this.$el.html(html);
 
@@ -38,7 +40,9 @@
 
         this.collection.categories.comparator = 'order';
         this.collection.categories.sort();
-        this.collection.categories.each(this.renderOne, this);
+        this.collection.categories.where({ projectId: ProjectManager.CurrentProjectId }).forEach(function (category) {
+            self.renderOne(category);
+        });
         return this;
     },
 
@@ -56,6 +60,7 @@
 
     createCategoryOnEnter: function (event) {
         let self = this;
+
         if (event.keyCode != 13) return;
 
         event.preventDefault();
@@ -63,33 +68,24 @@
         let input = this.$('#board-new-category-input').val();
         if (!input) return;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Category/Create",
-                data: {
-                    projectId: ProjectManager.CurrentProjectId,
-                    categoryName: input
-                },
-                success: function (newCategoryId) {
-                    resolve(newCategoryId);
-                }
-            });
-        }).then(function (newCategoryId) {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: "GET",
-                    url: "/Category/Get",
-                    data: {
-                        categoryId: newCategoryId
-                    },
-                    success: function (newCategory) {
-                        resolve(newCategory);
+        this.collection.categories.create(
+            {
+                name: input,
+                order: self.collection.categories.length,
+                projectId: ProjectManager.CurrentProjectId
+            },
+            {
+                success: function (newCategory, newCategoryId) {
+                    if (newCategory.get('id')) {
+                        newCategoryId = newCategory.get('id');
                     }
-                });
-            });
-        }).then(function (newCategory) {
-            self.collection.categories.add(newCategory);
-        });
+                    newCategory.set('id', newCategoryId);
+
+                    let categoryIdsClone = self.model.get('categoryIds').slice();
+                    categoryIdsClone.push(newCategory.get('id'));
+                    self.model.set('categoryIds', categoryIdsClone);
+                }
+            }
+        );
     }
 });

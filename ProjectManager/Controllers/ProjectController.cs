@@ -12,30 +12,6 @@ namespace ProjectManager.Controllers
     public class ProjectController : BaseController
     {
         [HttpGet]
-        public JsonResult Get(int projectId)
-        {
-            var context = new MyContext();
-            var project = context.UserProjects
-                .Where(up => up.Project.ProjectId == projectId)
-                .Include(up => up.Project.Categories)
-                .Include(up => up.Project.Tasks)
-                .Include(up => up.Project.Owner)
-                .Include(up => up.Project.TeamMembers)
-                .Select(up => new
-                {
-                    ProjectId = up.Project.ProjectId,
-                    Name = up.Project.Name,
-                    Description = up.Project.Description,
-                    CategoryIds = up.Project.Categories.Select(c => c.CategoryId),
-                    TaskIds = up.Project.Tasks.Select(t => t.TaskId),
-                    OwnerId = up.Project.Owner.UserId,
-                    TeamMemberIds = up.Project.TeamMembers.Select(up => up.User.UserId)
-                })
-                .First();
-            return Json(project);
-        }
-
-        [HttpGet]
         public JsonResult GetAllWithUser(int userId)
         {
             var context = new MyContext();
@@ -47,211 +23,180 @@ namespace ProjectManager.Controllers
                 .Include(up => up.Project.TeamMembers)
                 .Select(up => new
                 {
-                    ProjectId = up.Project.ProjectId,
-                    Name = up.Project.Name,
-                    Description = up.Project.Description,
-                    CategoryIds = up.Project.Categories.Select(c => c.CategoryId),
-                    TaskIds = up.Project.Tasks.Select(t => t.TaskId),
-                    OwnerId = up.Project.Owner.UserId,
-                    TeamMemberIds = up.Project.TeamMembers.Select(up => up.User.UserId)
+                    id = up.Project.ProjectId,
+                    name = up.Project.Name,
+                    description = up.Project.Description,
+                    categoryIds = up.Project.Categories.Select(c => c.CategoryId),
+                    taskIds = up.Project.Tasks.Select(t => t.TaskId),
+                    ownerId = up.Project.Owner.UserId,
+                    teamMemberIds = up.Project.TeamMembers.Select(up => up.User.UserId)
                 })
                 .ToList();
             return Json(projects);
         }
 
-        [HttpPost]
-        public JsonResult Create(int userId, string name, string description)
+        public struct ProjectJson
+        {
+            public int[] CategoryIds { get; set; }
+            public string Description { get; set; }
+            public string DueDate { get; set; }
+            public string Name { get; set; }
+            public int OwnerId { get; set; }
+            public int[] TagIds { get; set; }
+            public int[] TaskIds { get; set; }
+            public int[] TeamMemberIds { get; set; }
+        }
+
+        [HttpGet]
+        [Route("project/{id}")]
+        public JsonResult Get(int id)
         {
             var context = new MyContext();
+            var project = context.UserProjects
+                .Where(up => up.Project.ProjectId == id)
+                .Include(up => up.Project.Categories)
+                .Include(up => up.Project.Tasks)
+                .Include(up => up.Project.Owner)
+                .Include(up => up.Project.TeamMembers)
+                .Select(up => new ProjectJson()
+                {
+                    CategoryIds = up.Project.Categories.Select(c => c.CategoryId).ToArray(),
+                    Description = up.Project.Description,
+                    DueDate = up.Project.DueDate,
+                    Name = up.Project.Name,
+                    OwnerId = up.Project.Owner.UserId,
+                    TagIds = up.Project.Tags.Select(t => t.TagId).ToArray(),
+                    TaskIds = up.Project.Tasks.Select(t => t.TaskId).ToArray(),
+                    TeamMemberIds = up.Project.TeamMembers.Select(up => up.User.UserId).ToArray()
+                })
+                .First();
+            return Json(project);
+        }
 
+        [HttpPost]
+        [Route("project")]
+        public JsonResult Create([FromBody] [Bind("CategoryIds", "Description", "DueDate", "Name", "OwnerId", "TagIds", "TaskIds", "TeamMemberIds")] ProjectJson projectJson)
+        {
+            var context = new MyContext();
             var project = new Project()
             {
-                Name = name,
-                Description = description,
-                Owner = context.Users.Find(userId)
+                Description = projectJson.Description,
+                Name = projectJson.Name,
+                Owner = context.Users.Find(projectJson.OwnerId),
+                TeamMembers = new List<UserProject>()
             };
-            context.Projects.Add(project);
-
-            var userProject = new UserProject()
+            project.TeamMembers.Add(new UserProject()
             {
-                User = context.Users.Find(userId),
-                Project = project
-            };
-            context.UserProjects.Add(userProject);
-
+                Project = project,
+                User = context.Users.Find(projectJson.OwnerId)
+            });
+            context.Projects.Add(project);
             context.SaveChanges();
 
             return Json(project.ProjectId);
         }
 
-        [HttpPost]
-        public void UpdateName(int projectId, string name)
+        [HttpPut]
+        [Route("project/{id}")]
+        public JsonResult Update(int id, [FromBody] [Bind("CategoryIds", "Description", "DueDate", "Name", "OwnerId", "TagIds", "TaskIds", "TeamMemberIds")] ProjectJson projectJson)
+        {
+            var context = new MyContext();
+            var project = context.Projects.Where(p => p.ProjectId == id).Include(p => p.TeamMembers).First();
+            foreach (var categoryId in projectJson.CategoryIds)
+            {
+                var category = context.Categories.Find(categoryId);
+                if (category != null && category.Project.ProjectId != id)
+                {
+                    project.Categories.Add(category);
+                }
+            }
+            foreach (var category in context.Categories.Where(c => c.Project.ProjectId == id))
+            {
+                if (!projectJson.CategoryIds.Contains(category.CategoryId))
+                {
+                    category.Project = null;
+                }
+            }
+            project.Description = projectJson.Description;
+            project.DueDate = projectJson.DueDate;
+            project.Name = projectJson.Name;
+            project.Owner = context.Users.Find(projectJson.OwnerId);
+            foreach (var tagId in projectJson.TagIds)
+            {
+                var tag = context.Tags.Find(tagId);
+                if (tag != null && tag.Project.ProjectId != id)
+                {
+                    project.Tags.Add(tag);
+                }
+            }
+            foreach (var tag in context.Tags.Where(t => t.Project.ProjectId == id))
+            {
+                if (!projectJson.TagIds.Contains(tag.TagId))
+                {
+                    tag.Project = null;
+                }
+            }
+            foreach (var taskId in projectJson.TaskIds)
+            {
+                var task = context.Tasks.Find(taskId);
+                if (task != null && task.Project.ProjectId != id)
+                {
+                    project.Tasks.Add(task);
+                }
+            }
+            foreach (var task in context.Tasks.Where(t => t.Project.ProjectId == id))
+            {
+                if (!projectJson.TaskIds.Contains(task.TaskId))
+                {
+                    task.Project = null;
+                }
+            }
+            foreach (var teamMemberId in projectJson.TeamMemberIds)
+            {
+                if (!context.UserProjects.Any(up => up.Project.ProjectId == id && up.User.UserId == teamMemberId))
+                {
+                    project.TeamMembers.Add(new UserProject()
+                    {
+                        Project = project,
+                        User = context.Users.Find(teamMemberId)
+                    });
+                }
+            }
+            var teamMemberIds = context.UserProjects.Where(up => up.Project.ProjectId == id).Select(up => up.User.UserId).ToList();
+            foreach (var teamMemberId in teamMemberIds)
+            {
+                if (!projectJson.TeamMemberIds.Contains(teamMemberId))
+                {
+                    var userProject = context.UserProjects.Where(up => up.User.UserId == teamMemberId).First();
+                    if (userProject != null)
+                    {
+                        context.UserProjects.Attach(userProject);
+                        context.UserProjects.Remove(userProject);
+                    }
+                }
+            }
+            context.SaveChanges();
+
+            return Json(true);
+        }
+
+        [HttpDelete]
+        [Route("project/{id}")]
+        public JsonResult Delete(int id)
         {
             var context = new DAL.MyContext();
-            var project = context.Projects.Find(projectId);
-            project.Name = name;
-            context.SaveChanges();
-        }
-
-        [HttpPost]
-        public void UpdateDescription(int projectId, string description)
-        {
-            var context = new DAL.MyContext();
-            var project = context.Projects.Find(projectId);
-            project.Description = description;
-            context.SaveChanges();
-        }
-
-        public void SetDueDate(int projectId, int day, int month, int year)
-        {
-            var context = new MyContext();
-            var project = context.Projects.Find(projectId);
-            if ((day == -1) && (month == -1) && (year == -1))
+            var userProjects = context.UserProjects.Where(up => up.Project.ProjectId == id).ToList();
+            foreach (var userProject in userProjects)
             {
-                project.DueDate = new DateTime();
+                context.UserProjects.Attach(userProject);
+                context.UserProjects.Remove(userProject);
             }
-            else
-            {
-                project.DueDate = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
-            }
-            context.SaveChanges();
-        }
-
-        [HttpPost]
-        public void UpdateOwner(int projectId, int userId)
-        {
-            var context = new MyContext();
-            var project = context.Projects.Find(projectId);
-            var owner = context.Users.Find(userId);
-            project.Owner = owner;
-            context.SaveChanges();
-        }
-
-        [HttpPost]
-        public void AddTeamMember(int projectId, int userId)
-        {
-            var context = new MyContext();
-            var project = context.Projects
-                .Include(p => p.TeamMembers)
-                .Where(p => p.ProjectId == projectId)
-                .First();
-            var teamMember = context.Users.Find(userId);
-            var userProject = new UserProject()
-            {
-                User = teamMember,
-                Project = project
-            };
-            project.TeamMembers.Add(userProject);
-            context.SaveChanges();
-        }
-
-        [HttpPost]
-        public void RemoveTeamMember(int projectId, int userId)
-        {
-            var context = new MyContext();
-            var project = context.Projects
-                .Where(p => p.ProjectId == projectId)
-                .Include(p => p.Owner)
-                .Include(p => p.TeamMembers)
-                .First();
-            var teamMember = context.Users.Find(userId);
-            var userProject = context.UserProjects
-                .Where(up => up.User == teamMember)
-                .Where(up => up.Project == project)
-                .First();
-
-            if (project.Owner.UserId == userId && project.TeamMembers.Count != 1)
-            {
-                project.Owner = context.UserProjects
-                    .Where(up => up.Project.ProjectId == projectId && up.User.UserId != userId)
-                    .Include(up => up.User)
-                    .Select(up => up.User)
-                    .First();
-                context.SaveChanges();
-            }
-
-            var tasks = context.Tasks.Where(t => t.AssignedUser.UserId == userId).ToList();
-            var taskController = new TaskController();
-            foreach (var task in tasks)
-            {
-                taskController.UpdateAssignedUser(task.TaskId, 0);
-            }
-
-            var comments = context.Comments.Where(c => c.User.UserId == userId && c.Task.Project.ProjectId == projectId).ToList();
-            var commentController = new CommentController();
-            foreach (var comment in comments)
-            {
-                commentController.Delete(comment.CommentId);
-            }
-
-            if (teamMember.CurrentProjectId == projectId)
-            {
-                teamMember.CurrentProjectId = 0;
-            }
-
-            context.UserProjects.Attach(userProject);
-            context.UserProjects.Remove(userProject);
-            context.SaveChanges();
-        }
-
-        [HttpPost]
-        public void Delete(int projectId)
-        {
-            var context = new DAL.MyContext();
-            var categoryController = new CategoryController();
-            var categories = context.Categories
-                .Where(c => c.Project.ProjectId == projectId)
-                .ToList();
-            foreach (var category in categories)
-            {
-                categoryController.Delete(category.CategoryId);
-            }
-
-            context = new DAL.MyContext();
-            var tagController = new TagController();
-            var tags = context.Tags
-                .Where(t => t.Project.ProjectId == projectId)
-                .ToList();
-            foreach (var tag in tags)
-            {
-                tagController.Delete(tag.TagId);
-            }
-
-            context = new DAL.MyContext();
-            var inviteController = new InviteController();
-            var invites = context.Invites
-                .Where(i => i.Project.ProjectId == projectId)
-                .ToList();
-            foreach (var invite in invites)
-            {
-                inviteController.Delete(invite.InviteId);
-            }
-
-            context = new DAL.MyContext();
-            var teamMembers = context.Projects
-                .Where(p => p.ProjectId == projectId)
-                .Include(p => p.TeamMembers)
-                .ThenInclude(up => up.User)
-                .First()
-                .TeamMembers
-                .Select(up => up.User)
-                .ToList();
-            foreach (var teamMember in teamMembers)
-            {
-                RemoveTeamMember(projectId, teamMember.UserId);
-            }
-
-            context = new DAL.MyContext();
-            var project = context.Projects
-                .Where(p => p.ProjectId == projectId)
-                .Include(p => p.TeamMembers)
-                .ThenInclude(up => up.User)
-                .First();
-
+            var project = context.Projects.Find(id);
             context.Projects.Attach(project);
             context.Projects.Remove(project);
-
             context.SaveChanges();
+
+            return Json(true);
         }
     }
 }

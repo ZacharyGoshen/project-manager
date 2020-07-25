@@ -11,7 +11,7 @@
     initialize: function () {
         let self = this;
 
-        this.listenTo(this.collection.tags, "update", this.render);
+        this.listenTo(this.model, 'change:tagIds', this.render);
 
         $('body').on('mousedown', function () {
             if (self.$('#project-details-new-tag-input:hover').length) return;
@@ -35,7 +35,7 @@
         let html = this.template();
         this.$el.html(html);
 
-        this.collection.tags.forEach(function (tag) {
+        this.collection.tags.where({ projectId: ProjectManager.CurrentProjectId }).forEach(function (tag) {
             self.renderOne(tag);
         });
         return this;
@@ -62,33 +62,26 @@
         let input = this.$('#project-details-new-tag-input').val();
         if (!input) return;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Tag/Create",
-                data: {
-                    projectId: ProjectManager.CurrentProjectId,
-                    tagName: input
-                },
-                success: function (newTagId) {
-                    resolve(newTagId);
-                }
-            });
-        }).then(function (newTagId) {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: "GET",
-                    url: "/Tag/Get",
-                    data: {
-                        tagId: newTagId
-                    },
-                    success: function (newTag) {
-                        resolve(newTag);
+        this.collection.tags.create(
+            {
+                name: input,
+                projectId: self.model.get('id')
+            },
+            {
+                wait: true,
+                success: function (newTag, newTagId) {
+                    if (newTag.get('id')) {
+                        newTagId = newTag.get('id');
                     }
-                });
-            });
-        }).then(function (newTag) {
-            self.collection.tags.add(newTag);
-        });
+                    newTag.set('id', newTagId);
+
+                    let tagIdsClone = self.model.get('tagIds').slice();
+                    tagIdsClone.push(newTagId);
+                    self.model.save({ tagIds: tagIdsClone });
+
+                    self.hideInput();
+                }
+            }
+        );
     }
 });

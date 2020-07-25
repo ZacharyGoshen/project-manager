@@ -17,8 +17,10 @@
     initialize: function () {
         let self = this;
 
-        this.listenTo(this.collection.tasks, "update", this.render);
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, 'change:taskIds', this.render);
+        this.listenTo(this.model, 'change:name', this.render);
+        this.listenTo(this.model, 'sort', this.render);
+        this.listenTo(this.model, 'taskMove', this.render);
 
         $('body').on('mousedown', function (event) {
             if (getElementHovered(event, self.$('.board-new-task-input'))) return;
@@ -44,10 +46,11 @@
 
     render: function () {
         let self = this;
+
         let html = this.template(this.model.toJSON());
         this.$el.html(html);
 
-        let categoryId = this.model.get('categoryId');
+        let categoryId = this.model.get('id');
 
         this.collection.tasks.comparator = 'order';
         this.collection.tasks.sort();
@@ -71,7 +74,6 @@
     },
 
     updateNameOnEnter: function (event) {
-        let self = this;
         if (event.keyCode != 13) return;
 
         event.preventDefault();
@@ -79,21 +81,7 @@
         let input = this.$('.board-category-name-input').val();
         if (!input) return;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Category/UpdateName",
-                data: {
-                    categoryId: self.model.get('categoryId'),
-                    name: input
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('name', input);
-        });
+        this.model.save({ name: input });
     },
 
     toggleInput: function () {
@@ -120,40 +108,40 @@
         let input = this.$('.board-new-task-input').val();
         if (!input) return;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/Create",
-                data: {
-                    userId: ProjectManager.LoggedInUserId,
-                    projectId: ProjectManager.CurrentProjectId,
-                    categoryId: self.model.get('categoryId'),
-                    taskName: input
-                },
-                success: function (newTaskId) {
-                    self.model.get('taskIds').push(newTaskId);
-                    self.collection.tasks.where({ categoryId: self.model.get('categoryId') }).forEach(
-                        task => task.set('order', task.get('order') + 1)
-                    );
-                    resolve(newTaskId);
-                }
-            });
-        }).then(function (newTaskId) {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: "GET",
-                    url: "/Task/Get",
-                    data: {
-                        taskId: newTaskId
-                    },
-                    success: function (newTask) {
-                        resolve(newTask);
-                    }
-                });
-            });
-        }).then(function (newTask) {
-            self.collection.tasks.add(newTask);
+        self.collection.tasks.where({ categoryId: self.model.get('id') }).forEach(function (task) {
+            task.save({ order: task.get('order') + 1 });
         });
+
+        this.collection.tasks.create(
+            {
+                categoryId: self.model.get('id'),
+                name: input,
+                projectId: ProjectManager.CurrentProjectId,
+                submittingUserId: ProjectManager.LoggedInUserId
+            },
+            {
+                success: function (newTask, newTaskId) {
+                    if (newTask.get('id')) {
+                        newTaskId = newTask.get('id');
+                    }
+                    newTask.set('id', newTaskId);
+
+                    let categoryTaskIdsClone = self.model.get('taskIds').slice();
+                    categoryTaskIdsClone.push(newTask.get('id'));
+                    self.model.set('taskIds', categoryTaskIdsClone);
+
+                    let project = self.collection.projects.findWhere({ id: ProjectManager.CurrentProjectId });
+                    let projectTaskIdsClone = project.get('taskIds').slice();
+                    projectTaskIdsClone.push(newTask.get('id'));
+                    project.set('taskIds', projectTaskIdsClone);
+
+                    let user = self.collection.users.findWhere({ id: ProjectManager.LoggedInUserId });
+                    let submittedTaskIdsClone = user.get('submittedTaskIds').slice();
+                    submittedTaskIdsClone.push(newTask.get('id'));
+                    user.set('submittedTaskIds', submittedTaskIdsClone);
+                }
+            }
+        );
     },
 
     onClickDelete: function () {
@@ -179,19 +167,111 @@
     delete: function () {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Category/Delete",
-                data: {
-                    categoryId: self.model.get('categoryId')
-                },
-                success: function () {
-                    resolve();
-                }
+        let taskPromises = [];
+        this.collection.tasks.where({ categoryId: self.model.get('id') }).forEach(function (task) {
+            let commentPromises = [];
+            self.collection.comments.where({ taskId: task.get('id') }).forEach(function (comment) {
+                commentPromises.push(new Promise(function (resolve) {
+                    comment.destroy({
+                        success: function () {
+                            resolve();
+                        }
+                    });
+                }));
+
+                commentPromises.push(new Promise(function (resolve) {
+                    let user = self.collection.users.findWhere({ id: comment.get('userId') });
+                    let commentIdsClone = user.get('commentIds').slice();
+                    commentIdsClone.splice(commentIdsClone.indexOf(comment.get('id')), 1);
+                    user.save(
+                        { commentIds: commentIdsClone },
+                        { success: function () { resolve(); }}
+                    );
+                }));
             });
+
+            let tagPromises = [];
+            task.get('tagIds').forEach(function (tagId) {
+                tagPromises.push(new Promise(function (resolve) {
+                    let tag = self.collection.tags.findWhere({ id: tagId });
+                    let tagTaskIdsClone = tag.get('taskIds').slice();
+                    tagTaskIdsClone.splice(tagTaskIdsClone.indexOf(task.get('id')), 1);
+                    tag.save(
+                        { taskIds: tagTaskIdsClone },
+                        { success: function () { resolve(); } }
+                    )
+                }));
+            });
+
+            taskPromises.push(new Promise(function (resolve) {
+                Promise.all(tagPromises).then(function () {
+                    Promise.all(commentPromises).then(function () {
+                        task.destroy({
+                            success: function () {
+                                resolve();
+                            }
+                        });
+                    });
+                });
+            }));
+
+            taskPromises.push(new Promise(function (resolve) {
+                if (task.get('assignedUserId') == 0) {
+                    resolve();
+                    return;
+                }
+
+                let user = self.collection.users.findWhere({ id: task.get('assignedUserId') });
+                let assignedTaskIdsClone = user.get('assignedTaskIds').slice();
+                assignedTaskIdsClone.splice(assignedTaskIdsClone.indexOf(task.get('id')), 1);
+                user.save(
+                    { assignedTaskIds: assignedTaskIdsClone },
+                    { success: function () { resolve(); } }
+                );
+            }));
+
+            taskPromises.push(new Promise(function (resolve) {
+                let user = self.collection.users.findWhere({ id: task.get('submittingUserId') });
+                let submittedTaskIdsClone = user.get('submittedTaskIds').slice();
+                submittedTaskIdsClone.splice(submittedTaskIdsClone.indexOf(task.get('id')), 1);
+                user.save(
+                    { submittedTaskIds: submittedTaskIdsClone },
+                    { success: function () { resolve(); } }
+                );
+            }));
+        });
+
+        new Promise(function (resolve) {
+            Promise.all(taskPromises).then(function () {
+                self.model.destroy({
+                    wait: true,
+                    success: function () {
+                        resolve();
+                    }
+                });
+            })
         }).then(function () {
-            self.collection.categories.remove(self.model);
+            let categoryPromises = [];
+
+            self.collection.categories.forEach(function (category) {
+                if (category.get('order') <= self.model.get('order')) return;
+
+                categoryPromises.push(
+                    new Promise(function (resolve) {
+                        category.save(
+                            { order: category.get('order') - 1 },
+                            { success: function () { resolve(); } }
+                        );
+                    })
+                );
+            });
+
+            Promise.all(categoryPromises).then(function () {
+                let project = self.collection.projects.findWhere({ id: ProjectManager.CurrentProjectId });
+                let categoryIdsClone = project.get('categoryIds').slice();
+                categoryIdsClone.splice(categoryIdsClone.indexOf(self.model.get('id')), 1);
+                project.save({ categoryIds: categoryIdsClone });
+            });
         });
     },
 
@@ -388,34 +468,19 @@
                     $(this).remove();
                 });
 
-                new Promise(function (resolve) {
-                    Backbone.ajax({
-                        type: "POST",
-                        url: "/Category/Move",
-                        data: {
-                            categoryId: self.model.get('categoryId'),
-                            order: categoryIndex
-                        },
-                        success: function () {
-                            resolve();
-                        }
-                    });
-                }).then(function () {
-                    return new Promise(function (resolve) {
-                        self.collection.categories.fetch({
-                            data: {
-                                projectId: ProjectManager.CurrentProjectId
-                            },
-                            success: function () {
-                                resolve();
-                            }
-                        });
-                    });
-                }).then(function () {
-                    self.collection.categories.trigger('update');
-                    $('#board-dragged-category-copy').remove();
-                    $('#board-category-drop-area-indicator').remove();
+                self.collection.categories.each(function (category) {
+                    if (category.get('order') == self.model.get('order')) return;
+
+                    let order = category.get('order');
+                    if (order > self.model.get('order')) order -= 1;
+                    if (order >= categoryIndex) order += 1;
+                    if (order != category.get('order')) category.save({ order: order });
                 });
+
+                self.model.save({ order: categoryIndex });
+                self.collection.categories.trigger('categoryMove');
+                $('#board-dragged-category-copy').remove();
+                $('#board-category-drop-area-indicator').remove();
             } else {
                 $('.board-category-drop-area').each(function () {
                     $(this).remove();

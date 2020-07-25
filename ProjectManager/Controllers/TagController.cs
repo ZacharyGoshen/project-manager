@@ -9,7 +9,7 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
-    public class TagController : Controller
+    public class TagController : BaseController
     {
         [HttpGet]
         public JsonResult Get(int tagId)
@@ -17,13 +17,15 @@ namespace ProjectManager.Controllers
             var context = new MyContext();
             var tag = context.Tags
                 .Where(t => t.TagId == tagId)
+                .Include(t => t.Project)
                 .Include(t => t.TagTasks)
                 .Select(t => new
                 {
-                    TagId = t.TagId,
-                    Name = t.Name,
                     BackgroundColor = t.BackgroundColor,
-                    TaskIds = t.TagTasks.Select(tt => tt.Task.TaskId)
+                    Id = t.TagId,
+                    Name = t.Name,
+                    ProjectId = t.Project.ProjectId,
+                    TaskIds = t.TagTasks.Select(tt => tt.Task.TaskId).ToArray()
                 })
                 .First();
             return Json(tag);
@@ -35,27 +37,37 @@ namespace ProjectManager.Controllers
             var context = new MyContext();
             var tags = context.Tags
                 .Where(t => t.Project.ProjectId == projectId)
+                .Include(t => t.Project)
                 .Include(t => t.TagTasks)
                 .Select(t => new
                 {
-                    TagId = t.TagId,
-                    Name = t.Name,
                     BackgroundColor = t.BackgroundColor,
-                    TaskIds = t.TagTasks.Select(tt => tt.Task.TaskId)
+                    Id = t.TagId,
+                    Name = t.Name,
+                    ProjectId = t.Project.ProjectId,
+                    TaskIds = t.TagTasks.Select(tt => tt.Task.TaskId).ToArray()
                 })
                 .ToList();
             return Json(tags);
         }
 
-        public JsonResult Create(int projectId, string tagName)
+        public struct TagJson {
+            public int BackgroundColor { get; set; }
+            public string Name { get; set; }
+            public int ProjectId { get; set; }
+            public int[] TaskIds { get; set; }
+        }
+
+        [HttpPost]
+        [Route("tag")]
+        public JsonResult Create([FromBody] [Bind("BackgroundColor", "Name", "ProjectId", "TaskIds")] TagJson tagJson)
         {
             var context = new MyContext();
-            var project = context.Projects.Find(projectId);
-
             var tag = new Tag()
             {
-                Name = tagName,
-                Project = project
+                BackgroundColor = tagJson.BackgroundColor,
+                Name = tagJson.Name,
+                Project = context.Projects.Find(tagJson.ProjectId)
             };
             context.Tags.Add(tag);
             context.SaveChanges();
@@ -63,30 +75,58 @@ namespace ProjectManager.Controllers
             return Json(tag.TagId);
         }
 
-        public void UpdateBackgroundColor(int tagId, int backgroundColor)
+        [HttpPut]
+        [Route("tag/{id}")]
+        public JsonResult Update(int id, [FromBody] [Bind("BackgroundColor", "Name", "ProjectId", "TaskIds")] TagJson tagJson)
         {
             var context = new MyContext();
-            var tag = context.Tags.Find(tagId);
-            tag.BackgroundColor = backgroundColor;
+            var tag = context.Tags.Where(t => t.TagId == id).Include(t => t.TagTasks).First();
+            tag.BackgroundColor = tagJson.BackgroundColor;
+            tag.Name = tagJson.Name;
+            tag.Project = context.Projects.Find(tagJson.ProjectId);
+            foreach (var taskId in tagJson.TaskIds)
+            {
+                if (!context.TagTasks.Any(tt => tt.Tag.TagId == id && tt.Task.TaskId == taskId))
+                {
+                    tag.TagTasks.Add(new TagTask()
+                    {
+                        Tag = tag,
+                        Task = context.Tasks.Find(taskId)
+                    });
+                }
+            }
+            var taskIds = context.TagTasks.Where(tt => tt.Tag.TagId == id).Select(tt => tt.Task.TaskId).ToList();
+            foreach (var taskId in taskIds)
+            {
+                if (!tagJson.TaskIds.Contains(taskId))
+                {
+                    var tagTask = context.TagTasks.Where(tt => tt.Task.TaskId == taskId).First();
+                    context.TagTasks.Attach(tagTask);
+                    context.TagTasks.Remove(tagTask);
+                }
+            }
             context.SaveChanges();
+
+            return Json(true);
         }
 
-        public void Delete(int tagId)
+        [HttpDelete]
+        [Route("tag/{id}")]
+        public JsonResult Delete(int id)
         {
-            var context = new MyContext();
-            var tag = context.Tags.Find(tagId);
-
-            var tagTasks = context.TagTasks
-                .Where(tt => tt.Tag == tag)
-                .ToList();
-            foreach (var tagTask in tagTasks) {
+            var context = new DAL.MyContext();
+            var tagTasks = context.TagTasks.Where(tt => tt.Tag.TagId == id).ToList();
+            foreach (var tagTask in tagTasks)
+            {
                 context.TagTasks.Attach(tagTask);
                 context.TagTasks.Remove(tagTask);
             }
-
+            var tag = context.Tags.Find(id);
             context.Tags.Attach(tag);
             context.Tags.Remove(tag);
             context.SaveChanges();
+
+            return Json(true);
         }
     }
 }

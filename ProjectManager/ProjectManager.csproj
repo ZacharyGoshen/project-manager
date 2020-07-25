@@ -8,16 +8,7 @@
 
   <ItemGroup>
     <Folder Include="DAL\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="wwwroot\images\" />
-    <Folder Include="wwwroot\js\board\" />
-    <Folder Include="wwwroot\js\ajax\" />
-    <Folder Include="wwwroot\js\taskDetails\" />
-    <Folder Include="wwwroot\js\login\" />
-    <Folder Include="wwwroot\js\newProject\" />
-    <Folder Include="wwwroot\js\shared\" />
-    <Folder Include="wwwroot\js\projectDetails\" />
-    <Folder Include="wwwroot\js\account\" />
     <Folder Include="wwwroot\js\models\" />
     <Folder Include="wwwroot\js\templates\" />
     <Folder Include="wwwroot\js\collections\" />

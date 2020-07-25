@@ -128,6 +128,7 @@ TemplateManager.templates.entry = `
                     <div class='font-light-gray font-small'>Password</div>
                     <input id='login-password' class='entry-input border-light-gray focus-border-dark-gray font-small' type='password' autocomplete='current-password'/>
                     <div id='login-button' class='border-light-gray hover-background-color-dark-gray hover-border-dark-gray hover-cursor-pointer hover-font-white font-light-gray font-small text-center-horizontal'>Log In</div>
+                    <div id='demo-login-button' class='font-light-gray font-small hover-cursor-pointer hover-font-dark-gray'>Log in as demo user</div>
                 </form>
             </div>
             <div id='signup-form' class='flex-column flex-align-start'>
@@ -426,7 +427,7 @@ TemplateManager.templates.userPictureUnassigned = `
 TemplateManager.templates.userSelection = `
     <div>User</div>
     <input id='user-selection-input' class='border-light-gray focus-border-dark-gray font-small' type='text' />
-    <div id='user-selection-results' class='background-color-white border-light-gray hidden scrollbar-always-visible'></div>
+    <div id='user-selection-results' class='background-color-white border-light-gray hidden overflow-y-scroll scrollbar-always-visible'></div>
 `;
 
 TemplateManager.templates.userSelectionResult = `

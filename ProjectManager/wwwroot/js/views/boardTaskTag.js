@@ -3,7 +3,8 @@
     className: 'board-task-tag font-very-small font-white sides-round',
 
     initialize: function () {
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, "change:backgroundColor", this.render);
+        this.listenTo(this.model, "change:name", this.render);
     },
 
     render: function () {

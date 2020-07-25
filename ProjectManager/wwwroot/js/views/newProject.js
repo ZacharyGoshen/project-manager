@@ -9,13 +9,7 @@
         'click #new-project-create-button': 'createProject'
     },
 
-    initialize: function () {
-        let self = this;
-    },
-
     render: function () {
-        let self = this;
-
         let html = this.template();
         this.$el.html(html);
         return this;
@@ -34,34 +28,39 @@
         let description = this.$('#new-project-description').val();
 
         new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Project/Create",
-                data: {
-                    userId: ProjectManager.LoggedInUserId,
+            self.collection.projects.create(
+                {
+                    description: description,
                     name: name,
-                    description: description
+                    ownerId: ProjectManager.LoggedInUserId,
+                    teamMemberIds: [ProjectManager.LoggedInUserId]
                 },
-                success: function (newProjectId) {
-                    resolve(newProjectId);
-                }
-            });
-        }).then(function (newProjectId) {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: "POST",
-                    url: "/User/UpdateCurrentProjectId",
-                    data: {
-                        userId: ProjectManager.LoggedInUserId,
-                        projectId: newProjectId
-                    },
-                    success: function () {
-                        resolve()
+                {
+                    success: function (newProject, newProjectId) {
+                        if (newProject.get('id')) {
+                            newProjectId = newProject.get('id');
+                        }
+                        resolve(newProjectId);
                     }
-                });
+                }
+            );
+        }).then(function (newProjectId) {
+            return new Promise(function () {
+                let user = self.collection.users.findWhere({ id: ProjectManager.LoggedInUserId });
+                let projectIdsClone = user.get('projectIds').slice();
+                projectIdsClone.splice(projectIdsClone.push(newProjectId), 1);
+                user.save(
+                    {
+                        currentProjectId: newProjectId,
+                        projectIds: projectIdsClone
+                    },
+                    {
+                        success: function () {
+                            location.reload();
+                        }
+                    }
+                );
             });
-        }).then(function () {
-            location.reload()
         });
-    },
+    }
 });

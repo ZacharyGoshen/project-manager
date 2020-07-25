@@ -1,108 +1,165 @@
-﻿@model ProjectManager.ViewModels.ProjectViewModel
+﻿@{
+    Layout = "";
+}
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Project Manager</title>
+        <link rel="stylesheet" href="~/css/site.css" />
+    </head>
+    <body>
+        <div id="main-container" class="flex-column"></div>
 
-    <div id="boardContainer">
-        @if (Model.Projects.Count > 0)
-        {
-            <div id="boardCategoryContainer">
-                @for (int categoryIndex = 0; categoryIndex < Model.Categories.Count; categoryIndex++)
-                {
-                    <div class="board-category-drop-area" data-category-index="@categoryIndex"></div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.10.2/underscore-min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.16/backbone.localStorage-min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone-relational/0.10.0/backbone-relational.min.js"></script>
+        <script type="text/javascript" src="~/js/app.js"></script>
+        <script type="text/javascript" src="~/js/templates/templates.js"></script>
+        <script type="text/javascript" src="~/js/models/models.js"></script>
+        <script type="text/javascript" src="~/js/collections/collections.js"></script>
+        <script type="text/javascript" src="~/js/views/accountInfo.js"></script>
+        <script type="text/javascript" src="~/js/views/accountPassword.js"></script>
+        <script type="text/javascript" src="~/js/views/accountSettings.js"></script>
+        <script type="text/javascript" src="~/js/views/board.js"></script>
+        <script type="text/javascript" src="~/js/views/boardCategory.js"></script>
+        <script type="text/javascript" src="~/js/views/boardCategoryDropArea.js"></script>
+        <script type="text/javascript" src="~/js/views/boardCategoryDropAreaIndicator.js"></script>
+        <script type="text/javascript" src="~/js/views/boardDraggedCategoryCopy.js"></script>
+        <script type="text/javascript" src="~/js/views/boardDraggedTaskCopy.js"></script>
+        <script type="text/javascript" src="~/js/views/boardTask.js"></script>
+        <script type="text/javascript" src="~/js/views/boardTaskDropArea.js"></script>
+        <script type="text/javascript" src="~/js/views/boardTaskDropAreaIndicator.js"></script>
+        <script type="text/javascript" src="~/js/views/boardTaskTag.js"></script>
+        <script type="text/javascript" src="~/js/views/colorSelection.js"></script>
+        <script type="text/javascript" src="~/js/views/colorSelectionOption.js"></script>
+        <script type="text/javascript" src="~/js/views/confirmation.js"></script>
+        <script type="text/javascript" src="~/js/views/dateSelection.js"></script>
+        <script type="text/javascript" src="~/js/views/dateSelectionDay.js"></script>
+        <script type="text/javascript" src="~/js/views/dateSelectionWeek.js"></script>
+        <script type="text/javascript" src="~/js/views/dueDateAssigned.js"></script>
+        <script type="text/javascript" src="~/js/views/dueDateIcon.js"></script>
+        <script type="text/javascript" src="~/js/views/invite.js"></script>
+        <script type="text/javascript" src="~/js/views/inviteDropdownMenu.js"></script>
+        <script type="text/javascript" src="~/js/views/inviteIcon.js"></script>
+        <script type="text/javascript" src="~/js/views/login.js"></script>
+        <script type="text/javascript" src="~/js/views/navigationBar.js"></script>
+        <script type="text/javascript" src="~/js/views/newProject.js"></script>
+        <script type="text/javascript" src="~/js/views/optionsBar.js"></script>
+        <script type="text/javascript" src="~/js/views/popup.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetails.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsDescription.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsDescriptionEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsDescriptionNotEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsName.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsNameEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsNameNotEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsOwner.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsOwnerEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsOwnerNotEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTagEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTagNotEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTags.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTagsEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTagsNotEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMemberEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMemberNotEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMembers.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMembersEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDetailsTeamMembersNotEditable.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDropdownMenu.js"></script>
+        <script type="text/javascript" src="~/js/views/projectDropdownMenuOption.js"></script>
+        <script type="text/javascript" src="~/js/views/prioritySelection.js"></script>
+        <script type="text/javascript" src="~/js/views/prioritySelectionOption.js"></script>
+        <script type="text/javascript" src="~/js/views/sortDropdownMenu.js"></script>
+        <script type="text/javascript" src="~/js/views/sortIcon.js"></script>
+        <script type="text/javascript" src="~/js/views/tagSelection.js"></script>
+        <script type="text/javascript" src="~/js/views/tagSelectionResult.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetails.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsComment.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsComments.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsCompleted.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsDescription.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsDueDate.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsName.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsPriority.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsTag.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsTags.js"></script>
+        <script type="text/javascript" src="~/js/views/taskDetailsUser.js"></script>
+        <script type="text/javascript" src="~/js/views/userDropdownMenu.js"></script>
+        <script type="text/javascript" src="~/js/views/userPicture.js"></script>
+        <script type="text/javascript" src="~/js/views/userPictureDefault.js"></script>
+        <script type="text/javascript" src="~/js/views/userPictureDefaultLarge.js"></script>
+        <script type="text/javascript" src="~/js/views/userPictureUnassigned.js"></script>
+        <script type="text/javascript" src="~/js/views/userSelection.js"></script>
+        <script type="text/javascript" src="~/js/views/userSelectionResult.js"></script>
 
-                    <div class="board-category" data-category-id="@Model.Categories[categoryIndex].CategoryId" data-category-index="@categoryIndex">
-                        <div class="board-category-header">
-                            <div class="board-category-name">@Model.Categories[categoryIndex].Name</div>
-                            <button class="board-category-delete-button" type="button" onclick="deleteBoardCategory(@Model.Categories[categoryIndex].CategoryId)">x</button>
-                        </div>
-                        <div class="board-new-task-button-container">
-                            <button class="add-task-to-board-button" onclick="toggleNewTaskForm(@categoryIndex)">+</button>
-                        </div>
-                        <div class="new-board-task-container hidden">
-                            <textarea class="new-board-task-text-box font-small"></textarea>
-                        </div>
+        <script>function getElementHovered(event, selector) {
+                let mouseX = event.clientX;
+                let mouseY = event.clientY;
 
-                        <div class="board-task-container">
+                let elementHovered = null;
+                selector.each(function () {
+                    let element = $(this);
+                    let elementTopOffset = element.offset().top;
+                    let elementBottomOffset = elementTopOffset + element.outerHeight();
+                    let elementLeftOffset = element.offset().left;
+                    let elementRightOffset = elementLeftOffset + element.outerWidth();
 
-                            @for (int taskIndex = 0; taskIndex < Model.Tasks[categoryIndex].Count; taskIndex++)
-                            {
-                                <div class="board-task-drop-area" data-task-index="@taskIndex"></div>
+                    if (
+                        (mouseX >= elementLeftOffset) &&
+                        (mouseX <= elementRightOffset) &&
+                        (mouseY >= elementTopOffset) &&
+                        (mouseY <= elementBottomOffset)
+                    ) {
+                        elementHovered = element;
+                        return;
+                    }
+                });
 
-                                var task = Model.Tasks[categoryIndex][taskIndex];
-                                var boardTaskClasses = "board-task";
-                                if (task.IsCompleted)
-                                {
-                                    boardTaskClasses += " board-task-completed";
-                                }
+                return elementHovered;
+            }
 
-                                <div class="@boardTaskClasses" data-task-id="@task.TaskId" data-task-index="@taskIndex">
-                                    <div class="board-task-left-section">
-                                        <div class="board-task-priority task-priority" data-priority="@task.Priority"></div>
-                                        <div class="board-task-second-row">
-                                            @if (task.IsCompleted)
-                                            {
-                                                <div class="board-task-completed-icon">
-                                                    <div>&#10003</div>
-                                                </div>
-                                            }
-                                            <div class="board-task-name">@task.Name</div>
-                                        </div>
-                                        <div class="board-task-third-row">
-                                            <div class="board-task-assignee" onclick="toggleBoardAssigneeSelectionContainer(@task.TaskId)">
-                                                @if (task.AssignedUser != null)
-                                                {
-                                                    <div class="default-profile-pic color-option-@task.AssignedUser.BackgroundColor">
-                                                        <div>@task.AssignedUser.FirstName[0]@task.AssignedUser.LastName[0]</div>
-                                                    </div>
-                                                }
-                                                else
-                                                {
-                                                    <input class="unassigned-user-icon" type="image" src="~/images/user.png" />
-                                                }
-                                            </div>
-                                            <div class="board-task-due-date" onclick="toggleBoardDueDateSelectionContainer(@task.TaskId)">
-                                                @if (@task.DueDate.Date == new DateTime().Date)
-                                                {
-                                                    <input class="unassigned-due-date-icon" type="image" src="~/images/clock.png" />
-                                                }
-                                                else
-                                                {
-                                                    <div>@task.DueDate.ToString("MMM d")</div>
-                                                }
-                                            </div>
-                                        </div>
-                                        <div class="board-task-fourth-row">
-                                            @foreach (TagTask tagTask in task.TagTasks)
-                                            {
-                                                var tag = tagTask.Tag;
+            function priorityToString(priority) {
+                if (priority == 5) return "Very High";
+                else if (priority == 4) return "High";
+                else if (priority == 3) return "Medium";
+                else if (priority == 2) return "Low";
+                else if (priority == 1) return "Very Low";
+                else return "No Priority";
+            }
 
-                                                <div class="board-task-tag color-option-@tag.BackgroundColor" data-tag-id="@tag.TagId">@tag.Name</div>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="board-task-right-section">
-                                        <div class="board-task-delete-button" onclick="deleteBoardTask(@task.TaskId)">x</div>
-                                    </div>
-                                </div>
-                            }
-                            <div class="board-task-drop-area" data-task-index="@Model.Tasks[categoryIndex].Count"></div>
-                            <div class="board-task-container-extra-height"></div>
-                        </div>
-                    </div>
+            function getDaysInMonth(month, year) {
+                let nextMonth = month + 1;
+                let yearOfNextMonth = year;
+                if (month == 11) {
+                    nextMonth = 0;
+                    yearOfNextMonth = year + 1;
                 }
-                <div class="board-category-drop-area" data-category-index="@Model.Categories.Count"></div>
-                <div class="board-category" data-category-index="@Model.Categories.Count">
-                    <div id="addBoardCategoryButton" onclick="toggleNewBoardCategoryForm()">+ Add category</div>
-                    <input id="newCategoryNameTextBox" class="hidden" type="text" placeholder="Category Name" />
-                </div>
-                <div id="boardCategoryContainerExtraWidth"></div>
-            </div>
+                return new Date(yearOfNextMonth, nextMonth, 0).getDate();
+            }
 
-            <div id="removeBoardCategoryAlert" class="hidden">
-                Categories that have tasks attached cannot be removed
-            </div>
+            function getWeeksInMonth(month, year) {
+                let sundayOfFirstWeek = new Date(year, month);
+                let numberOfDaysInWeekBeforeFirst = 0;
+                while (sundayOfFirstWeek.getDay() != 0) {
+                    sundayOfFirstWeek.setDate(sundayOfFirstWeek.getDate() - 1);
+                    numberOfDaysInWeekBeforeFirst += 1;
+                }
+                let daysInMonth = getDaysInMonth(month, year);
+                return Math.ceil((daysInMonth + numberOfDaysInWeekBeforeFirst) / 7.0);
+            }
 
-            <div id="draggedCategoryCopy" class="hidden"></div>
-            <div id="boardCategoryDropAreaIndicator"></div>
-            <div id="draggedTaskCopy" class="hidden"></div>
-            <div id="boardTaskDropAreaIndicator"></div>
-        }
-    </div>
+            function getSundayOfFirstWeek(month, year) {
+                let sundayOfFirstWeek = new Date(year, month);
+                while (sundayOfFirstWeek.getDay() != 0) {
+                    sundayOfFirstWeek.setDate(sundayOfFirstWeek.getDate() - 1);
+                }
+                return sundayOfFirstWeek;
+            }
+
+            ProjectManager.start();</script>
+    </body>
+</html>

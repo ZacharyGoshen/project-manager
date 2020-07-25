@@ -1,57 +1,24 @@
 ﻿@{
     Layout = "";
 }
-
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project Manager</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/login.css" />
 </head>
 <body>
-    <div id="loginViewSoftwareTitle">Project Manager</div>
-    <div id="userLoginContainer">
-        <div id="userLoginContainerLeftSide">
-            <div class="login-container-title">Log In</div>
-            <div id="loginErrorMessage" class="hidden error-message"></div>
-            <form>
-                <div>Email</div>
-                <input id="userLoginEmail" type="email" autocomplete="username"/>
-                <div>Password</div>
-                <input id="userLoginPassword" type="password" autocomplete="current-password"/>
-                <div id="loginButton" class="login-container-button">Log In</div>
-            </form>
-            <div id="loginViewLinks">
-                <a asp-controller="Home" asp-action="Board">Log in as demo user</a>
-            </div>
-        </div>
-        <div id="userLoginContainerRightSide">
-            <div class="login-container-title">Sign Up</div>
-            <div id="signupErrorMessage" class="hidden error-message"></div>
-            <form>
-                <div>First Name</div>
-                <input id="userSignupFirstName" type="text"/>
-                <div>Last Name</div>
-                <input id="userSignupLastName" type="text"/>
-                <div>Email</div>
-                <input id="userSignupEmail" type="email" autocomplete="username"/>
-                <div>Password</div>
-                <input id="userSignupPassword" type="password" autocomplete="new-password"/>
-                <div>Confirm Password</div>
-                <input id="userSignupConfirmPassword" type="password" autocomplete="new-password"/>
-                <div id="signupButton" class="login-container-button">Sign Up</div>
-            </form>
-        </div>
-    </div>
+    <div id="main-container" class="flex-column"></div>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/ajax/user.js"></script>
-    <script src="~/js/login/index.js"></script>
-    <script src="~/js/shared/validation.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.10.2/underscore-min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.16/backbone.localStorage-min.js"></script>
+    <script type="text/javascript" src="~/js/app.js"></script>
+    <script type="text/javascript" src="~/js/templates/templates.js"></script>
+    <script type="text/javascript" src="~/js/views/login.js"></script>
+
+    <script>ProjectManager.start('login');</script>
 </body>
 </html>

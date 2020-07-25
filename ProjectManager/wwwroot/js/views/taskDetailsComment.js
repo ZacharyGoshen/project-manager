@@ -19,8 +19,7 @@
             hover: false
         });
         this.$('.task-details-comment-user').html(userPictureView.render().$el);
-
-        let creationTime = new Date(this.model.get('creationTime') + 'Z');
+        let creationTime = new Date(self.model.get('creationTime'));
         let creationTimeString = creationTime.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour12: true, hour: '2-digit', minute: '2-digit'});
         this.$('.task-details-comment-creation-time').html(creationTimeString);
 
@@ -33,18 +32,20 @@
         let self = this;
 
         new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Comment/Delete",
-                data: {
-                    commentId: self.model.get('commentId')
-                },
-                success: function () {
-                    resolve();
-                }
+            self.model.destroy({
+                wait: true,
+                success: function () { resolve(); }
             });
         }).then(function () {
-            self.collection.comments.remove(self.model);
+            let task = self.collection.tasks.findWhere({ id: self.model.get('taskId') });
+            let taskCommentsIdsClone = task.get('commentIds').slice();
+            taskCommentsIdsClone.splice(taskCommentsIdsClone.indexOf(task.get('id')), 1);
+            task.save({ commentIds: taskCommentsIdsClone });
+
+            let user = self.collection.users.findWhere({ id: ProjectManager.LoggedInUserId });
+            let userCommentsIdsClone = user.get('commentIds').slice();
+            userCommentsIdsClone.splice(userCommentsIdsClone.indexOf(user.get('id')), 1);
+            user.save({ commentIds: userCommentsIdsClone });
         });
     }
 });

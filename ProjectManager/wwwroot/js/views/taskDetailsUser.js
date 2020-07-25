@@ -10,7 +10,7 @@
     },
 
     initialize: function () {
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, "change:assignedUserId", this.render);
     },
 
     render: function () {
@@ -27,7 +27,7 @@
         this.$("#task-details-user-picture").html(userPictureView.render().$el);
 
         if (self.model.get('assignedUserId')) {
-            let assignedUser = self.collection.users.findWhere({ userId: self.model.get('assignedUserId') });
+            let assignedUser = self.collection.users.findWhere({ id: self.model.get('assignedUserId') });
             this.$("#task-details-user-name").html(assignedUser.get('firstName') + ' ' + assignedUser.get('lastName'));
         } else {
             this.$("#task-details-user-name").html('Select a user');
@@ -58,41 +58,30 @@
     update: function (user) {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/UpdateAssignedUser",
-                data: {
-                    taskId: self.model.get('taskId'),
-                    userId: user.get('userId')
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('assignedUserId', user.get('userId'));
-            self.toggleSelectUser();
-        });
+        if (this.model.get('assignedUserId')) {
+            let previousUser = this.collection.users.findWhere({ id: self.model.get('assignedUserId') });
+            let assignedTaskIdsClone = previousUser.get('assignedTaskIds').slice();
+            assignedTaskIdsClone.splice(assignedTaskIdsClone.indexOf(self.model.get('id')), 1);
+            previousUser.save({ assignedTaskIds: assignedTaskIdsClone });
+        }
+
+        this.model.save({ assignedUserId: user.get('id') });
+        
+        let assignedTaskIdsClone = user.get('assignedTaskIds').slice();
+        assignedTaskIdsClone.push(self.model.get('id'));
+        user.save({ assignedTaskIds: assignedTaskIdsClone });
+
+        this.toggleSelectUser();
     },
 
     remove: function () {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/UpdateAssignedUser",
-                data: {
-                    taskId: self.model.get('taskId'),
-                    userId: 0
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('assignedUserId', 0);
-        });
+        let previousUser = this.collection.users.findWhere({ id: self.model.get('assignedUserId') });
+        let assignedTaskIdsClone = previousUser.get('assignedTaskIds').slice();
+        assignedTaskIdsClone.splice(assignedTaskIdsClone.indexOf(self.model.get('id')), 1);
+        previousUser.save({ assignedTaskIds: assignedTaskIdsClone });
+
+        this.model.save({ assignedUserId: 0 });
     }
 });

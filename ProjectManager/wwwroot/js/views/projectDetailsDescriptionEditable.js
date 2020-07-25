@@ -8,10 +8,6 @@
         'keypress': 'focusOutOnEnter'
     },
 
-    initialize: function () {
-        this.listenTo(this.model, "change", this.render);
-    },
-
     render: function () {
         let self = this;
 
@@ -28,20 +24,8 @@
     update: function () {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Project/UpdateDescription",
-                data: {
-                    projectId: self.model.get('projectId'),
-                    description: self.$el.val()
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('description', self.$el.val());
+        this.model.save({
+            description: self.$el.val()
         });
     }
 });

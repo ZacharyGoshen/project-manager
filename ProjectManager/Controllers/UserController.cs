@@ -25,14 +25,23 @@ namespace ProjectManager.Controllers
             var user = context.Users
                 .Where(u => u.UserId == userId)
                 .Include(u => u.AssignedTasks)
+                .Include(u => u.Comments)
+                .Include(u => u.Invites)
+                .Include(u => u.SubmittedTasks)
+                .Include(u => u.UserProjects).ThenInclude(up => up.Project)
                 .Select(u => new
                 {
-                    UserId = u.UserId,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
-                    Email = u.Email,
+                    AssignedTaskIds = u.AssignedTasks.Select(t => t.TaskId).ToArray(),
                     BackgroundColor = u.BackgroundColor,
-                    AssignedTaskIds = u.AssignedTasks.Select(t => t.TaskId)
+                    CommentIds = u.Comments.Select(c => c.CommentId).ToArray(),
+                    CurrentProjectId = u.CurrentProjectId,
+                    Email = u.Email,
+                    FirstName = u.FirstName,
+                    Id = u.UserId,
+                    InviteIds = u.Invites.Select(i => i.InviteId).ToArray(),
+                    LastName = u.LastName,
+                    ProjectIds = u.UserProjects.Select(up => up.Project.ProjectId).ToArray(),
+                    SubmittedTaskIds = u.SubmittedTasks.Select(t => t.TaskId).ToArray()
                 })
                 .ToList();
             return Json(user);
@@ -42,18 +51,26 @@ namespace ProjectManager.Controllers
         public JsonResult GetAllInProject(int projectId)
         {
             var context = new MyContext();
-            var users = context.UserProjects
-                .Where(up => up.Project.ProjectId == projectId)
-                .Include(up => up.User)
-                .ThenInclude(u => u.AssignedTasks)
-                .Select(up => new
+            var users = context.Users
+                .Where(u => u.UserProjects.Select(up => up.Project.ProjectId).Contains(projectId))
+                .Include(u => u.AssignedTasks)
+                .Include(u => u.Comments)
+                .Include(u => u.Invites)
+                .Include(u => u.SubmittedTasks)
+                .Include(u => u.UserProjects).ThenInclude(up => up.Project)
+                .Select(u => new
                 {
-                    UserId = up.User.UserId,
-                    FirstName = up.User.FirstName,
-                    LastName = up.User.LastName,
-                    Email = up.User.Email,
-                    BackgroundColor = up.User.BackgroundColor,
-                    AssignedTaskIds = up.User.AssignedTasks.Select(t => t.TaskId)
+                    AssignedTaskIds = u.AssignedTasks.Select(t => t.TaskId).ToArray(),
+                    BackgroundColor = u.BackgroundColor,
+                    CommentIds = u.Comments.Select(c => c.CommentId).ToArray(),
+                    CurrentProjectId = u.CurrentProjectId,
+                    Email = u.Email,
+                    FirstName = u.FirstName,
+                    Id = u.UserId,
+                    InviteIds = u.Invites.Select(i => i.InviteId).ToArray(),
+                    LastName = u.LastName,
+                    ProjectIds = u.UserProjects.Select(up => up.Project.ProjectId).ToArray(),
+                    SubmittedTaskIds = u.SubmittedTasks.Select(t => t.TaskId).ToArray()
                 })
                 .ToList();
             return Json(users);
@@ -68,39 +85,6 @@ namespace ProjectManager.Controllers
             return Json(currentProjectId);
         }
 
-        public JsonResult FindFirstTenThatContainName(string name, int projectId)
-        {
-            var context = new DAL.MyContext();
-            List<User> users = new List<User>();
-            if (projectId == 0)
-            {
-                users = context.Users.ToList();
-            }
-            else
-            {
-                var project = context.Projects.Find(projectId);
-                var userProjects = context.UserProjects
-                    .Include(up => up.User)
-                    .Include(up => up.Project)
-                    .Where(up => up.Project == project);
-                foreach (var userProject in userProjects)
-                {
-                    users.Add(userProject.User);
-                }
-            }
-            var matchingUsers = new List<User>();
-            foreach (var user in users)
-            {
-                var fullName = user.FirstName.ToLower() + " " + user.LastName.ToLower();
-                if (fullName.Contains(name) && matchingUsers.Count < 10)
-                {
-                    matchingUsers.Add(user);
-                }
-            }
-
-            return Json(matchingUsers);
-        }
-
         public JsonResult GetWithEmail(string email)
         {
             var context = new DAL.MyContext();
@@ -110,13 +94,68 @@ namespace ProjectManager.Controllers
             }
             else
             {
-                var user = context.Users.Where(u => u.Email == email).FirstOrDefault();
+                var user = context.Users
+                    .Where(u => u.Email == email)
+                    .Include(u => u.AssignedTasks)
+                    .Include(u => u.Comments)
+                    .Include(u => u.Invites)
+                    .Include(u => u.SubmittedTasks)
+                    .Include(u => u.UserProjects).ThenInclude(up => up.Project)
+                    .Select(u => new
+                    {
+                        AssignedTaskIds = u.AssignedTasks.Select(t => t.TaskId).ToArray(),
+                        BackgroundColor = u.BackgroundColor,
+                        CommentIds = u.Comments.Select(c => c.CommentId).ToArray(),
+                        CurrentProjectId = u.CurrentProjectId,
+                        Email = u.Email,
+                        FirstName = u.FirstName,
+                        Id = u.UserId,
+                        InviteIds = u.Invites.Select(i => i.InviteId).ToArray(),
+                        LastName = u.LastName,
+                        ProjectIds = u.UserProjects.Select(up => up.Project.ProjectId).ToArray(),
+                        SubmittedTaskIds = u.SubmittedTasks.Select(t => t.TaskId).ToArray()
+                    })
+                    .First();
                 return Json(user);
             }
+
+        }
+
+        public void UpdatePassword(int userId, string password)
+        {
+            var context = new DAL.MyContext();
+            var user = context.Users.Find(userId);
+            user.Password = HashPassword(password, user.Salt);
+            context.SaveChanges();
         }
 
         [HttpPost]
-        public JsonResult Create(string firstName, string lastName, string email, string password)
+        public JsonResult LogIn(string email, string password)
+        {
+            var context = new DAL.MyContext();
+            context.Database.EnsureCreated();
+            if (context.Users.Where(e => e.Email == email).ToList().Count == 1)
+            {
+                var user = context.Users.Where(e => e.Email == email).First();
+                string encrypted = HashPassword(password, user.Salt);
+                if (encrypted == user.Password)
+                {
+                    this.UserId = user.UserId;
+                    return Json(true);
+                }
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
+        public void LogOut()
+        {
+            this.UserId = 0;
+            this.Demo = 0;
+        }
+
+        [HttpPost]
+        public JsonResult SignUp(string firstName, string lastName, string email, string password)
         {
             var context = new DAL.MyContext();
             context.Database.EnsureCreated();
@@ -143,90 +182,6 @@ namespace ProjectManager.Controllers
             {
                 return Json(false);
             }
-        }
-
-        public void UpdateFirstName(int userId, string firstName)
-        {
-            var context = new DAL.MyContext();
-            var user = context.Users.Find(userId);
-            user.FirstName = firstName;
-            context.SaveChanges();
-        }
-
-        public void UpdateLastName(int userId, string lastName)
-        {
-            var context = new DAL.MyContext();
-            var user = context.Users.Find(userId);
-            user.LastName = lastName;
-            context.SaveChanges();
-        }
-
-        public void UpdateEmail(int userId, string email)
-        {
-            var context = new DAL.MyContext();
-            var user = context.Users.Find(userId);
-            user.Email = email;
-            context.SaveChanges();
-        }
-
-        public void UpdatePassword(int userId, string password)
-        {
-            var context = new DAL.MyContext();
-            var user = context.Users.Find(userId);
-            user.Password = HashPassword(password, user.Salt);
-            context.SaveChanges();
-        }
-
-        public void UpdateBackgroundColor(int userId, int backgroundColor)
-        {
-            var context = new DAL.MyContext();
-            var user = context.Users.Find(userId);
-            user.BackgroundColor = backgroundColor;
-            context.SaveChanges();
-        }
-
-        [HttpPost]
-        public void UpdateCurrentProjectId(int userId, int projectId)
-        {
-            var context = new DAL.MyContext();
-            var user = context.Users.Find(userId);
-            user.CurrentProjectId = projectId;
-            context.SaveChanges();
-        }
-
-        [HttpPost]
-        public JsonResult LogIn(string email, string password)
-        {
-            var context = new DAL.MyContext();
-            context.Database.EnsureCreated();
-            if (context.Users.Where(e => e.Email == email).ToList().Count == 1)
-            {
-                var user = context.Users.Where(e => e.Email == email).First();
-                string encrypted = HashPassword(password, user.Salt);
-                if (encrypted == user.Password)
-                {
-                    this.UserId = user.UserId;
-                    return Json(true);
-                }
-            }
-            return Json(false);
-        }
-
-        [HttpPost]
-        public void LogOut()
-        {
-            this.UserId = 0;
-            this.CurrentProjectId = 0;
-        }
-
-        public void RemoveAssignedTask(int taskId, int userId)
-        {
-            var context = new DAL.MyContext();
-            var assignedUser = context.Users.Find(userId);
-            var assignedTask = context.Tasks.Find(taskId);
-
-            assignedUser.AssignedTasks.Remove(assignedTask);
-            context.SaveChanges();
         }
 
         public JsonResult Authenticate(int userId, string password)
@@ -264,6 +219,66 @@ namespace ProjectManager.Controllers
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
             return hashed;
+        }
+
+        public struct UserJson
+        {
+            public int[] AssignedTaskIds { get; set; }
+            public int BackgroundColor { get; set; }
+            public int[] CommentIds { get; set; }
+            public int CurrentProjectId { get; set; }
+            public string Email { get; set; }
+            public string FirstName { get; set; }
+            public int[] InviteIds { get; set; }
+            public string LastName { get; set; }
+            public int[] ProjectIds { get; set; }
+            public int[] SubmittedTaskIds { get; set; }
+        }
+
+        [HttpPut]
+        [Route("user/{id}")]
+        public JsonResult Update(int id, [FromBody] [Bind("AssignedTaskIds", "BackgroundColor", "CommentIds", "CurrentProjectId", "Email", "FirstName", "InviteIds", "LastName", "ProjectIds", "SubmittedTaskIds")] UserJson userJson)
+        {
+            var context = new MyContext();
+            var user = context.Users.Find(id);
+            foreach (var assignedTaskId in userJson.AssignedTaskIds)
+            {
+                var assignedTask = context.Tasks.Where(t => t.TaskId == assignedTaskId).Include(t => t.AssignedUser).First();
+                if (assignedTask.AssignedUser.UserId != id)
+                {
+                    user.AssignedTasks.Add(assignedTask);
+                }
+            }
+            foreach (var assignedTask in context.Tasks.Where(t => t.AssignedUser.UserId == id))
+            {
+                if (!userJson.AssignedTaskIds.Contains(assignedTask.TaskId))
+                {
+                    assignedTask.AssignedUser = null;
+                }
+            }
+            user.BackgroundColor = userJson.BackgroundColor;
+            foreach (var commentId in userJson.CommentIds)
+            {
+                var comment = context.Comments.Where(c => c.CommentId == commentId).Include(c => c.User).First();
+                if (comment.User.UserId != id)
+                {
+                    user.Comments.Add(comment);
+                }
+            }
+            foreach (var comment in context.Comments.Where(c => c.User.UserId == id))
+            {
+                if (!userJson.CommentIds.Contains(comment.CommentId))
+                {
+                    comment.User = null;
+                }
+            }
+            user.CurrentProjectId = userJson.CurrentProjectId;
+            user.Email = userJson.Email;
+            user.FirstName = userJson.FirstName;
+            user.LastName = userJson.LastName;
+            context.SaveChanges();
+
+            return Json(true);
         }
     }
 }

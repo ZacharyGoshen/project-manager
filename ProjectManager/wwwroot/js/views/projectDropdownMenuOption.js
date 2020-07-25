@@ -16,20 +16,10 @@
     updateCurrentProject: function () {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/User/UpdateCurrentProjectId",
-                data: {
-                    userId: ProjectManager.LoggedInUserId,
-                    projectId: self.model.get('projectId')
-                },
-                success: function () {
-                    resolve()
-                }
-            });
-        }).then(function () {
-            location.reload()
-        });
+        let user = this.collection.users.findWhere({ id: ProjectManager.LoggedInUserId });
+        user.save(
+            { currentProjectId: self.model.get('id') },
+            { success: function () { location.reload(); } }
+        );
     }
 });

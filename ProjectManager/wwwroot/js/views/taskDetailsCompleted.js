@@ -8,13 +8,13 @@
         'click': 'update'
     },
 
-    initalize: function () {
-        this.listenTo(this.model, 'change', this.render);
+    initialize: function () {
+        this.listenTo(this.model, 'change:isCompleted', this.render);
     },
 
     render: function () {
         let html = this.template(this.model.toJSON());
-        this.$el.append(html);
+        this.$el.html(html);
 
         if (this.model.get('isCompleted')) this.$('#task-details-completed-text').html('Completed');
         else this.$('#task-details-completed-text').html('Mark Completed');
@@ -25,20 +25,6 @@
     update: function () {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/UpdateIsCompleted",
-                data: {
-                    taskId: self.model.get('taskId'),
-                    isCompleted: !self.model.get('isCompleted')
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('isCompleted', !self.model.get('isCompleted'));
-        });
+        this.model.save({ isCompleted: !self.model.get('isCompleted') });
     }
 });

@@ -10,10 +10,6 @@
         'click #project-details-delete-button': 'onClickDelete'
     },
 
-    initialize: function () {
-        this.listenTo(this.model, "change", this.render);
-    },
-
     render: function () {
         let self = this;
 
@@ -88,32 +84,38 @@
     leave: function () {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Project/RemoveTeamMember",
-                data: {
-                    projectId: ProjectManager.CurrentProjectId,
-                    userId: ProjectManager.LoggedInUserId
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.collection.tasks
-                .where({ assignedUserId: self.model.get('userId') })
-                .forEach(function (task) { task.set('assignedUserId', 0) });
+        //this.collection.comments.where({ userId: ProjectManager.LoggedInUserId }).forEach(function (comment) {
+        //    comment.destroy();
+        //});
 
-            self.collection.tasks
-                .where({ assignedUserId: self.model.get('userId') })
-                .forEach(function (task) { task.set('assignedUserId', 0) });
-
-            self.collection.users.remove(self.model);
-            self.collection.users.trigger('update');
-
-            location.reload();
+        this.collection.invites.where({ inviterId: ProjectManager.LoggedInUserId }).forEach(function (invite) {
+            invite.destroy();
         });
+
+        this.collection.tasks.where({ assignedUserId: ProjectManager.LoggedInUserId }).forEach(function (task) {
+            task.save({ assignedUserId: 0 });
+        });
+
+        let teamMemberIdsClone = this.model.get('teamMemberIds').slice();
+        teamMemberIdsClone.splice(teamMemberIdsClone.indexOf(ProjectManager.LoggedInUserId), 1);
+
+        let ownerId = ProjectManager.LoggedInUserId;
+        if (this.model.get('ownerId') == ProjectManager.LoggedInUserId) ownerId = teamMemberIdsClone[0];
+
+        this.model.save({
+            ownerId: ownerId,
+            teamMemberIds: teamMemberIdsClone
+        });
+
+        let user = this.collection.users.findWhere({ id: ProjectManager.LoggedInUserId })
+        let projectIdsClone = user.get('projectIds').slice();
+        projectIdsClone.splice(projectIdsClone.indexOf(self.model.get('id')), 1);
+        user.save({
+            currentProjectId: 0,
+            projectIds: projectIdsClone
+        });
+
+        location.reload();
     },
 
     onClickDelete: function () {
@@ -134,33 +136,141 @@
     delete: function () {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: 'POST',
-                url: '/Project/Delete',
-                data: {
-                    projectId: self.model.get('projectId')
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: 'POST',
-                    url: '/User/UpdateCurrentProjectId',
-                    data: {
-                        userId: ProjectManager.LoggedInUserId,
-                        projectId: 0
-                    },
-                    success: function () {
-                        resolve();
-                    }
+        let categoryPromises = [];
+        this.collection.categories.where().forEach(function (category) {
+            let taskPromises = [];
+            this.collection.tasks.where({ categoryId: category.get('id') }).forEach(function (task) {
+                let commentPromises = [];
+                self.collection.comments.where({ taskId: task.get('id') }).forEach(function (comment) {
+                    let tagPromises = [];
+                    task.get('tagIds').forEach(function (tagId) {
+                        tagPromises.push(new Promise(function (resolve) {
+                            let tag = self.collection.tags.findWhere({ id: tagId });
+                            let tagTaskIdsClone = tag.get('taskIds').slice();
+                            tagTaskIdsClone.splice(tagTaskIdsClone.indexOf(task.get('id')), 1);
+                            tag.save(
+                                { taskIds: tagTaskIdsClone },
+                                { success: function () { resolve(); } }
+                            )
+                        }));
+                    });
+
+                    taskPromises.push(new Promise(function (resolve) {
+                        Promise.all(tagPromises).then(function () {
+                            Promise.all(commentPromises).then(function () {
+                                task.destroy({
+                                    success: function () {
+                                        resolve();
+                                    }
+                                });
+                            });
+                        });
+                    }));
+
+                    taskPromises.push(new Promise(function (resolve) {
+                        if (task.get('assignedUserId') == 0) {
+                            resolve();
+                            return;
+                        }
+
+                        let user = self.collection.users.findWhere({ id: task.get('assignedUserId') });
+                        let assignedTaskIdsClone = user.get('assignedTaskIds').slice();
+                        assignedTaskIdsClone.splice(assignedTaskIdsClone.indexOf(task.get('id')), 1);
+                        user.save(
+                            { assignedTaskIds: assignedTaskIdsClone },
+                            { success: function () { resolve(); } }
+                        );
+                    }));
+
+                    taskPromises.push(new Promise(function (resolve) {
+                        let user = self.collection.users.findWhere({ id: task.get('submittingUserId') });
+                        let submittedTaskIdsClone = user.get('submittedTaskIds').slice();
+                        submittedTaskIdsClone.splice(submittedTaskIdsClone.indexOf(task.get('id')), 1);
+                        user.save(
+                            { submittedTaskIds: submittedTaskIdsClone },
+                            { success: function () { resolve(); } }
+                        );
+                    }));
+
+                    commentPromises.push(new Promise(function (resolve) {
+                        comment.destroy({
+                            success: function () {
+                                resolve();
+                            }
+                        });
+                    }));
+
+                    commentPromises.push(new Promise(function (resolve) {
+                        let user = self.collection.users.findWhere({ id: comment.get('userId') });
+                        let commentIdsClone = user.get('commentIds').slice();
+                        commentIdsClone.splice(commentIdsClone.indexOf(comment.get('id')), 1);
+                        user.save(
+                            { commentIds: commentIdsClone },
+                            { success: function () { resolve(); } }
+                        );
+                    }));
                 });
             });
-        }).then(function() {
-            location.reload();
+
+            categoryPromises.push(function () {
+                new Promise(function (resolve) {
+                    Promise.all(taskPromises).then(function () {
+                        category.destroy({
+                            wait: true,
+                            success: function () {
+                                resolve();
+                            }
+                        });
+                    })
+                }).then(function () {
+                    let project = self.collection.projects.findWhere({ id: ProjectManager.CurrentProjectId });
+                    let categoryIdsClone = project.get('categoryIds').slice();
+                    categoryIdsClone.splice(categoryIdsClone.indexOf(category.get('id')), 1);
+                    project.save({ categoryIds: categoryIdsClone });
+                });
+            });
+        });
+
+        Promise.all(categoryPromises).then(function () {
+            let invitePromises = [];
+            invitePromises.push(
+                new Promise(function (resolve) {
+                    self.collection.invites.where({ projectId: self.model.get('id') }).forEach(function (invite) {
+                        invite.destroy({ success: function () { resolve(); } })
+                    });
+                })
+            );
+
+            new Promise(function (resolve) {
+                self.model.destroy({ success: function () { resolve(); } })
+            }).then(function () {
+                let userPromises = [];
+
+                self.collection.users.forEach(function (user) {
+                    if (!user.get('projectIds').includes(self.model.get('id'))) return;
+
+                    userPromises.push(
+                        new Promise(function (resolve) {
+                            let currentProjectId = user.get('currentProjectId');
+                            if (currentProjectId == self.model.get('id')) currentProjectId = 0;
+
+                            let projectIdsClone = user.get('projectIds').slice();
+                            projectIdsClone.splice(projectIdsClone.indexOf(self.model.get('id')), 1);
+                            user.save(
+                                {
+                                    currentProjectId: currentProjectId,
+                                    projectIds: projectIdsClone
+                                },
+                                { success: function () { resolve(); } }
+                            );
+                        })
+                    );
+                });
+
+                Promise.all(userPromises).then(function () {
+                    location.reload();
+                });
+            })
         });
     }
 });

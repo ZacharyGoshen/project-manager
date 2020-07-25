@@ -9,7 +9,7 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         [HttpGet]
         public JsonResult Get(int categoryId)
@@ -21,11 +21,11 @@ namespace ProjectManager.Controllers
                 .Include(c => c.Tasks)
                 .Select(c => new
                 {
-                    CategoryId = c.CategoryId,
-                    Name = c.Name,
-                    Order = c.Order,
-                    ProjectId = c.Project.ProjectId,
-                    TaskIds = c.Tasks.Select(t => t.TaskId)
+                    id = c.CategoryId,
+                    name = c.Name,
+                    order = c.Order,
+                    projectId = c.Project.ProjectId,
+                    taskIds = c.Tasks.Select(t => t.TaskId).ToArray()
                 })
                 .First();
             return Json(category);
@@ -41,101 +41,82 @@ namespace ProjectManager.Controllers
                 .Include(c => c.Tasks)
                 .Select(c => new
                 {
-                    CategoryId = c.CategoryId,
-                    Name = c.Name,
-                    Order = c.Order,
-                    ProjectId = c.Project.ProjectId,
-                    TaskIds = c.Tasks.Select(t => t.TaskId)
+                    id = c.CategoryId,
+                    name = c.Name,
+                    order = c.Order,
+                    projectId = c.Project.ProjectId,
+                    taskIds = c.Tasks.Select(t => t.TaskId).ToArray()
                 })
                 .ToList();
             return Json(categories);
         }
 
-        [HttpPost]
-        public JsonResult Create(int projectId, string categoryName)
+        public struct CategoryJson
         {
-            using (var context = new DAL.MyContext())
-            {
-                var newCategory = new ProjectManager.Models.Category()
-                {
-                    Name = categoryName,
-                    Project = context.Projects.Find(projectId),
-                    Order = context.Categories.Where(c => c.Project.ProjectId == projectId).ToList().Count
-                };
-                context.Categories.Add(newCategory);
-                context.SaveChanges();
-
-                return Json(newCategory.CategoryId);
-            }
+            public string Name { get; set; }
+            public int Order { get; set; }
+            public int ProjectId { get; set; }
+            public int[] TaskIds { get; set; }
         }
 
         [HttpPost]
-        public void UpdateName(int categoryId, string name)
-        {
-            var context = new DAL.MyContext();
-            var category = context.Categories.Find(categoryId);
-            category.Name = name;
-            context.SaveChanges();
-        }
-
-        [HttpPost]
-        public void AddTask(int categoryId, int taskId)
+        [Route("category")]
+        public JsonResult Create([FromBody] [Bind("Name", "Order", "ProjectId", "TaskIds")] CategoryJson categoryJson)
         {
             var context = new MyContext();
-            var category = context.Categories.Find(categoryId);
-            var task = context.Tasks.Find(taskId);
-            category.Tasks.Add(task);
+            var category = new Category()
+            {
+                Name = categoryJson.Name,
+                Order = categoryJson.Order,
+                Project = context.Projects.Find(categoryJson.ProjectId)
+            };
+            context.Categories.Add(category);
             context.SaveChanges();
+
+            return Json(category.CategoryId);
         }
 
-        public void Delete(int categoryId)
+        [HttpPut]
+        [Route("category/{id}")]
+        public JsonResult Update(int id, [FromBody] [Bind("Name", "Order", "ProjectId", "TaskIds")] CategoryJson categoryJson)
+        {
+            Console.WriteLine(id);
+            var context = new MyContext();
+            var category = context.Categories.Where(c => c.CategoryId == id).Include(c => c.Tasks).First();
+            category.Name = categoryJson.Name;
+            category.Order = categoryJson.Order;
+            category.Project = context.Projects.Find(categoryJson.ProjectId);
+            foreach (var taskId in categoryJson.TaskIds)
+            {
+                var task = context.Tasks.Where(t => t.TaskId == taskId).Include(t => t.Category).First();
+                if (task.Category != null && task.Category.CategoryId != id)
+                {
+                    category.Tasks.Add(task);
+                }
+            }
+            foreach (var task in context.Tasks.Where(t => t.Category.CategoryId == id))
+            {
+                if (!categoryJson.TaskIds.Contains(task.TaskId))
+                {
+                    task.Category = null;
+                }
+            }
+            context.SaveChanges();
+
+            return Json(true);
+        }
+
+        [HttpDelete]
+        [Route("category/{id}")]
+        public JsonResult Delete(int id)
         {
             var context = new DAL.MyContext();
-            var taskController = new TaskController();
-            var tasks = context.Tasks
-                .Where(t => t.Category.CategoryId == categoryId)
-                .ToList();
-            foreach (var task in tasks)
-            {
-                taskController.Delete(task.TaskId);
-            }
-
-            context = new DAL.MyContext();
-            var category = context.Categories.Find(categoryId);
+            var category = context.Categories.Find(id);
             context.Categories.Attach(category);
             context.Categories.Remove(category);
             context.SaveChanges();
-        }
 
-        [HttpPost]
-        public void Move(int categoryId, int order)
-        {
-            var context = new MyContext();
-            var category = context.Categories
-                .Where(c => c.CategoryId == categoryId)
-                .Include(c => c.Project)
-                .First();
-
-            var project = context.Projects
-                .Where(p => p.ProjectId == category.Project.ProjectId)
-                .Include(p => p.Categories)
-                .First();
-
-            foreach (var categoryInProject in project.Categories)
-            {
-                if (categoryInProject.Order > category.Order)
-                {
-                    categoryInProject.Order -= 1;
-                }
-                if (categoryInProject.Order >= order)
-                {
-                    categoryInProject.Order += 1;
-                }
-            }
-
-            category.Order = order;
-
-            context.SaveChanges();
+            return Json(true);
         }
     }
 }

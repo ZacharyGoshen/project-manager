@@ -9,11 +9,13 @@
     },
 
     initialize: function () {
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, "change:ownerId", this.render);
     },
 
     render: function () {
         let self = this;
+
+        if (!this.model.get('ownerId')) return;
 
         let html = this.template(this.model.toJSON());
         this.$el.html(html);
@@ -25,7 +27,7 @@
         });
         this.$("#project-details-owner-picture").html(userPictureView.render().$el);
 
-        let owner = self.collection.users.findWhere({ userId: self.model.get('ownerId') });
+        let owner = self.collection.users.findWhere({ id: self.model.get('ownerId') });
         this.$("#project-details-owner-name").html(owner.get('firstName') + ' ' + owner.get('lastName'));
 
         return this;
@@ -66,22 +68,9 @@
     },
 
     update: function (user) {
-        let self = this;
-
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Project/UpdateOwner",
-                data: {
-                    projectId: self.model.get('projectId'),
-                    userId: user.get('userId')
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('ownerId', user.get('userId'));
-        });
+        this.model.save(
+            { ownerId: user.get('id') },
+            { success: function () { location.reload(); } }
+        );
     }
 });

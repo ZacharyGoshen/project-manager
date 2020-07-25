@@ -4,7 +4,8 @@
     template: _.template(TemplateManager.templates.invite),
 
     events: {
-        'click .invite-accept-button': 'accept'
+        'click .invite-accept-button': 'accept',
+        'click .invite-decline-button': 'decline'
     },
 
     render: function () {
@@ -19,50 +20,31 @@
     accept: function () {
         let self = this;
 
+        let project = new ProjectManager.Models.Project({ id: self.model.get('projectId') });
         new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Project/AddTeamMember",
-                data: {
-                    projectId: self.model.get('projectId'),
-                    userId: self.model.get('inviteeId')
-                },
-                success: function () {
-                    resolve()
-                }
+            project.fetch({
+                success: function () { resolve(); }
             });
         }).then(function () {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: "POST",
-                    url: "/Invite/Delete",
-                    data: {
-                        inviteId: self.model.get('inviteId')
-                    },
-                    success: function () {
-                        resolve()
-                    }
-                });
-            });
-        }).then(function () {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: "GET",
-                    url: "/Project/Get",
-                    data: {
-                        projectId: self.model.get('projectId')
-                    },
-                    success: function (project) {
-                        resolve(project)
-                    }
-                });
-            });
-        }).then(function (project) {
-            if (ProjectManager.CurrentProjectId == 0) location.reload();
-
-            self.collection.projects.add(project);
-            self.collection.invites.remove(self.model);
-            self.remove();
+            let teamMemberIdsClone = project.get('teamMemberIds').slice();
+            teamMemberIdsClone.push(self.model.get('inviteeId'));
+            project.save({ teamMemberIds: teamMemberIdsClone });
         });
+
+        let user = this.collection.users.findWhere({ id: ProjectManager.LoggedInUserId })
+        let projectIdsClone = user.get('projectIds').slice();
+        projectIdsClone.push(ProjectManager.CurrentProjectId);
+        user.save({
+            currentProjectId: 0,
+            projectIds: projectIdsClone
+        });
+
+        self.model.destroy();
+
+        //if (ProjectManager.CurrentProjectId == 0) location.reload();
+    },
+
+    decline: function () {
+        this.model.destroy();
     }
 });

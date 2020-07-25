@@ -9,7 +9,7 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
-    public class TaskController : Controller
+    public class TaskController : BaseController
     {
         [HttpGet]
         public JsonResult Get(int taskId)
@@ -17,22 +17,26 @@ namespace ProjectManager.Controllers
             var context = new MyContext();
             var task = context.Tasks
                 .Where(t => t.TaskId == taskId)
-                .Include(t => t.Category)
                 .Include(t => t.AssignedUser)
+                .Include(t => t.Category)
+                .Include(t => t.Comments)
+                .Include(t => t.SubmittingUser)
                 .Include(t => t.TagTasks)
                 .Select(t => new
                 {
-                    TaskId = t.TaskId,
-                    Name = t.Name,
-                    Description = t.Description,
-                    CreationTime = t.CreationTime,
-                    DueDate = t.DueDate,
-                    Order = t.Order,
-                    Priority = t.Priority,
-                    IsCompleted = t.IsCompleted,
-                    CategoryId = t.Category.CategoryId,
-                    AssignedUserId = t.AssignedUser.UserId,
-                    TagIds = t.TagTasks.Select(tt => tt.Tag.TagId)
+                    assignedUserId = t.AssignedUser.UserId,
+                    categoryId = t.Category.CategoryId,
+                    commentIds = t.Comments.Select(c => c.CommentId).ToArray(),
+                    creationTime = t.CreationTime,
+                    description = t.Description,
+                    dueDate = t.DueDate,
+                    id = t.TaskId,
+                    isCompleted = t.IsCompleted,
+                    name = t.Name,
+                    order = t.Order,
+                    priority = t.Priority,
+                    submittingUserId = t.SubmittingUser.UserId,
+                    tagIds = t.TagTasks.Select(tt => tt.Tag.TagId).ToArray()
                 })
                 .First();
             return Json(task);
@@ -44,22 +48,26 @@ namespace ProjectManager.Controllers
             var context = new MyContext();
             var tasks = context.Tasks
                 .Where(t => t.Project.ProjectId == projectId)
-                .Include(t => t.Category)
                 .Include(t => t.AssignedUser)
-                                .Include(t => t.TagTasks)
+                .Include(t => t.Category)
+                .Include(t => t.Comments)
+                .Include(t => t.SubmittingUser)
+                .Include(t => t.TagTasks)
                 .Select(t => new
                 {
-                    TaskId = t.TaskId,
-                    Name = t.Name,
-                    Description = t.Description,
-                    CreationTime = t.CreationTime,
-                    DueDate = t.DueDate,
-                    Order = t.Order,
-                    Priority = t.Priority,
-                    IsCompleted = t.IsCompleted,
-                    CategoryId = t.Category.CategoryId,
-                    AssignedUserId = t.AssignedUser.UserId,
-                    TagIds = t.TagTasks.Select(tt => tt.Tag.TagId)
+                    assignedUserId = t.AssignedUser.UserId,
+                    categoryId = t.Category.CategoryId,
+                    commentIds = t.Comments.Select(c => c.CommentId).ToArray(),
+                    creationTime = t.CreationTime,
+                    description = t.Description,
+                    dueDate = t.DueDate,
+                    id = t.TaskId,
+                    isCompleted = t.IsCompleted,
+                    name = t.Name,
+                    order = t.Order,
+                    priority = t.Priority,
+                    submittingUserId = t.SubmittingUser.UserId,
+                    tagIds = t.TagTasks.Select(tt => tt.Tag.TagId).ToArray()
                 })
                 .ToList();
             return Json(tasks);
@@ -73,7 +81,7 @@ namespace ProjectManager.Controllers
                 var newTask = new ProjectManager.Models.Task()
                 {
                     Name = taskName,
-                    CreationTime = TimeZoneInfo.ConvertTimeToUtc(DateTime.Now),
+                    CreationTime = "",
                     Order = 0,
                     SubmittingUser = context.Users.Find(userId),
                     Project = context.Projects.Find(projectId),
@@ -124,21 +132,21 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
-        [HttpPost]
-        public void UpdateDueDate(int taskId, int year, int month, int day)
-        {
-            var context = new DAL.MyContext();
-            var task = context.Tasks.Find(taskId);
-            if ((day == 1) && (month == 0) && (year == 0))
-            {
-                task.DueDate = new DateTime();
-            }
-            else
-            {
-                task.DueDate = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
-            }
-            context.SaveChanges();
-        }
+        //[HttpPost]
+        //public void UpdateDueDate(int taskId, int year, int month, int day)
+        //{
+        //    var context = new DAL.MyContext();
+        //    var task = context.Tasks.Find(taskId);
+        //    if ((day == 1) && (month == 0) && (year == 0))
+        //    {
+        //        task.DueDate = new DateTime();
+        //    }
+        //    else
+        //    {
+        //        task.DueDate = TimeZoneInfo.ConvertTimeToUtc(new DateTime(year, month, day));
+        //    }
+        //    context.SaveChanges();
+        //}
 
         [HttpPost]
         public void UpdateIsCompleted(int taskId, bool isCompleted)
@@ -222,51 +230,51 @@ namespace ProjectManager.Controllers
             context.SaveChanges();
         }
 
-        [HttpPost]
-        public void Delete(int taskId)
-        {
-            var context = new DAL.MyContext();
-            var commentController = new CommentController();
-            var comments = context.Comments
-                .Where(c => c.Task.TaskId == taskId)
-                .ToList();
-            foreach (var comment in comments)
-            {
-                commentController.Delete(comment.CommentId);
-            }
+        //[HttpPost]
+        //public void Delete(int taskId)
+        //{
+        //    var context = new DAL.MyContext();
+        //    var commentController = new CommentController();
+        //    var comments = context.Comments
+        //        .Where(c => c.Task.TaskId == taskId)
+        //        .ToList();
+        //    foreach (var comment in comments)
+        //    {
+        //        commentController.Delete(comment.CommentId);
+        //    }
 
-            context = new DAL.MyContext();
-            var tags = context.TagTasks
-                .Where(tt => tt.Task.TaskId == taskId)
-                .Select(tt => tt.Tag)
-                .ToList();
-            foreach (var tag in tags)
-            {
-                RemoveTag(taskId, tag.TagId);
-            }
+        //    context = new DAL.MyContext();
+        //    var tags = context.TagTasks
+        //        .Where(tt => tt.Task.TaskId == taskId)
+        //        .Select(tt => tt.Tag)
+        //        .ToList();
+        //    foreach (var tag in tags)
+        //    {
+        //        RemoveTag(taskId, tag.TagId);
+        //    }
 
-            context = new DAL.MyContext();
+        //    context = new DAL.MyContext();
 
-            var taskToDelete = context.Tasks
-                .Where(t => t.TaskId == taskId)
-                .Include(t => t.Category)
-                .First();
-            context.Tasks.Attach(taskToDelete);
-            context.Tasks.Remove(taskToDelete);
+        //    var taskToDelete = context.Tasks
+        //        .Where(t => t.TaskId == taskId)
+        //        .Include(t => t.Category)
+        //        .First();
+        //    context.Tasks.Attach(taskToDelete);
+        //    context.Tasks.Remove(taskToDelete);
 
-            var tasksWithHigherOrder = context.Tasks
-                .Where(t => t.Category == taskToDelete.Category)
-                .Where(t => t.Order > taskToDelete.Order)
-                .ToList();
-            foreach (Models.Task task in tasksWithHigherOrder)
-            {
-                var entity = context.Tasks.Find(task.TaskId);
-                entity.Order -= 1;
-                context.Tasks.Update(entity);
-            }
+        //    var tasksWithHigherOrder = context.Tasks
+        //        .Where(t => t.Category == taskToDelete.Category)
+        //        .Where(t => t.Order > taskToDelete.Order)
+        //        .ToList();
+        //    foreach (Models.Task task in tasksWithHigherOrder)
+        //    {
+        //        var entity = context.Tasks.Find(task.TaskId);
+        //        entity.Order -= 1;
+        //        context.Tasks.Update(entity);
+        //    }
 
-            context.SaveChanges();
-        }
+        //    context.SaveChanges();
+        //}
 
         public void Sort(int projectId, string property, bool descending)
         {
@@ -379,6 +387,76 @@ namespace ProjectManager.Controllers
             task.Order = order;
 
             context.SaveChanges();
+        }
+
+        public struct TaskJson
+        {
+            public int AssignedUserId { get; set; }
+            public int CategoryId { get; set; }
+            public int[] CommentIds { get; set; }
+            public string CreationTime { get; set; }
+            public string Description { get; set; }
+            public string DueDate { get; set; }
+            public bool IsCompleted { get; set; }
+            public string Name { get; set; }
+            public int Order { get; set; }
+            public int Priority { get; set; }
+            public int ProjectId { get; set; }
+            public int SubmittingUserId { get; set; }
+            public int[] TagIds { get; set; }
+        }
+
+        [HttpPost]
+        [Route("task")]
+        public JsonResult Create([FromBody] [Bind("AssignedUserId", "CategoryId", "CommentIds", "CreationTime", "Description", "DueDate", "IsCompleted", "Name", "Order", "Priority", "ProjectId", "SubmittingUserId", "TagIds")] TaskJson taskJson)
+        {
+            var context = new MyContext();
+            var task = new Models.Task()
+            {
+                Category = context.Categories.Find(taskJson.CategoryId),
+                Name = taskJson.Name,
+                Order = 0,
+                Project = context.Projects.Find(taskJson.ProjectId),
+                SubmittingUser = context.Users.Find(taskJson.SubmittingUserId)
+            };
+            context.Tasks.Add(task);
+            context.SaveChanges();
+
+            return Json(task.TaskId);
+        }
+
+        [HttpPut]
+        [Route("task/{id}")]
+        public JsonResult Update(int id, [FromBody] [Bind("AssignedUserId", "CategoryId", "CommentIds", "CreationTime", "Description", "DueDate", "IsCompleted", "Name", "Order", "Priority", "ProjectId", "SubmittingUserId", "TagIds")] TaskJson taskJson)
+        {
+            var context = new MyContext();
+            var task = context.Tasks.Find(id);
+            task.AssignedUser = context.Users.Find(taskJson.AssignedUserId);
+            task.Category = context.Categories.Find(taskJson.CategoryId);
+            task.DueDate = taskJson.DueDate;
+            task.Order = taskJson.Order;
+            context.SaveChanges();
+
+            return Json(true);
+        }
+
+        [HttpDelete]
+        [Route("task/{id}")]
+        public JsonResult Delete(int id)
+        {
+            var context = new DAL.MyContext();
+            var tagTasks = context.TagTasks.Where(tt => tt.Task.TaskId == id).ToList();
+            foreach (var tagTask in tagTasks)
+            {
+                context.TagTasks.Attach(tagTask);
+                context.TagTasks.Remove(tagTask);
+            }
+            var task = context.Tasks.Find(id);
+            context.Tasks.Attach(task);
+            context.Tasks.Remove(task);
+            context.SaveChanges();
+
+            return Json(true);
         }
     }
 }

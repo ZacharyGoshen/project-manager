@@ -7,10 +7,6 @@
         'click .remove-button-small': 'onClickRemove'
     },
 
-    initialize: function () {
-        this.listenTo(this.model, "change", this.render);
-    },
-
     render: function () {
         let self = this;
 
@@ -19,12 +15,12 @@
 
         let userPictureView = new ProjectManager.Views.UserPicture({
             collection: self.collection,
-            userId: self.model.get('userId'),
+            userId: self.model.get('id'),
             hover: false
         });
         this.$(".project-details-team-member-picture").html(userPictureView.render().$el);
 
-        let user = self.collection.users.findWhere({ userId: self.model.get('userId') });
+        let user = self.collection.users.findWhere({ id: self.model.get('id') });
         this.$(".project-details-team-member-name").html(user.get('firstName') + ' ' + user.get('lastName'));
 
         return this;
@@ -48,37 +44,29 @@
     remove: function () {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Project/RemoveTeamMember",
-                data: {
-                    projectId: ProjectManager.CurrentProjectId,
-                    userId: self.model.get('userId')
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            let teamMemberIds = self.collection.projects
-                .findWhere({ projectId: ProjectManager.CurrentProjectId })
-                .get('teamMemberIds');
-            teamMemberIds.splice(teamMemberIds.indexOf(self.model.get('userId'), 1));
-            self.collection.projects
-                .findWhere({ projectId: ProjectManager.CurrentProjectId })
-                .trigger('change');
+        this.collection.invites.where({ inviterId: self.model.get('id') }).forEach(function (invite) {
+            invite.destroy();
+        });
 
-            self.collection.tasks
-                .where({ assignedUserId: self.model.get('userId') })
-                .forEach(function (task) { task.set('assignedUserId', 0); });
+        let assignedTaskIdsClone = self.model.get('assignedTaskIds').slice();
+        this.collection.tasks.where({ assignedUserId: self.model.get('id') }).forEach(function (task) {
+            assignedTaskIdsClone.splice(assignedTaskIdsClone.indexOf(task.get('id')), 1);
+            task.save({ assignedUserId: 0 });
+        });
 
-            self.collection.comments
-                .where({ userId: self.model.get('userId') })
-                .forEach(function (comment) { self.collection.comments.remove(comment); });
+        let project = this.collection.projects.findWhere({ id: ProjectManager.CurrentProjectId });
+        let teamMemberIdsClone = project.get('teamMemberIds').slice();
+        teamMemberIdsClone.splice(teamMemberIdsClone.indexOf(self.model.get('id')), 1);
+        project.save({
+            teamMemberIds: teamMemberIdsClone
+        });
 
-            self.collection.users.remove(self.model);
-            self.collection.users.trigger('update');
+        let projectIdsClone = self.model.get('projectIds').slice();
+        projectIdsClone.splice(projectIdsClone.indexOf(project.get('id')), 1);
+        self.model.save({
+            assignedTaskIds: assignedTaskIdsClone,
+            currentProjectId: 0,
+            projectIds: projectIdsClone
         });
     }
 });

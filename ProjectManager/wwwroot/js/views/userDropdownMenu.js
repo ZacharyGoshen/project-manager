@@ -42,7 +42,7 @@
         let self = this;
 
         let accountSettingsView = new ProjectManager.Views.AccountSettings({
-            model: self.collection.users.findWhere({ userId: ProjectManager.LoggedInUserId }),
+            model: self.collection.users.findWhere({ id: ProjectManager.LoggedInUserId }),
             collection: self.collection
         });
 
@@ -52,6 +52,12 @@
     },
 
     logOut: function () {
-        location.href = 'BackboneLogin'
+        Backbone.ajax({
+            type: 'POST',
+            url: '/user/logout',
+            success: function () {
+                location.href = 'login'
+            }
+        });
     }
 });

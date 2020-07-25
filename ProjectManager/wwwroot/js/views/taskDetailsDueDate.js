@@ -10,10 +10,12 @@
     },
 
     initialize: function () {
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, "change:dueDate", this.render);
     },
 
     render: function () {
+        let self = this;
+
         let html = this.template(this.model.toJSON());
         this.$el.html(html);
 
@@ -22,12 +24,11 @@
         });
         this.$('#task-details-due-date-icon').html(dueDateIconView.render().$el);
 
-        let dueDate = new Date(this.model.get('dueDate'));
-        let dueDateUtc = new Date(this.model.get('dueDate') + 'Z')
-        if (dueDateUtc.getTime() == new Date('0001-01-01T00:00:00Z').getTime()) {
+        if (this.model.get('dueDate') == '') {
             this.$("#task-details-due-date-text").html('Set a due date');
+            this.$('.remove-button-small').remove();
         } else {
-            let dueDateString = dueDate.toLocaleDateString(undefined, { month: "long", day: "numeric" });
+            let dueDateString = new Date(self.model.get('dueDate')).toLocaleDateString(undefined, { month: "long", day: "numeric" });
             this.$("#task-details-due-date-text").html(dueDateString);
         }
 
@@ -54,48 +55,12 @@
         }
     },
 
-    update: function (date) {
-        let self = this;
-
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/UpdateDueDate",
-                data: {
-                    taskId: self.model.get('taskId'),
-                    year: date.getFullYear(),
-                    month: date.getMonth() + 1,
-                    day: date.getDate()
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('dueDate', date);
-            self.toggleSelectDate();
-        });
+    update: function (dueDate) {
+        this.model.save({ dueDate: dueDate.toISOString() });
+        this.toggleSelectDate();
     },
 
     remove: function () {
-        let self = this;
-
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Task/UpdateDueDate",
-                data: {
-                    taskId: self.model.get('taskId'),
-                    year: 0,
-                    month: 0,
-                    day: 1
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('dueDate', '0001-01-01T00:00:00');
-        });
+        this.model.save({ dueDate: '' });
     },
 });

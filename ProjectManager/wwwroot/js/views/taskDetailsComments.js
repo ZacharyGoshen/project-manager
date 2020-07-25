@@ -20,7 +20,7 @@
         let self = this;
 
         this.$el.html('');
-        this.collection.comments.forEach(function (comment) {
+        this.collection.comments.where({ taskId: self.model.get('id') }).forEach(function (comment) {
             self.renderOne(comment);
         });
         return this;

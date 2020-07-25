@@ -9,10 +9,6 @@
         'click #account-info-update-button': 'updateInfo'
     },
 
-    initialize: function () {
-        this.listenTo(this.model, 'change', this.render);
-    },
-
     render: function () {
         let self = this;
 
@@ -49,24 +45,8 @@
     },
 
     updateBackgroundColor: function (color) {
-        let self = this;
-
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/User/UpdateBackgroundColor",
-                data: {
-                    userId: self.model.get('userId'),
-                    backgroundColor: color
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('backgroundColor', color);
-            self.toggleSelectColor();
-        });
+        this.model.save({ backgroundColor: color });
+        this.toggleSelectColor();
     },
 
     updateInfo: function () {
@@ -95,6 +75,13 @@
         new Promise(function (resolve) {
             if (email == self.model.get('email')) {
                 resolve();
+            } else if (ProjectManager.Demo) {
+                if (self.collection.users.findWhere({ email: email })) {
+                    self.updateInfoError('User already exists with that email.');
+                    return;
+                } else {
+                    resolve();
+                }
             } else {
                 Backbone.ajax({
                     type: 'POST',
@@ -113,51 +100,12 @@
                 });
             }
         }).then(function () {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: 'POST',
-                    url: '/User/UpdateFirstName',
-                    data: {
-                        userId: self.model.get('userId'),
-                        firstName: firstName
-                    },
-                    success: function () {
-                        resolve();
-                    }
-                });
+            self.model.save({
+                firstName: firstName,
+                lastName: lastName,
+                email: email
             });
-        }).then(function () {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: 'POST',
-                    url: '/User/UpdateLastName',
-                    data: {
-                        userId: self.model.get('userId'),
-                        lastName: lastName
-                    },
-                    success: function () {
-                        resolve();
-                    }
-                });
-            });
-        }).then(function () {
-            return new Promise(function (resolve) {
-                Backbone.ajax({
-                    type: 'POST',
-                    url: '/User/UpdateEmail',
-                    data: {
-                        userId: self.model.get('userId'),
-                        email: email
-                    },
-                    success: function () {
-                        resolve();
-                    }
-                });
-            });
-        }).then(function () {
-            self.model.set('firstName', firstName);
-            self.model.set('lastName', lastName);
-            self.model.set('email', email);
+            self.updateInfoError('Info updated.');
         });
     },
 

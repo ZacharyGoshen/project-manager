@@ -9,7 +9,7 @@
     },
 
     initialize: function () {
-        this.listenTo(this.model, "change", this.render);
+        this.listenTo(this.model, "change:backgroundColor", this.render);
     },
 
     render: function () {
@@ -38,40 +38,32 @@
     updateBackgroundColor: function (color) {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Tag/UpdateBackgroundColor",
-                data: {
-                    tagId: self.model.get('tagId'),
-                    backgroundColor: color
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.model.set('backgroundColor', color);
-            self.toggleSelectColor();
-        });
+        self.model.save(
+            { backgroundColor: color },
+            { success: function () { self.toggleSelectColor(); }}
+        );
     },
 
     delete: function () {
         let self = this;
 
-        new Promise(function (resolve) {
-            Backbone.ajax({
-                type: "POST",
-                url: "/Tag/Delete",
-                data: {
-                    tagId: self.model.get('tagId')
-                },
-                success: function () {
-                    resolve();
-                }
-            });
-        }).then(function () {
-            self.collection.tags.remove(self.model);
+        this.model.destroy({
+            wait: true,
+            success: function () {
+                self.collection.tasks.forEach(function (task) {
+                    if (!task.get('tagIds').includes(self.model.get('id'))) return;
+
+                    let tagIdsClone = task.get('tagIds').slice();
+                    tagIdsClone.splice(tagIdsClone.indexOf(self.model.get('id')), 1);
+                    task.save({ tagIds: tagIdsClone });
+                });
+
+                let project = self.collection.projects.findWhere({ id: self.model.get('projectId') });
+                let tagIdsClone = project.get('tagIds').slice();
+                console.log(tagIdsClone);
+                tagIdsClone.splice(tagIdsClone.indexOf(self.model.get('id')), 1);
+                project.save({ tagIds: tagIdsClone });
+            }
         });
     }
 });
