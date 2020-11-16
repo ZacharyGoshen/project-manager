@@ -19,7 +19,7 @@ namespace ProjectManager.Controllers
         public IActionResult Board()
         {
             var context = new MyContext();
-            context.Database.EnsureCreated();
+            //context.Database.EnsureCreated();
 
             if (this.UserId == 0 && this.Demo == 0)
             {
